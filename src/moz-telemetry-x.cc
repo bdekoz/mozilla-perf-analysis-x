@@ -12,14 +12,30 @@
 #include <iostream>
 #include "moz-json-basic.h"
 
-using std::string;
+using namespace moz;
 
-
-string
+std::string
 usage()
 {
-  string s("usage: a60-analyze file.json");
+  std::string s("usage: a60-analyze file.json");
   return s;
+}
+
+/*
+  network
+  parse
+  style
+  layout
+  paint/composite
+
+  TIME_TO_*
+  *_MS
+ */
+void
+extract_probes(std::string ifile)
+{
+  rj::Document dom(deserialize_json_to_dom(ifile));
+  walk_dom_for_string_fields_matching(dom, "TIME_TO");
 }
 
 int main(int argc, char* argv[])
@@ -33,20 +49,21 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-  // Output.
-#if 0  
-  string odir = io::get_output_directory("tmp");
-  io::sanity_check_output_directory(odir);
-#endif
-  
   // Input file, output directory.
+  std::string ifile;
   if (argc > 1)
     {
-      string input_file(argv[1]);
-      //io::sanity_check_input(input_file);
+      ifile = argv[1];
     }
+  else
+    {
+      std::clog << usage() << std::endl;
+      return 1;
+    }
+  std::clog << "input file: " << ifile << std::endl;
 
-  
+  // Extract from json.
+  extract_probes(ifile);
 
   return 0;
 }
