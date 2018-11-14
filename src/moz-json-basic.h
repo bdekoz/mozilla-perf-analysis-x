@@ -1,15 +1,14 @@
-// alphmoz serialize/deserialize forward declarations -*- mode: C++ -*-
+// mozilla serialize/deserialize forward declarations -*- mode: C++ -*-
 
-// alphmoz
-// bittorrent x scrape x data + analytics
+// Copyright (c) 2018, Mozilla
+// Benjamin De Kosnik <bdekoz@mozilla.com>
 
-// Copyright (c) 2018, Benjamin De Kosnik <b.dekosnik@gmail.com>
+// This file is part of the MOZILLA TELEMETRY X library.
 
-// This file is part of the alphmoz library.  This library is free
-// software; you can redistribute it and/or modify it under the terms
-// of the GNU General Public License as published by the Free Software
-// Foundation; either version 3, or (at your option) any later
-// version.
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation; either version 3, or (at
+// your option) any later version.
 
 // This library is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
