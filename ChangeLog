@@ -1,3 +1,12 @@
+2018-11-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* ChangeLog
+	* data/
+	* scripts/
+	* src/
+	* viz.archive/
+	* viz.sunburst-v5/
+
 2018-11-07  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* Initial collections, organization of files.
