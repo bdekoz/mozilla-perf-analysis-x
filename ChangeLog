@@ -1,3 +1,11 @@
+2018-11-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* docs: New.
+
+	* data/2018-11-08-varney-crash-report.json: New.
+
+	* src/moz-json-basic.h: State of walking.
+
 2018-11-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h: Copyright cleanup.
