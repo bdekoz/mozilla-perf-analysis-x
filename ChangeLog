@@ -1,3 +1,8 @@
+2018-11-16  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
+	* src/moz-json-basic.h: Nested objects try.
+	* src/moz-telemetry-x.cc: Same.
+
 2018-11-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* docs: New.

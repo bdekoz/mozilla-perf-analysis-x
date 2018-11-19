@@ -43,7 +43,13 @@ void
 extract_probes(std::string ifile)
 {
   rj::Document dom(deserialize_json_to_dom(ifile));
-  walk_dom_for_string_fields_matching(dom, "TIME_TO");
+
+  //search_dom_for_object_field_matching(dom, sapp);
+  //seaach_dom_for_object_field_matching(dom, spay);
+  search_dom_for_object_field_matching(dom, senv);
+
+  // XXX
+  //walk_dom_for_string_fields_matching(dom, "TIME_TO");
 }
 
 int main(int argc, char* argv[])

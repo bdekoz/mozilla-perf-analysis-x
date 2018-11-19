@@ -22,22 +22,30 @@
 #include <sstream>
 
 #define RAPIDJSON_HAS_STDSTRING 1
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/filereadstream.h"
-#include "rapidjson/reader.h"
+
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"
-
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/pointer.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/reader.h"
 
 namespace moz
 {
+  /// Namespace aliaases.
+  namespace rj = rapidjson;
+
   /// Types.
   using std::string;
-
-  /// Scopes.
-  namespace rj = rapidjson;
   using jsonstream = rj::PrettyWriter<rj::StringBuffer>;
-  using citerator = rj::Value::ConstMemberIterator;
+
+  //using citerator = rj::Value::ConstMemberIterator;
+  using citerator_m = rj::Value::ConstMemberIterator;
+  using citerator_v = rj::Value::ConstValueIterator;
+
+  /// Constants.
+  const char* kTypeNames[] =
+    { "Null", "False", "True", "Object", "Array", "String", "Number" };
 
   void
   serialize_to_json(jsonstream&, string);
@@ -81,21 +89,66 @@ namespace moz
   rj::Document
   deserialize_json_to_dom_object(string);
 
-  // search_dom_for_string_match
-  // search_dom_for_string_containing
-  /// Search DOM for string literals.
-  rj::Value
-  search_dom_for_object_field_matching(const rj::Document& dom, const string m)
+  // Telemetry data file object parition constants.
+  const string sapp("application");
+  const string spay("payload");
+  const string senv("environment");
+
+  /// Search DOM for objects.
+  void
+  search_dom_for_object_field_matching(const rj::Document& dom,
+				       const string match)
   {
-    rj::Value ret;
-    if (!dom.HasParseError() && dom.HasMember(m.c_str()))
+#if 0
+    if (!dom.HasParseError() && dom.HasMember(match.c_str()))
       {
-	const rj::Value& a = dom[m.c_str()];
-	ret = a;
+	// Get value for field matching...
+	const rj::Value& v = dom[match.c_str()];
+	if (v.IsObject())
+	  {
+	    std::clog << match << " object:" << std::endl;
+#if 0
+	    // All objects in JSON file, XXX could be top-level
+	    for (auto& m : v.GetObject())
+	      {
+		string fname(m.name.GetString());
+		string ftype(kTypeNames[m.value.GetType()]);
+		std::clog << fname << " " << ftype << std::endl;
+	      }
+
+#endif
+
+#if 1
+	    for (citerator_mem itr = v.value.MemberBegin(); itr != v.value.MemberEnd(); ++itr)
+	      {
+		string fname(itr->name.GetString());
+		string ftype(kTypeNames[itr->value.GetType()]);
+		std::clog << fname << " " << ftype << std::endl;
+	      }
+#endif
+	  }
       }
-    return ret;
+#else
+
+    if (!dom.HasParseError())
+      {
+	// http://rapidjson.org/md_doc_pointer.html
+	const rj::Value* pv = rapidjson::Pointer(match.c_str()).Get(dom);
+
+	if (pv->IsObject())
+	  {
+	    for (citerator_m itr = pv->MemberBegin(); itr != pv->MemberEnd(); ++itr)
+	      {
+		string fname(itr->name.GetString());
+		string ftype(kTypeNames[itr->value.GetType()]);
+		std::clog << fname << " " << ftype << std::endl;
+	      }
+	  }
+      }
+#endif
   }
 
+  /// Search DOM for string literals.
   string
   search_dom_for_string_field(const rj::Document& dom, const string finds)
   {
@@ -132,33 +185,24 @@ namespace moz
   {
     if (!dom.HasParseError())
       {
-	// Telemetry data file object parition constants.
-	const string sapp("application");
-	const string spay("payload");
-	const string senv("environment");
-
-	const char* kTypeNames[] =
-	{ "Null", "False", "True", "Object", "Array", "String", "Number" };
-
-#if 0
-	for (citerator itr = dom.MemberBegin(); itr != dom.MemberEnd(); ++itr)
+	for (citerator_m itr = dom.MemberBegin(); itr != dom.MemberEnd(); ++itr)
 	  {
 	    auto& dmem = *itr;
 	    string fname(dmem.name.GetString());
 	    string ftype(kTypeNames[dmem.value.GetType()]);
 	    std::clog << fname << " " << ftype << std::endl;
 
+#if 0
 	    // Walk matching to clog.
 	    if (ftype == "Object")
-	      for (uint i = 0; i < dmem.Size(); ++i)
+	      for (uint i = 0; i < dom.Size(); ++i)
 		{
-		  const rj::Value& v = dmem[i];
+		  const rj::Value& v = dom[i];
 		  field_match_extract_v(dom, m, fname);
 		}
-	  }
-#else
-
 #endif
+	  }
+
       }
   }
 
