@@ -1,5 +1,16 @@
 2018-11-19  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
+	* src/moz-json-basic.h (field_value_to_string): Convenience function.
+	(search_dom_for_object_field_matching): To..
+	(list_dom_fields): ...this.
+	* src/moz-telemetry-x.cc (extract_probes): To...
+	(extract_named_objects): ...this.
+	(extract_tier_1_probes): New.
+	* data/mozilla-telemetry-names-all.txt: Probe names.
+	* data/mozilla-telemetry-names-tier-1.txt: Tier 1 probe names.
+
+2018-11-19  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
 	* src/moz-json-basic.h: Nested objects cleanup.
 	* src/moz-telemetry-x.cc: Same.
 

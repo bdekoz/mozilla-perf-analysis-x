@@ -72,9 +72,9 @@ deserialize_json_to_dom(string input_file)
       std::cerr << "error: cannot open input file "
 		<< input_file << std::endl;
     }
-  
+
   // Validate json file.
-  
+
   // DOM
   rj::Document dom;
   dom.Parse(json.c_str());
@@ -84,9 +84,28 @@ deserialize_json_to_dom(string input_file)
       std::cerr << rj::GetParseError_En(dom.GetParseError()) << std::endl;
       std::cerr << dom.GetErrorOffset() << std::endl;
     }
-  
+
   return dom;
 }
+
+string
+field_value_to_string(const rj::Value& v)
+{
+  string ret;
+  if (v.IsNumber())
+    ret = std::to_string(v.GetInt());
+  else if (v.IsString())
+    ret = v.GetString();
+  else if (v.IsBool())
+    ret = v.GetBool();
+  else
+    {
+      // Array or Object.
+      ret = "non-plain old field";
+    }
+  return ret;
+}
+
 
 void
 search_dom_object_field_contents(const rj::Document& dom, const string match)
@@ -99,47 +118,40 @@ search_dom_object_field_contents(const rj::Document& dom, const string match)
       if (v.IsObject())
 	{
 	  std::clog << match << " object found with members:" << std::endl;
-	  
+
 	  for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
 	    {
 	      // Iterate through object
 	      string nname = i->name.GetString();
-	      string nvalue = i->value.GetString();
-	      string ntype(kTypeNames[i->value.GetType()]);	      
+	      std::clog << nname;
 
-	      std::clog << nname << " : " << nvalue << " : " << ntype
-			<< std::endl;
+	      const rj::Value& nv = i->value;
+	      string ntype(kTypeNames[nv.GetType()]);
+	      string nvalue = field_value_to_string(nv);
+	      std::clog << " : " << ntype << " : " << nvalue << std::endl;
 
 	      //const rj::Value& nestedv = v[nname.c_str()];
 	    }
-	  
+
 	}
     }
 }
-  
+
 /// Search DOM for objects.
 void
-search_dom_for_object_field_matching(const rj::Document& dom,
-				     const string match)
+list_dom_fields(const rj::Document& dom)
 {
-  if (!dom.HasParseError() && dom.HasMember(match.c_str()))
+  if (!dom.HasParseError())
     {
-      // Get value for field matching...
-      const rj::Value& v = dom[match.c_str()];
-      if (v.IsObject())
+      for (vcmem_iterator i = dom.MemberBegin(); i != dom.MemberEnd(); ++i)
 	{
-	  std::clog << match << " object:" << std::endl;
-	  
-	  for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
-	    {
-	      string fname(i->name.GetString());
-	      string ftype(kTypeNames[i->value.GetType()]);
-	      std::clog << fname << " " << ftype << std::endl;
-	    }
+	  string fname(i->name.GetString());
+	  string ftype(kTypeNames[i->value.GetType()]);
+	  std::clog << fname << " " << ftype << std::endl;
 	}
     }
 }
-  
+
 /// Search DOM for string literals.
 string
 search_dom_for_string_field(const rj::Document& dom, const string finds)
