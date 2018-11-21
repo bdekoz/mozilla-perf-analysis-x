@@ -1,5 +1,20 @@
 2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
+	New telemetry JSON files.
+	* data/2018-11-20-varney-main-ping-15-30-guardian.gen.json
+	* data/2018-11-20-varney-main-ping-15-30-reddit.gen.json
+	* data/2018-11-20-varney-main-ping-15-30-twitch.gen.json
+	* data/2018-11-20-varney-main-ping-15-30-twitch.json
+	* data/2018-11-20-varney-main-ping-15-30-twitter.gen.json
+	* data/2018-11-20-varney-main-ping-15-30-youtube.gen.json
+	* data/2018-11-20-varney-main-ping-15-30-youtube.json
+
+	* data/url-list.txt: Test URI values.
+
+	* scripts/mozlz4a.py: Utility to convert jsonlz4 to json.
+
+2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
 	* src/moz-json-basic.h (extract_dom_histogram_fields): New.
 	(extract_dom_scalar_fields): New.
 	(list_dom_nested_object_fields): New.
