@@ -1,6 +1,17 @@
+2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
+	* src/moz-json-basic.h (extract_dom_histogram_fields): New.
+	(extract_dom_scalar_fields): New.
+	(list_dom_nested_object_fields): New.
+	(search_dom_object_field_contents): New.
+	* src/moz-telemetry-x.cc (list_fields): New.
+	(update_extract_lists): New.
+	(extract_tier_1_probes): Use all the above.
+
 2018-11-19  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
-	* src/moz-json-basic.h (field_value_to_string): Convenience function.
+	* src/moz-json-basic.h (field_value_to_string): Convenience
+	function.
 	(search_dom_for_object_field_matching): To..
 	(list_dom_fields): ...this.
 	* src/moz-telemetry-x.cc (extract_probes): To...

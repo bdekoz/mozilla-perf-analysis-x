@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #define RAPIDJSON_HAS_STDSTRING 1
 
@@ -38,6 +39,7 @@ namespace rj = rapidjson;
 
 /// Types.
 using std::string;
+using strings = std::vector<std::string>;
 using jsonstream = rj::PrettyWriter<rj::StringBuffer>;
 
 using vcmem_iterator = rj::Value::ConstMemberIterator;
@@ -54,6 +56,7 @@ const string senv("environment");
 
 void
 serialize_to_json(jsonstream&, string);
+
 
 rj::Document
 deserialize_json_to_dom(string input_file)
@@ -88,6 +91,7 @@ deserialize_json_to_dom(string input_file)
   return dom;
 }
 
+
 string
 field_value_to_string(const rj::Value& v)
 {
@@ -107,35 +111,87 @@ field_value_to_string(const rj::Value& v)
 }
 
 
+// Assume v is the histogram node.
+strings
+extract_dom_histogram_fields(const rj::Value& v, const strings& probes,
+			     std::ofstream& ofs)
+{
+  strings found;
+  if (v.IsObject())
+    {
+      for (const string& probe : probes)
+	{
+	  auto i = v.FindMember(probe.c_str());
+	  if (i != v.MemberEnd())
+	    {
+	      const rj::Value& nv = i->value["sum"];
+	      string nvalue = field_value_to_string(nv);
+	      ofs << probe << "," << nvalue << std::endl;
+	      found.push_back(probe);
+	    }
+	}
+    }
+  return found;
+}
+
+
+strings
+extract_dom_scalar_fields(const rj::Value& v, const strings& probes,
+			  std::ofstream& ofs)
+{
+  strings found;
+  if (v.IsObject())
+    {
+      for (const string& probe : probes)
+	{
+	  auto i = v.FindMember(probe.c_str());
+	  if (i != v.MemberEnd())
+	    {
+	      const rj::Value& nv = i->value;
+	      string nvalue = field_value_to_string(nv);
+	      ofs << probe << "," << nvalue << std::endl;
+	      found.push_back(probe);
+	    }
+	}
+    }
+  return found;
+}
+
+
+void
+list_dom_nested_object_fields(const rj::Value& v)
+{
+  if (v.IsObject())
+    {
+      for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
+	{
+	  // Iterate through object
+	  string nname = i->name.GetString();
+	  std::clog << nname;
+
+	  const rj::Value& nv = i->value;
+	  string ntype(kTypeNames[nv.GetType()]);
+	  string nvalue = field_value_to_string(nv);
+	  std::clog << " : " << ntype << " : " << nvalue << std::endl;
+
+	  //const rj::Value& nestedv = v[nname.c_str()];
+	}
+    }
+}
+
+
 void
 search_dom_object_field_contents(const rj::Document& dom, const string match)
 {
 
   if (!dom.HasParseError() && dom.HasMember(match.c_str()))
     {
-      // Get value for field matching...
+      std::clog << match << " nested object found with members:" << std::endl;
       const rj::Value& v = dom[match.c_str()];
-      if (v.IsObject())
-	{
-	  std::clog << match << " object found with members:" << std::endl;
-
-	  for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
-	    {
-	      // Iterate through object
-	      string nname = i->name.GetString();
-	      std::clog << nname;
-
-	      const rj::Value& nv = i->value;
-	      string ntype(kTypeNames[nv.GetType()]);
-	      string nvalue = field_value_to_string(nv);
-	      std::clog << " : " << ntype << " : " << nvalue << std::endl;
-
-	      //const rj::Value& nestedv = v[nname.c_str()];
-	    }
-
-	}
+      list_dom_nested_object_fields(v);
     }
 }
+
 
 /// Search DOM for objects.
 void
