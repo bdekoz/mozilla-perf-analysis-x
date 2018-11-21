@@ -113,7 +113,7 @@ field_value_to_string(const rj::Value& v)
 
 // Assume v is the histogram node.
 strings
-extract_dom_histogram_fields(const rj::Value& v, const strings& probes,
+extract_histogram_fields(const rj::Value& v, const strings& probes,
 			     std::ofstream& ofs)
 {
   strings found;
@@ -136,7 +136,7 @@ extract_dom_histogram_fields(const rj::Value& v, const strings& probes,
 
 
 strings
-extract_dom_scalar_fields(const rj::Value& v, const strings& probes,
+extract_scalar_fields(const rj::Value& v, const strings& probes,
 			  std::ofstream& ofs)
 {
   strings found;

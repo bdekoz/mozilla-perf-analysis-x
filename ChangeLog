@@ -1,5 +1,15 @@
 2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
+	* data/url-list.txt: Correct spelling of simpleMeasures fields.
+	Re-order so that the most difficult or problematic are at the
+	bottom, remove ones that are as of yet mythical.
+
+	* src/moz-json-basic.h (extract_dom_*): To...
+	(extract_*): ...this.
+	* src/moz-telemetry-x.cc (extract_tier_1_probes): Look in more places.
+
+2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
 	New telemetry JSON files.
 	* data/2018-11-20-varney-main-ping-15-30-guardian.gen.json
 	* data/2018-11-20-varney-main-ping-15-30-reddit.gen.json
