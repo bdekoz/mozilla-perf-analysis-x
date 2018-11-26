@@ -1,3 +1,7 @@
+2018-11-26  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
+	* data/Firefox 2018-11-26 14.11 profile.sps.json: Add profiler output.
+
 2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
 	* data/url-list.txt: Correct spelling of simpleMeasures fields.
