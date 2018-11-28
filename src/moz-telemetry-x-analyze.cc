@@ -18,12 +18,16 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
+
 #include "moz-json-basic.h"
+#include "moz-telemetry-x.h"
+#include "a60-svg-base.h"
 
 
 namespace moz {
 
-const string errorprefix("error -> ");
+using namespace svg;
+using color = svg::colore;
 
 std::string
 usage()
@@ -32,10 +36,37 @@ usage()
   return s;
 }
 
+
+// Create an svg object with 1080p dimensions and return it.
+svg_form
+initialize_svg()
+{
+  area<> a = { unit::pixel, 1920, 1080 };
+  svg_form obj("moz-telemetry-radiating-lines.svg", a);
+
+  group_form g;
+  g.start_element("mozilla viz experiment 20181127.v2", k::b_style);
+  g.finish_element();
+  obj.add_element(g);
+
+  return obj;
+}
+
+
+// Map a value to a point radiating out from a center.
 void
-radiate_probes_by_value()
+radiate_probe_by_value(svg_form& obj, string probename, int pvalue, int pmax,
+		       double r, color c = color::black)
 {
 
+}
+
+
+// Create radial viz
+void
+radiating_probe_lines_viz()
+{
+  svg_form obj = initialize_svg();
 }
 
 } // namespace moz

@@ -1,5 +1,11 @@
 2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
+	* src/moz-telemetry-x.h: New.
+	* src/moz-telemetry-x-analyze.cc: Use it.
+	* src/moz-telemetry-x-extract.cc: Same.
+
+2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
 	* src/a60-svg-base.h: SVG api.
 	* src/moz-json-basic.h (list_fields): Move here.
 	* src/moz-telemetry-x-analyze.cc: Separate out viz to this file.

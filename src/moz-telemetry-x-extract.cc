@@ -18,12 +18,11 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
-#include "moz-json-basic.h"
 
+#include "moz-json-basic.h"
+#include "moz-telemetry-x.h"
 
 namespace moz {
-
-const string errorprefix("error -> ");
 
 std::string
 usage()
@@ -87,8 +86,6 @@ void
 extract_tier_1_probes(std::string ifile)
 {
   // Read probe names from input file, and put into vector<string>
-  const string dpath("/home/bkoz/src/mozilla-telemetry-x/data/");
-  const string tier1file("mozilla-telemetry-names-tier-1.txt");
   std::ifstream ifs(dpath + tier1file);
   strings probes1;
   strings probes1found;
@@ -114,7 +111,6 @@ extract_tier_1_probes(std::string ifile)
     }
 
   // Prepare output file.
-  const string tier1outfile("mozilla-telemetry-names-tier-1-data.txt");
   std::ofstream ofs(dpath + "../" + tier1outfile);
   if (!ofs.good())
     {
