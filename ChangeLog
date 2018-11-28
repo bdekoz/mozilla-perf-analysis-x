@@ -1,27 +1,27 @@
-2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* moz-telemetry-x-analyze.cc (radiate_probe_by_value): New.
 	(place_probe_text): New.
 	* moz-telemetry-x.h (testfile): Add.
 
-2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.cc: Use generated csv files,
 	parse them back out.
 
-2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x.h: Update paths.
 	* src/moz-telemetry-x-analyze.cc: Same.
 	* src/moz-telemetry-x-extract.cc: Same.
 
-2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x.h: New.
 	* src/moz-telemetry-x-analyze.cc: Use it.
 	* src/moz-telemetry-x-extract.cc: Same.
 
-2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/a60-svg-base.h: SVG api.
 	* src/moz-json-basic.h (list_fields): Move here.
@@ -30,11 +30,11 @@
 	* src/moz-telemetry-x.cc: Move to...
 	* src/moz-telemetry-x-extract.cc: ...here.
 
-2018-11-26  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/Firefox 2018-11-26 14.11 profile.sps.json: Add profiler output.
 
-2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/url-list.txt: Correct spelling of simpleMeasures fields.
 	Re-order so that the most difficult or problematic are at the
@@ -44,7 +44,7 @@
 	(extract_*): ...this.
 	* src/moz-telemetry-x.cc (extract_tier_1_probes): Look in more places.
 
-2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	New telemetry JSON files.
 	* data/2018-11-20-varney-main-ping-15-30-guardian.gen.json
@@ -59,7 +59,7 @@
 
 	* scripts/mozlz4a.py: Utility to convert jsonlz4 to json.
 
-2018-11-20  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_dom_histogram_fields): New.
 	(extract_dom_scalar_fields): New.
@@ -69,7 +69,7 @@
 	(update_extract_lists): New.
 	(extract_tier_1_probes): Use all the above.
 
-2018-11-19  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (field_value_to_string): Convenience
 	function.
@@ -81,12 +81,12 @@
 	* data/mozilla-telemetry-names-all.txt: Probe names.
 	* data/mozilla-telemetry-names-tier-1.txt: Tier 1 probe names.
 
-2018-11-19  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h: Nested objects cleanup.
 	* src/moz-telemetry-x.cc: Same.
 
-2018-11-16  Benjamin De Kosnik  <bdekoza@mozilla.com>
+2018-11-16  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h: Nested objects try.
 	* src/moz-telemetry-x.cc: Same.
