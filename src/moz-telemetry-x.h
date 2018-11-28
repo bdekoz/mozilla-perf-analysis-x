@@ -29,9 +29,12 @@ namespace moz
   const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
   const string datapath(prefixpath + "data/");
 
+  const string testfile("mozilla-telemetry-test-data.txt");
+
   const string tier1file("mozilla-telemetry-names-tier-1.txt");
   const string tier1outfile("mozilla-telemetry-names-tier-1-data.txt");
 
   const string errorprefix("error -> ");
 } // namespace moz
+
 #endif
