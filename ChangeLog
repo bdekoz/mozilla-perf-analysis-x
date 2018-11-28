@@ -1,5 +1,10 @@
 2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.cc: Use generated csv files,
+	parse them back out.
+
+2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
 	* src/moz-telemetry-x.h: Update paths.
 	* src/moz-telemetry-x-analyze.cc: Same.
 	* src/moz-telemetry-x-extract.cc: Same.
