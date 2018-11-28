@@ -34,7 +34,7 @@
 namespace moz
 {
 
-/// Namespace aliaases.
+/// Namespace aliases.
 namespace rj = rapidjson;
 
 /// Types.
@@ -207,6 +207,15 @@ list_dom_fields(const rj::Document& dom)
 	}
     }
 }
+
+
+void
+list_fields(std::string ifile)
+{
+  rj::Document dom(deserialize_json_to_dom(ifile));
+  list_dom_fields(dom);
+}
+
 
 /// Search DOM for string literals.
 string

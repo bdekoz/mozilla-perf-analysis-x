@@ -1,3 +1,12 @@
+2018-11-27  Benjamin De Kosnik  <bdekoza@mozilla.com>
+
+	* src/a60-svg-base.h: SVG api.
+	* src/moz-json-basic.h (list_fields): Move here.
+	* src/moz-telemetry-x-analyze.cc: Separate out viz to this file.
+
+	* src/moz-telemetry-x.cc: Move to...
+	* src/moz-telemetry-x-extract.cc: ...here.
+
 2018-11-26  Benjamin De Kosnik  <bdekoza@mozilla.com>
 
 	* data/Firefox 2018-11-26 14.11 profile.sps.json: Add profiler output.

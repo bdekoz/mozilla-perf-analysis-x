@@ -21,7 +21,7 @@
 #include "moz-json-basic.h"
 
 
-using namespace moz;
+namespace moz {
 
 const string errorprefix("error -> ");
 
@@ -30,14 +30,6 @@ usage()
 {
   std::string s("usage: a60-analyze file.json");
   return s;
-}
-
-
-void
-list_fields(std::string ifile)
-{
-  rj::Document dom(deserialize_json_to_dom(ifile));
-  list_dom_fields(dom);
 }
 
 
@@ -209,10 +201,13 @@ extract_tier_1_probes(std::string ifile)
     std::cerr << errorprefix << kpayload << " not found " << std::endl;
 }
 
+} // namespace moz
+
 
 int main(int argc, char* argv[])
 {
   using namespace rapidjson;
+  using namespace moz;
 
   // Sanity check.
   if (argc > 2)
