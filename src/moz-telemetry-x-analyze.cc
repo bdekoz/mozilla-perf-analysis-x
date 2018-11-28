@@ -58,7 +58,7 @@ void
 radiate_probe_by_value(svg_form& obj, string probename, int pvalue, int pmax,
 		       double r, color c = color::black)
 {
-
+  
 }
 
 

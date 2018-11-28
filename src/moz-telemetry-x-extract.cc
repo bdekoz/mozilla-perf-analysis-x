@@ -86,7 +86,7 @@ void
 extract_tier_1_probes(std::string ifile)
 {
   // Read probe names from input file, and put into vector<string>
-  std::ifstream ifs(dpath + tier1file);
+  std::ifstream ifs(datapath + tier1file);
   strings probes1;
   strings probes1found;
   strings probes1r;
@@ -107,15 +107,15 @@ extract_tier_1_probes(std::string ifile)
     {
       std::cerr << errorprefix
 		<< "error: cannot open input file "
-		<< dpath + tier1file << std::endl;
+		<< datapath + tier1file << std::endl;
     }
 
   // Prepare output file.
-  std::ofstream ofs(dpath + "../" + tier1outfile);
+  std::ofstream ofs(prefixpath + tier1outfile);
   if (!ofs.good())
     {
       std::cerr << errorprefix
-		<< "cannot open output file " << dpath + "../" + tier1outfile
+		<< "cannot open output file " << datapath + tier1outfile
 		<< std::endl;
     }
 
