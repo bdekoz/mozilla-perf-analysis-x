@@ -1,5 +1,12 @@
 2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/a60-svg-base.h (transform): Correct rotate delimiter to use
+	comma instead of space.
+	* src/moz-telemetry-x-analyze.cc (place_probe_text): Rotate text
+	by degree about the middle.
+
+2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.cc: Fix placement on circumference.
 
 2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
