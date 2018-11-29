@@ -1,5 +1,11 @@
 2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/a60-svg-base.h: Add monospace type options.
+	* src/moz-telemetry-x-analyze.cc (place_probe_text): Parameterize
+	rotation.
+
+2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/a60-svg-base.h (transform): Correct rotate delimiter to use
 	comma instead of space.
 	* src/moz-telemetry-x-analyze.cc (place_probe_text): Rotate text

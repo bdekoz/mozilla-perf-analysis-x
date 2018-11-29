@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <unordered_map>
 
@@ -55,18 +56,9 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines")
 
 
 void
-place_probe_text(svg_form& obj, string label, int tx, int ty,
-		 const double deg = 0.0, const color c = color::black)
+place_probe_text(svg_form& obj, typography& typo, string label, int tx, int ty,
+		 const double deg = 0.0)
 {
-  // Common typographics.
-  svg::typography typo = k::apercu_typo;
-  typo._M_size = 12;
-  typo._M_a = svg::typography::anchor::middle;
-  //typo._M_align = svg::typography::align::left;
-  typo._M_style = k::b_style;
-  typo._M_w = svg::typography::weight::xlight;
-  typo._M_style._M_fill_color = c;
-
   text_form::data dt = { tx, ty, label, typo };
   text_form t;
   t.start_element();
@@ -95,7 +87,7 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 // Map a value to a point radiating out from a center.
 void
 radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
-		       double r)
+		       double r, bool rotatep = false)
 {
   // Find center of SVG canvas.
   const double cx = obj._M_area._M_width / 2;
@@ -103,7 +95,7 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
 
   // Normalize [0, pmax] to range [0, 360] and put pvalue in it.
   //const double kangle = (360 / pmax) * static_cast<double>(pvalue);
-  int angled = normalize_on_range(pvalue, 0, pmax, 0, 360);
+  int angled = normalize_on_range(pvalue, 0, pmax, 0, 359);
   std::clog << pname << " -> " << pvalue << " " << angled << std::endl;
 
   /*
@@ -116,8 +108,32 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
   double y(cy - (r * std::sin(angler)));
 
   // Consolidate label text to be "VALUE -> NAME"
-  string label = std::to_string(pvalue) + " -> " + pname;
-  place_probe_text(obj, label, x, y, angled);
+  std::ostringstream oss;
+  oss.imbue(std::locale(""));
+  oss << std::setfill(' ') << std::setw(6);
+  oss << pvalue << " -> " << pname;
+  string label = oss.str();
+
+  // Common typographics.
+  typography typo = k::ccode_typo;
+  typo._M_size = 12;
+  typo._M_style = k::b_style;
+  typo._M_w = svg::typography::weight::xlight;
+  // typo._M_style._M_fill_color = c;
+
+  if (rotatep)
+    {
+      typo._M_a = svg::typography::anchor::start;
+      typo._M_align = svg::typography::align::left;
+      //      typo._M_a = svg::typography::anchor::middle;
+      place_probe_text(obj, typo, label, x, y, angled);
+    }
+  else
+    {
+      typo._M_align = svg::typography::align::left;
+      typo._M_a = svg::typography::anchor::start;
+      place_probe_text(obj, typo, label, x, y, 0);
+    }
 }
 
 
@@ -166,7 +182,12 @@ radiating_probe_lines_viz(string ifile)
       string pname(v.first);
       int pvalue(v.second);
       double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / 4;
-      radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r);
+
+      // Don't Rotate.
+      //radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r, false);
+
+      // Rotate
+      radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r, true);
     }
 
 }
@@ -180,8 +201,8 @@ int main(void)
   using namespace moz;
 
   // Extract data/values computed previously and draw.
-  string ifile(prefixpath + testfile);
-  //string ifile(prefixpath + tier1outfile);
+  //string ifile(prefixpath + testfile);
+  string ifile(prefixpath + tier1outfile);
 
   radiating_probe_lines_viz(ifile);
 

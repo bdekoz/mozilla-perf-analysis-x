@@ -1003,11 +1003,14 @@ namespace constants
   const char* ssans = "Source Sans Pro";
   const char* smono = "Source Code Pro";
   const char* shsans = "Source Han Sans CN";
+  const char* aprcu = "Apercu";
+  const char* ccode = "Calling Code";
   const typography smono_typo = { smono, 12, b_style, a, al, w, p };
   const typography sserif_typo = { sserif, 12, b_style, a, al, w, p };
   const typography ssans_typo = { ssans, 12, b_style, a, al, w, p };
   const typography shsans_typo = { shsans, 12, b_style, a, al, w, p };
-  const typography apercu_typo = { "Apercu", 4, b_style, a, al, w, p };
+  const typography apercu_typo = { aprcu, 4, b_style, a, al, w, p };
+  const typography ccode_typo = { ccode, 12, b_style, a, al, w, p };
 
   // Default typography.
   //
