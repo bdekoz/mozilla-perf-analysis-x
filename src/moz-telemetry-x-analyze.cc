@@ -104,59 +104,21 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
 
   // Normalize [0, pmax] to range [0, 360] and put pvalue in it.
   //const double kangle = (360 / pmax) * static_cast<double>(pvalue);
-  int kangle = normalize_on_range(pvalue, 0, pmax, 0, 360);
-  std::clog << pname << " -> " << pvalue << " " << kangle << std::endl;
+  int angled = normalize_on_range(pvalue, 0, pmax, 0, 360);
+  std::clog << pname << " -> " << pvalue << " " << angled << std::endl;
 
   /*
     Draw text on the circumference of a circle of radius r centered (cx, cy)
     corresponding to the angle above.
-
-    Divide into 4 quadrants.
-
-    Quad 1 [0-90]
-    Quad 2 [91-180]
-    Quad 2 [181-270]
-    Quad 4 [271-360]
   */
-  enum quadrant { q1, q2, q3, q4 };
-  quadrant q;
-  if (0 <= kangle && kangle <= 90)
-    q = q1;
-  else if (90 < kangle && kangle <= 180)
-    q = q2;
-  else if (180 < kangle && kangle <= 270)
-    q = q3;
-  else
-    q = q4;
-
-  double x(0);
-  double y(0);
-  switch (q)
-    {
-    case q1:
-       x = cx + (r * std::cos(kangle));
-       y = cy - (r * std::sin(kangle));
-      break;
-    case q2:
-       x = cx - (r * std::cos(kangle));
-       y = cy - (r * std::sin(kangle));
-      break;
-    case q3:
-       x = cx - (r * std::cos(kangle));
-       y = cy + (r * std::sin(kangle));
-      break;
-    case q4:
-       x = cx + (r * std::cos(kangle));
-       y = cy + (r * std::sin(kangle));
-      break;
-    default:
-      throw std::runtime_error("radiate out of quadrant");
-      break;
-    }
+  constexpr double kpi(22/7);
+  double angler = (kpi / 180) * angled;
+  double x(cx + (r * std::cos(angler)));
+  double y(cy - (r * std::sin(angler)));
 
   // Consolidate label text to be "VALUE -> NAME"
   string label = std::to_string(pvalue) + " -> " + pname;
-  place_probe_text(obj, label, x, y, kangle);
+  place_probe_text(obj, label, x, y, angled);
 
 }
 
