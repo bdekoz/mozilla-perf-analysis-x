@@ -805,13 +805,24 @@ namespace svg
   struct transform
   {
     static string
+    rotate(int deg)
+    {
+      std::ostringstream stream;
+      stream << k::space;
+      stream << "transform=" << k::quote;
+      stream << "rotate(" << std::to_string(deg)
+	     << ")" << k::quote;
+      return stream.str();
+    }
+
+    static string
     rotate(int deg, int x, int y)
     {
       std::ostringstream stream;
       stream << k::space;
       stream << "transform=" << k::quote;
       stream << "rotate(" << std::to_string(deg)
-	     << k::space << x << k::space << y
+	     << k::comma << x << k::comma << y
 	     << ")" << k::quote;
       return stream.str();
     }

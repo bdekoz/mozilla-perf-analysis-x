@@ -61,8 +61,8 @@ place_probe_text(svg_form& obj, string label, int tx, int ty,
   // Common typographics.
   svg::typography typo = k::apercu_typo;
   typo._M_size = 12;
-  typo._M_a = svg::typography::anchor::start;
-  typo._M_align = svg::typography::align::left;
+  typo._M_a = svg::typography::anchor::middle;
+  //typo._M_align = svg::typography::align::left;
   typo._M_style = k::b_style;
   typo._M_w = svg::typography::weight::xlight;
   typo._M_style._M_fill_color = c;
@@ -72,9 +72,8 @@ place_probe_text(svg_form& obj, string label, int tx, int ty,
   t.start_element();
 
   // IFF degrees, then rotate text.
-  // NB or XXX, should rotations be about the center axis?
-  if (false && deg > 0)
-    t.add_data(dt, svg::transform::rotate(deg, tx, ty));
+  if (deg > 0)
+    t.add_data(dt, svg::transform::rotate(360 - deg, tx, ty));
   else
     t.add_data(dt);
 
@@ -119,7 +118,6 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
   // Consolidate label text to be "VALUE -> NAME"
   string label = std::to_string(pvalue) + " -> " + pname;
   place_probe_text(obj, label, x, y, angled);
-
 }
 
 
