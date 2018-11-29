@@ -1,3 +1,8 @@
+2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* scripts/compile-source.f29.sh: Remove unused.
+	* src/moz-telemetry-x-analyze.cc: Error fix.
+
 2018-11-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* moz-telemetry-x-analyze.cc (radiate_probe_by_value): New.

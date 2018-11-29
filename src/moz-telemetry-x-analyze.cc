@@ -40,10 +40,10 @@ usage()
 
 // Create an svg object with 1080p dimensions and return it.
 svg_form
-initialize_svg()
+initialize_svg(string ofile = "moz-telemetry-radiating-lines")
 {
   area<> a = { unit::pixel, 1920, 1080 };
-  svg_form obj("moz-telemetry-radiating-lines", a);
+  svg_form obj(ofile, a);
 
   group_form g;
   g.start_element("mozilla viz experiment 20181127.v2", k::b_style);
@@ -55,7 +55,8 @@ initialize_svg()
 
 
 void
-place_probe_text(svg_form& obj, string label, int tx, int ty, const double deg)
+place_probe_text(svg_form& obj, string label, int tx, int ty,
+		 const double deg = 0.0, const color c = color::black)
 {
   // Common typographics.
   svg::typography typo = k::apercu_typo;
@@ -64,13 +65,18 @@ place_probe_text(svg_form& obj, string label, int tx, int ty, const double deg)
   typo._M_align = svg::typography::align::left;
   typo._M_style = k::b_style;
   typo._M_w = svg::typography::weight::xlight;
+  typo._M_style._M_fill_color = c;
 
   text_form::data dt = { tx, ty, label, typo };
   text_form t;
   t.start_element();
 
-  //t.add_data(dt, svg::transform::rotate(deg, cx, cy));
-  t.add_data(dt);
+  // IFF degrees, then rotate text.
+  // NB or XXX, should rotations be about the center axis?
+  if (false && deg > 0)
+    t.add_data(dt, svg::transform::rotate(deg, tx, ty));
+  else
+    t.add_data(dt);
 
   t.finish_element();
   obj.add_element(t);
@@ -90,7 +96,7 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 // Map a value to a point radiating out from a center.
 void
 radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
-		       double r, color c = color::black)
+		       double r)
 {
   // Find center of SVG canvas.
   const double cx = obj._M_area._M_width / 2;
@@ -114,11 +120,11 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
   */
   enum quadrant { q1, q2, q3, q4 };
   quadrant q;
-  if (0 <= kangle <= 90)
+  if (0 <= kangle && kangle <= 90)
     q = q1;
-  else if (90 < kangle <= 180)
+  else if (90 < kangle && kangle <= 180)
     q = q2;
-  else if (180 < kangle <= 270)
+  else if (180 < kangle && kangle <= 270)
     q = q3;
   else
     q = q4;
@@ -157,15 +163,14 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
 
 // Create radial viz
 void
-radiating_probe_lines_viz()
+radiating_probe_lines_viz(string ifile)
 {
   // Read CSV file of [marker name || probe name] and value, and
   // store in hash_map, along with the max value.
   std::unordered_map<string, int> probe_map;
   int probe_key_max(0);
 
-  //  std::ifstream ifs(prefixpath + tier1outfile);
-  std::ifstream ifs(prefixpath + testfile);
+  std::ifstream ifs(ifile);
   if (ifs.good())
     {
       do
@@ -215,7 +220,10 @@ int main(void)
   using namespace moz;
 
   // Extract data/values computed previously and draw.
-  radiating_probe_lines_viz();
+  string ifile(prefixpath + testfile);
+  //string ifile(prefixpath + tier1outfile);
+
+  radiating_probe_lines_viz(ifile);
 
   return 0;
 }
