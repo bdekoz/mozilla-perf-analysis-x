@@ -1,5 +1,10 @@
 2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/mozilla-telemetry-environment-fields.txt: Essential
+	environmental data.
+
+2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.cc: Correct usage, output names.
 	* src/moz-telemetry-x-extract.cc: Same.
 	* src/moz-telemetry-x.h (file_path_to_stem): Add it.

@@ -1,0 +1,11 @@
+distributionId
+os.name
+os.version
+os.locale
+cpu.count
+memoryMB
+applicationName
+architecture
+version
+buildId
+browser.engagement.total_uri_count
