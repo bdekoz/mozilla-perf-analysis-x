@@ -20,21 +20,34 @@
 #define moz_TELEMETRY_X_H 1
 
 #include <fstream>
+#include <experimental/filesystem>
 #include <sstream>
 #include <vector>
 
 
 namespace moz
 {
+  namespace filesystem = std::experimental::filesystem;
+
   const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
   const string datapath(prefixpath + "data/");
 
-  const string testfile("mozilla-telemetry-test-data.txt");
-
-  const string tier1file("mozilla-telemetry-names-tier-1.txt");
-  const string tier1outfile("mozilla-telemetry-names-tier-1-data.txt");
-
   const string errorprefix("error -> ");
+
+  // Common output file extentions.
+  const char* extract_ext = ".csv";
+  //const char* analyze_ext = ".svg";
+
+  // Sanity check input file and path exist, and then return stem.
+  string
+  file_path_to_stem(string ifile)
+  {
+    filesystem::path ipath(ifile);
+    if (!exists(ipath))
+      throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
+    return ipath.stem().string();
+  }
+
 } // namespace moz
 
 #endif

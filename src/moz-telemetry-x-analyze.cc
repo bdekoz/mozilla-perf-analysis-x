@@ -34,7 +34,7 @@ using color = svg::colore;
 std::string
 usage()
 {
-  std::string s("usage: a60-analyze file.json");
+  std::string s("usage: moz-telemetry-x-analyze.exe data.csv");
   return s;
 }
 
@@ -146,6 +146,7 @@ radiating_probe_lines_viz(string ifile)
   std::unordered_map<string, int> probe_map;
   int probe_key_max(0);
 
+  const string fstem = file_path_to_stem(ifile);
   std::ifstream ifs(ifile);
   if (ifs.good())
     {
@@ -166,15 +167,14 @@ radiating_probe_lines_viz(string ifile)
     }
   else
     {
-      std::cerr << errorprefix
-		<< "error: cannot open input file "
-		<< datapath + tier1file << std::endl;
+      std::cerr << errorprefix << "cannot open input file "
+		<< ifile << std::endl;
     }
   std::clog << probe_map.size() << " probes found with max value "
 	    << probe_key_max << std::endl;
 
   // Create svg canvas.
-  svg_form obj = initialize_svg();
+  svg_form obj = initialize_svg(fstem);
 
   // Loop through map key/values and put on canvas.
   for (const auto& v : probe_map)
@@ -195,16 +195,23 @@ radiating_probe_lines_viz(string ifile)
 } // namespace moz
 
 
-int main(void)
+int main(int argc, char* argv[])
 {
   using namespace rapidjson;
   using namespace moz;
 
-  // Extract data/values computed previously and draw.
-  //string ifile(prefixpath + testfile);
-  string ifile(prefixpath + tier1outfile);
+   // Sanity check.
+  if (argc != 2)
+    {
+      std::cerr << usage() << std::endl;
+      return 1;
+    }
 
-  radiating_probe_lines_viz(ifile);
+  // Input names file, input data file
+  std::string idata = argv[1];
+  std::clog << "input files: " << idata << std::endl;
+
+  radiating_probe_lines_viz(idata);
 
   return 0;
 }

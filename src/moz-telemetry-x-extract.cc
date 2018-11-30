@@ -27,7 +27,7 @@ namespace moz {
 std::string
 usage()
 {
-  std::string s("usage: a60-analyze file.json");
+  std::string s("usage: moz-telemetry-x-extract.exe names.txt data.json");
   return s;
 }
 
@@ -83,10 +83,12 @@ update_extract_lists(const strings& total, strings& found)
   Takes a text file with all Tier 1 probes.
  */
 void
-extract_tier_1_probes(std::string ifile)
+extract_tier_1_probes(string inames, string ifile)
 {
+  const string fstem = file_path_to_stem(ifile);
+
   // Read probe names from input file, and put into vector<string>
-  std::ifstream ifs(datapath + tier1file);
+  std::ifstream ifs(inames);
   strings probes1;
   strings probes1found;
   strings probes1r;
@@ -107,15 +109,15 @@ extract_tier_1_probes(std::string ifile)
     {
       std::cerr << errorprefix
 		<< "error: cannot open input file "
-		<< datapath + tier1file << std::endl;
+		<< datapath + fstem << std::endl;
     }
 
   // Prepare output file.
-  std::ofstream ofs(prefixpath + tier1outfile);
+  std::ofstream ofs(datapath + fstem + extract_ext);
   if (!ofs.good())
     {
       std::cerr << errorprefix
-		<< "cannot open output file " << datapath + tier1outfile
+		<< "cannot open output file " << datapath + fstem
 		<< std::endl;
     }
 
@@ -206,29 +208,21 @@ int main(int argc, char* argv[])
   using namespace moz;
 
   // Sanity check.
-  if (argc > 2)
+  if (argc != 3)
     {
       std::cerr << usage() << std::endl;
       return 1;
     }
 
-  // Input file, output directory.
-  std::string ifile;
-  if (argc > 1)
-    {
-      ifile = argv[1];
-    }
-  else
-    {
-      std::clog << usage() << std::endl;
-      return 1;
-    }
-  std::clog << "input file: " << ifile << std::endl;
+  // Input names file, input data file
+  std::string inames = argv[1];
+  std::string idata = argv[2];
+  std::clog << "input files: " << inames << " , " << idata << std::endl;
 
   // Extract data/values from json.
-  list_fields(ifile);
-  extract_named_objects(ifile);
-  extract_tier_1_probes(ifile);
+  list_fields(idata);
+  extract_named_objects(idata);
+  extract_tier_1_probes(inames, idata);
 
   return 0;
 }

@@ -1,5 +1,11 @@
 2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.cc: Correct usage, output names.
+	* src/moz-telemetry-x-extract.cc: Same.
+	* src/moz-telemetry-x.h (file_path_to_stem): Add it.
+
+2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/a60-svg-base.h: Add monospace type options.
 	* src/moz-telemetry-x-analyze.cc (place_probe_text): Parameterize
 	rotation.
