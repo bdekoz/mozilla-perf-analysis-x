@@ -22,7 +22,6 @@
 #include <unordered_map>
 
 #include "moz-json-basic.h"
-#include "moz-telemetry-x.h"
 #include "a60-svg-base.h"
 
 

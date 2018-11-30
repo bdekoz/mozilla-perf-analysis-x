@@ -25,62 +25,67 @@
 #include <vector>
 
 
-namespace moz
+namespace moz {
+
+namespace filesystem = std::experimental::filesystem;
+
+/// Types.
+using std::string;
+using strings = std::vector<std::string>;
+
+const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
+const string datapath(prefixpath + "data/");
+
+const string errorprefix("error -> ");
+
+// Common output file extentions.
+const char* extract_ext = ".csv";
+//const char* analyze_ext = ".svg";
+
+// Sanity check input file and path exist, and then return stem.
+string
+file_path_to_stem(string ifile)
 {
-  namespace filesystem = std::experimental::filesystem;
-
-  const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
-  const string datapath(prefixpath + "data/");
-
-  const string errorprefix("error -> ");
-
-  // Common output file extentions.
-  const char* extract_ext = ".csv";
-  //const char* analyze_ext = ".svg";
-
-  // Sanity check input file and path exist, and then return stem.
-  string
-  file_path_to_stem(string ifile)
-  {
-    filesystem::path ipath(ifile);
-    if (!exists(ipath))
-      throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
-    return ipath.stem().string();
-  }
+  filesystem::path ipath(ifile);
+  if (!exists(ipath))
+    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
+  return ipath.stem().string();
+}
 
 
-  /*
-    Environmental Metadata
+/*
+  Environmental Metadata
 
-    distributionId
-    os.name
-    os.version
-    os.locale
-    cpu.count
-    memoryMB
-    applicationName
-    architecture
-    version
+  distributionId
+  os.name
+  os.version
+  os.locale
+  cpu.count
+  memoryMB
+  applicationName
+  architecture
+  version
     buildId
     browser.engagement.total_uri_count
-   */
-  struct environment
-  {
-    string	os_vendor;
-    string	os_name;
-    string	os_version;
-    string	os_locale;
+*/
+struct environment
+{
+  string	os_vendor;
+  string	os_name;
+  string	os_version;
+  string	os_locale;
 
-    int		hw_cpu;
-    int		hw_mem;
+  int		hw_cpu;
+  int		hw_mem;
 
-    string	sw_name;
-    string	sw_arch;
-    string	sw_version;
-    string	sw_build_id;
+  string	sw_name;
+  string	sw_arch;
+  string	sw_version;
+  string	sw_build_id;
 
-    int		fx_uri_count;
-  };
+  int		fx_uri_count;
+};
+
 } // namespace moz
 
 #endif

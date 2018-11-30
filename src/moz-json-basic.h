@@ -18,10 +18,6 @@
 #ifndef moz_JSON_FWD_H
 #define moz_JSON_FWD_H 1
 
-#include <fstream>
-#include <sstream>
-#include <vector>
-
 #define RAPIDJSON_HAS_STDSTRING 1
 
 #include "rapidjson/document.h"
@@ -30,6 +26,9 @@
 #include "rapidjson/pointer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/reader.h"
+
+#include "moz-telemetry-x.h"
+
 
 namespace moz {
 
@@ -164,6 +163,59 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
 	}
     }
   return found;
+}
+
+
+environment
+extract_environment(string ifile)
+{
+  const string fstem = file_path_to_stem(ifile);
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  environment env = { };
+  const string kenv("environment");
+  if (dom.HasMember(kenv.c_str()))
+    {
+      const string kbuild("build");
+      const string kpartner("partner");
+      const string ksystem("system");
+      const string kcpu("cpu");
+      const string kos("os");
+      const rj::Value& denv = dom[kenv.c_str()];
+      const rj::Value& dbuild = denv[kbuild.c_str()];
+      const rj::Value& dpartner = denv[kpartner.c_str()];
+      const rj::Value& dsystem = denv[ksystem.c_str()];
+      const rj::Value& dcpu = dsystem[kcpu.c_str()];
+      const rj::Value& dkos = dsystem[kos.c_str()];
+
+      env.os_vendor = field_value_to_string(dpartner["distributionId"]);
+      env.os_name = field_value_to_string(dkos["name"]);
+      env.os_version = field_value_to_string(dkos["version"]);
+      env.os_locale = field_value_to_string(dkos["locale"]);
+
+      env.hw_cpu = field_value_to_int(dcpu["count"]);
+      env.hw_mem = field_value_to_int(dsystem["memoryMB"]);
+
+      env.sw_name = field_value_to_string(dbuild["applicationName"]);
+      env.sw_arch = field_value_to_string(dbuild["architecture"]);
+      env.sw_version = field_value_to_string(dbuild["version"]);
+      env.sw_build_id = field_value_to_string(dbuild["buildId"]);
+
+      // payload/processes/parent/scalars
+      const string kpayload("payload");
+      const string kproc("processes");
+      const string kparent("parent");
+      const string kscalars("scalars");
+      const rj::Value& dpayload = dom[kpayload.c_str()];
+      const rj::Value& dproc = dpayload[kproc.c_str()];
+      const rj::Value& dparents = dproc[kparent.c_str()][kscalars.c_str()];
+
+      const char* suri = "browser.engagement.total_uri_count";
+      env.fx_uri_count = field_value_to_int(dparents[suri]);
+    }
+  return env;
 }
 
 

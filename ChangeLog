@@ -1,5 +1,16 @@
 2018-11-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* image.generated/2018-11-14-varney-main-ping-11-00.png: Remove.
+	* image.generated/2018-11-14-varney-main-ping-11-00.svg: Update
+	proposed design.
+
+	* src/moz-telemetry-x.h: Everything includes this.
+	* src/moz-json-basic.h (extract_environment): Add here.
+	* src/moz-telemetry-x-analyze.cc: Adjust includes.
+	* src/moz-telemetry-x-extract.cc: And here.
+
+2018-11-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (field_value_to_int): Parity with string.
 	* src/moz-telemetry-x-extract.cc (extract_enviornment): Rough in.
 	* src/moz-telemetry-x.h: Use fx_  prefix for browser metadata.
