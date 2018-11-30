@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg2"
+   xml:space="preserve"
+   x="0px"
+   y="0px"
+   width="1920px"
+   height="1080px"
+   viewBox="0 0 1920 1080"
+   enable-background="new 0 0 1920 1080"
+   sodipodi:docname="2018-11-14-varney-main-ping-11-00.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:export-filename="/home/bkoz/src/mozilla-telemetry-x/src/2018-11-14-varney-main-ping-11-00.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600"><metadata
+   id="metadata84"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title>2018-11-14-varney-main-ping-11-00</dc:title></cc:Work></rdf:RDF></metadata><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="2560"
+   inkscape:window-height="1394"
+   id="namedview82"
+   showgrid="false"
+   showguides="true"
+   inkscape:guide-bbox="true"
+   inkscape:zoom="1.0046875"
+   inkscape:cx="960"
+   inkscape:cy="540"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="g5248"><sodipodi:guide
+     position="959.75,503.5"
+     orientation="1,0"
+     id="guide4857"
+     inkscape:locked="false" /><sodipodi:guide
+     position="161.24417,540.46656"
+     orientation="0,1"
+     id="guide4865"
+     inkscape:locked="false" /><sodipodi:guide
+     position="1011,494.5"
+     orientation="1,0"
+     id="guide5238"
+     inkscape:locked="false" /></sodipodi:namedview>
+
+<title
+   id="title2">2018-11-14-varney-main-ping-11-00</title>
+<defs
+   id="defs24"><marker
+   inkscape:stockid="Arrow2Lend"
+   orient="auto"
+   refY="0.0"
+   refX="0.0"
+   id="Arrow2Lend"
+   style="overflow:visible;"
+   inkscape:isstock="true"><path
+     id="path4895"
+     style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round;stroke:#000000;stroke-opacity:1;fill:#000000;fill-opacity:1"
+     d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+     transform="scale(1.1) rotate(180) translate(1,0)" /></marker><marker
+   inkscape:stockid="Arrow1Lend"
+   orient="auto"
+   refY="0.0"
+   refX="0.0"
+   id="Arrow1Lend"
+   style="overflow:visible;"
+   inkscape:isstock="true"><path
+     id="path4877"
+     d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+     style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+     transform="scale(0.8) rotate(180) translate(12.5,0)" /></marker>
+    <filter
+   id="gblur10"
+   x="0"
+   y="0">
+      <feGaussianBlur
+   in="SourceGraphic"
+   stdDeviation="10"
+   id="feGaussianBlur4" />
+      <feOffset
+   dx="0"
+   dy="0"
+   id="feOffset6" />
+     </filter>
+    <filter
+   id="gblur20"
+   x="0"
+   y="0">
+      <feGaussianBlur
+   in="SourceGraphic"
+   stdDeviation="20"
+   id="feGaussianBlur9" />
+      <feOffset
+   dx="0"
+   dy="0"
+   id="feOffset11" />
+    </filter>
+    <filter
+   id="gblur10y"
+   x="0"
+   y="0">
+      <feGaussianBlur
+   in="SourceGraphic"
+   stdDeviation="0, 10"
+   id="feGaussianBlur14" />
+      <feOffset
+   dx="0"
+   dy="0"
+   id="feOffset16" />
+    </filter>
+    <filter
+   id="gblur20y"
+   x="0"
+   y="0">
+      <feGaussianBlur
+   in="SourceGraphic"
+   stdDeviation="0, 20"
+   id="feGaussianBlur19" />
+      <feOffset
+   dx="0"
+   dy="0"
+   id="feOffset21" />
+    </filter>
+  </defs>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<g
+   inkscape:groupmode="layer"
+   id="layer3"
+   inkscape:label="background" /><g
+   inkscape:groupmode="layer"
+   id="layer4"
+   inkscape:label="metadata" /><g
+   inkscape:groupmode="layer"
+   id="layer2"
+   inkscape:label="generated"
+   sodipodi:insensitive="true"><g
+     id="mozilla viz experiment 20181127.v2"
+     style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0">
+</g><text
+     x="1229"
+     y="535"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-1,1229,535)"
+     id="text27"> 1,031 -&gt;  timestamps.first_paint</text>
+<text
+     x="1229"
+     y="531"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-2,1229,531)"
+     id="text29"> 1,946 -&gt;  sessionRestored</text>
+<text
+     x="1229"
+     y="535"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-1,1229,535)"
+     id="text31">   923 -&gt;  blankWindowShown</text>
+<text
+     x="1229"
+     y="517"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-5,1229,517)"
+     id="text33"> 3,937 -&gt;  WEBEXT_CONTENT_SCRIPT_INJECTION_MS</text>
+<text
+     x="1217"
+     y="619"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(1,1217,619)"
+     id="text35">254,039 -&gt;  TIME_TO_FIRST_INTERACTION_MS</text>
+<text
+     x="1225"
+     y="490"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-11,1225,490)"
+     id="text37"> 8,291 -&gt;  TIME_TO_DOM_LOADING_MS</text>
+<text
+     x="1213"
+     y="447"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-21,1213,447)"
+     id="text39">15,097 -&gt;  TIME_TO_DOM_INTERACTIVE_MS</text>
+<text
+     x="1226"
+     y="499"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-9,1226,499)"
+     id="text41"> 6,735 -&gt;  TIME_TO_NON_BLANK_PAINT_MS</text>
+<text
+     x="1201"
+     y="418"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-28,1201,418)"
+     id="text43">20,510 -&gt;  TIME_TO_DOM_CONTENT_LOADED_END_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text45">     2 -&gt;  FX_SESSION_RESTORE_STARTUP_ONLOAD_INITIAL_WINDOW_MS</text>
+<text
+     x="1196"
+     y="410"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-30,1196,410)"
+     id="text47">21,562 -&gt;  INPUT_EVENT_RESPONSE_COALESCED_MS</text>
+<text
+     x="1131"
+     y="331"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-53,1131,331)"
+     id="text49">37,676 -&gt;  TIME_TO_LOAD_EVENT_END_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text51">   659 -&gt;  SEARCH_SERVICE_INIT_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text53">     0 -&gt;  FX_SESSION_RESTORE_STARTUP_INIT_SESSION_MS</text>
+<text
+     x="1144"
+     y="343"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-49,1144,343)"
+     id="text55">34,679 -&gt; FX_PAGE_LOAD_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text57">    30 -&gt;  FX_SESSION_RESTORE_RESTORE_WINDOW_MS</text>
+<text
+     x="1229"
+     y="517"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-5,1229,517)"
+     id="text59"> 4,179 -&gt;  NETWORK_CACHE_V2_HIT_TIME_MS</text>
+<text
+     x="1229"
+     y="517"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-5,1229,517)"
+     id="text61"> 3,685 -&gt;  PLACES_AUTOCOMPLETE_6_FIRST_RESULTS_TIME_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text63">   369 -&gt;  FX_TAB_SWITCH_UPDATE_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text65">    42 -&gt;  GC_ANIMATION_MS</text>
+<text
+     x="1226"
+     y="499"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-9,1226,499)"
+     id="text67"> 6,628 -&gt;  TIME_TO_RESPONSE_START_MS</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text69">     0 -&gt;  NETWORK_CACHE_V2_MISS_TIME_MS</text>
+<text
+     x="1109"
+     y="315"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-59,1109,315)"
+     id="text71">41,805 -&gt;  CONTENT_PAINT_TIME</text>
+<text
+     x="1230"
+     y="540"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     id="text73">    96 -&gt;  FX_TAB_SWITCH_TOTAL_E10S_MS</text>
+<text
+     x="1228"
+     y="513"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-6,1228,513)"
+     id="text75"> 4,792 -&gt;  WEBEXT_BACKGROUND_PAGE_LOAD_MS</text>
+<text
+     x="1229"
+     y="526"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-3,1229,526)"
+     id="text77"> 2,256 -&gt;  WEBEXT_EXTENSION_STARTUP_MS</text>
+<text
+     x="1131"
+     y="331"
+     font-size="12"
+     text-align="left"
+     font-weight="200"
+     font-style="normal"
+     style="font-style:normal;font-weight:200;font-size:12px;font-family:'Calling Code';text-align:left;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-opacity:0"
+     transform="rotate(-53,1131,331)"
+     id="text79">37,630 -&gt;  TIME_TO_DOM_COMPLETE_MS</text>
+</g><g
+   inkscape:groupmode="layer"
+   id="layer1"
+   inkscape:label="vector"
+   style="display:none"
+   sodipodi:insensitive="true"><path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74710125px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 960.37355,-30 v 20"
+     id="path4855"
+     inkscape:connector-curvature="0" /><path
+     inkscape:connector-curvature="0"
+     id="path4859"
+     d="m 960.37355,1090 v 20"
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74710125px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" /><path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74710125px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M -10,1079.6264 H -30"
+     id="path4861"
+     inkscape:connector-curvature="0" /><path
+     inkscape:connector-curvature="0"
+     id="path4863"
+     d="M -10,539.6264 H -30"
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74710125px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" /><path
+     sodipodi:type="spiral"
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     id="path4867"
+     sodipodi:cx="959.50232"
+     sodipodi:cy="539.53345"
+     sodipodi:expansion="1"
+     sodipodi:revolution="3"
+     sodipodi:radius="50.762054"
+     sodipodi:argument="-18.849556"
+     sodipodi:t0="0"
+     d="m 959.50232,539.53345 c 2.54513,0 1.25568,3.43078 0,4.23017 -3.40281,2.16629 -7.4171,-0.95273 -8.46034,-4.23017 -1.86612,-5.86257 2.87014,-11.50424 8.46034,-12.69052 8.20384,-1.74091 15.66425,4.79613 16.92068,12.69052 1.67463,10.52197 -6.72286,19.85243 -16.92068,21.15085 -12.83291,1.63394 -24.05458,-8.64941 -25.38103,-21.15085 -1.6065,-15.14092 10.57574,-28.26472 25.38103,-29.6112 17.44752,-1.58678 32.47985,12.5019 33.84137,29.6112 1.57192,19.75335 -14.42797,36.69832 -33.84137,38.07154 -22.05874,1.56034 -40.91913,-16.35396 -42.30171,-38.07154 -1.55105,-24.36384 18.27991,-45.14163 42.30171,-46.53189 26.66875,-1.54344 49.36538,20.20583 50.76208,46.53188" /></g><g
+   inkscape:groupmode="layer"
+   id="layer6"
+   inkscape:label="vector top"
+   style="display:none"
+   sodipodi:insensitive="true"><path
+     style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     d="m 964.47656,492.48047 c -1.64895,-0.0817 -3.31918,-0.076 -5.0039,0.0215 -24.29284,1.40594 -44.34085,22.411 -42.77149,47.0625 1.3998,21.98791 20.4885,40.11982 42.83594,38.53907 19.68289,-1.39229 41.96859,-23.19338 34.30469,-38.60938 -0.14827,-0.29824 -0.69784,-0.07 -0.99611,0.0782 -14.99402,7.44988 -14.23499,36.17904 -33.3789,37.5332 -21.77005,1.53992 -40.40221,-16.15627 -41.76758,-37.60352 -1.53274,-24.07618 18.08126,-44.62738 41.83203,-46.00195 26.38193,-1.52684 48.85216,20.00611 50.23436,46.06055 l 0.9981,-0.0527 c -1.3229,-24.93532 -21.55281,-45.80201 -46.28715,-47.02734 z"
+     id="path5240"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccssaassscccc" /></g><g
+   style="display:inline"
+   inkscape:label="vector top copy"
+   id="g5248"
+   inkscape:groupmode="layer"
+   sodipodi:insensitive="true"><path
+     sodipodi:nodetypes="ccssaassscccc"
+     inkscape:connector-curvature="0"
+     id="path5246"
+     d="m 964.47656,586.14282 c -1.64895,0.0817 -3.31918,0.076 -5.0039,-0.0215 -24.29284,-1.40594 -44.34085,-22.411 -42.77149,-47.0625 1.3998,-21.98791 20.4885,-40.11982 42.83594,-38.53907 19.68289,1.39229 41.96859,23.19338 34.30469,38.60938 -0.14827,0.29824 -0.69784,0.07 -0.99611,-0.0782 -14.99402,-7.44988 -14.23499,-36.17904 -33.3789,-37.5332 -21.77005,-1.53992 -40.40221,16.15627 -41.76758,37.60352 -1.53274,24.07618 18.08126,44.62738 41.83203,46.00195 26.38193,1.52684 48.85216,-20.00611 50.23436,-46.06055 l 0.9981,0.0527 c -1.3229,24.93532 -21.55281,45.80201 -46.28715,47.02734 z"
+     style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" /></g><g
+   inkscape:groupmode="layer"
+   id="layer5"
+   inkscape:label="top"
+   sodipodi:insensitive="true"
+   style="display:none"><path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 1010.2644,539.53344 c 0,0 -4.1623,-21.59032 -11.3489,-29.14172 C 988.99254,499.96504 971.87851,492.75 959.50233,492.75 c -24.75235,0 -43.76747,26.68925 -42.75233,46.78344 1.01514,20.09419 18.13929,38.48264 42.75233,38.21656 23.64744,-5.63076 32.55612,-18.13848 33.74767,-38.21656 v 0"
+     id="path4872"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="caszccc" /></g></svg>
