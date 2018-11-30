@@ -1,5 +1,9 @@
 2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/mozilla-telemetry-names-test-fields.csv: Add test.
+
+2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/mozilla-telemetry-environment-fields.txt: Essential
 	environmental data.
 
