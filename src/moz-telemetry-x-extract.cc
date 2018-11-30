@@ -79,6 +79,34 @@ update_extract_lists(const strings& total, strings& found)
 }
 
 
+environment
+extract_environment(string ifile)
+{
+  const string fstem = file_path_to_stem(ifile);
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  environment env = { };
+  const string kenv("environment");
+  if (dom.HasMember(kenv.c_str()))
+    {
+      const string kbuild("build");
+      const string ksystem("system");
+      const string kcpu("cpu");
+      const string kos("os");
+      const rj::Value& denv = dom[kenv.c_str()];
+      const rj::Value& dbuild = denv[kbuild.c_str()];
+      const rj::Value& dsystem = denv[ksystem.c_str()];
+      const rj::Value& dcpu = dsystem[kcpu.c_str()];
+      const rj::Value& dkos = dsystem[kos.c_str()];
+
+
+    }
+  return env;
+}
+
+
 /*
   Takes a text file with all Tier 1 probes.
  */
@@ -162,17 +190,17 @@ extract_tier_1_probes(string inames, string ifile)
       // Extract histogram values.
       // list_dom_nested_object_fields(dhistogram);
 
-      strings foundhi = extract_histogram_fields(dhisto, probes1, ofs);
+      strings foundhi = extract_histogram_fields_sum(dhisto, probes1, ofs);
       std::copy(foundhi.begin(), foundhi.end(),
 		std::back_inserter(probes1found));
       probes1r = update_extract_lists(probes1, foundhi);
 
-      strings foundco = extract_histogram_fields(dcont, probes1r, ofs);
+      strings foundco = extract_histogram_fields_sum(dcont, probes1r, ofs);
       std::copy(foundco.begin(), foundco.end(),
 		std::back_inserter(probes1found));
       probes1r = update_extract_lists(probes1r, foundco);
 
-      strings foundgp = extract_histogram_fields(dgpu, probes1r, ofs);
+      strings foundgp = extract_histogram_fields_sum(dgpu, probes1r, ofs);
       std::copy(foundgp.begin(), foundgp.end(),
 		std::back_inserter(probes1found));
       probes1r = update_extract_lists(probes1r, foundgp);

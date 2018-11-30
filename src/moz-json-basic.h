@@ -31,8 +31,7 @@
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/reader.h"
 
-namespace moz
-{
+namespace moz {
 
 /// Namespace aliases.
 namespace rj = rapidjson;
@@ -101,7 +100,7 @@ field_value_to_string(const rj::Value& v)
   else if (v.IsString())
     ret = v.GetString();
   else if (v.IsBool())
-    ret = v.GetBool();
+    ret = std::to_string(v.GetBool());
   else
     {
       // Array or Object.
@@ -113,7 +112,7 @@ field_value_to_string(const rj::Value& v)
 
 // Assume v is the histogram node.
 strings
-extract_histogram_fields(const rj::Value& v, const strings& probes,
+extract_histogram_fields_sum(const rj::Value& v, const strings& probes,
 			     std::ofstream& ofs)
 {
   strings found;
