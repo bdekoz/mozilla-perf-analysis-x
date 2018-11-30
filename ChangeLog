@@ -1,4 +1,4 @@
-2018-11-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.cc: Correct usage, output names.
 	* src/moz-telemetry-x-extract.cc: Same.
