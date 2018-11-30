@@ -1,3 +1,9 @@
+2018-11-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (field_value_to_int): Parity with string.
+	* src/moz-telemetry-x-extract.cc (extract_enviornment): Rough in.
+	* src/moz-telemetry-x.h: Use fx_  prefix for browser metadata.
+
 2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (field_value_to_string): Bool to string.
