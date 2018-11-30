@@ -1,5 +1,13 @@
 2018-11-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/a60-svg-base.h: Sync with master.
+	* src/moz-telemetry-x-analyze.cc (place_metadata_text): New.
+	(place_metadata): New.
+	(radiating_probe_lines_viz): Call it.
+	* src/moz-telemetry-x.h: Inject std::to_string.
+
+2018-11-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* image.generated/2018-11-14-varney-main-ping-11-00.png: Remove.
 	* image.generated/2018-11-14-varney-main-ping-11-00.svg: Update
 	proposed design.

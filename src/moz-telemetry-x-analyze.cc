@@ -55,6 +55,25 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines")
 
 
 void
+place_metadata_text(svg_form& obj, typography& typo, string text)
+{
+  // Margin in pixels.
+  const int margin = 100;
+  int tx = margin;
+  static int ty = margin;
+
+  text_form::data dt = { tx, ty, text, typo };
+  text_form t;
+  t.start_element();
+  t.finish_element();
+  obj.add_element(t);
+
+  // Increment vertical, assume higher moves text down the page.
+  ty += typo._M_size;
+}
+
+
+void
 place_probe_text(svg_form& obj, typography& typo, string label, int tx, int ty,
 		 const double deg = 0.0)
 {
@@ -136,6 +155,41 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
 }
 
 
+void
+place_metadata(svg_form& obj, environment& env)
+{
+    // Common typographics.
+  typography typo = k::zslab_typo;
+  typo._M_size = 14;
+  typo._M_style = k::b_style;
+  typo._M_w = svg::typography::weight::medium;
+  typo._M_style._M_fill_color = colore::gray50;
+
+  place_metadata_text(obj, typo, env.os_vendor);
+  place_metadata_text(obj, typo, env.os_name);
+  place_metadata_text(obj, typo, env.os_version);
+  place_metadata_text(obj, typo, env.os_locale);
+
+  place_metadata_text(obj, typo, " ");
+
+  typo._M_size = 20;
+  place_metadata_text(obj, typo, to_string(env.hw_cpu) + " cores");
+  place_metadata_text(obj, typo, to_string(env.hw_mem * .001) + " GB");
+  typo._M_size = 14;
+
+  place_metadata_text(obj, typo, " ");
+
+  place_metadata_text(obj, typo, env.sw_name);
+  place_metadata_text(obj, typo, env.sw_arch);
+  place_metadata_text(obj, typo, env.sw_version);
+  place_metadata_text(obj, typo, env.sw_build_id);
+
+  place_metadata_text(obj, typo, " ");
+
+  place_metadata_text(obj, typo, to_string(env.fx_uri_count) + " uri count");
+}
+
+
 // Create radial viz
 void
 radiating_probe_lines_viz(string ifile)
@@ -175,6 +229,7 @@ radiating_probe_lines_viz(string ifile)
   // Create svg canvas.
   svg_form obj = initialize_svg(fstem);
 
+  // Probe/Marker display.
   // Loop through map key/values and put on canvas.
   for (const auto& v : probe_map)
     {
@@ -189,6 +244,9 @@ radiating_probe_lines_viz(string ifile)
       radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r, true);
     }
 
+  // Metadata display.
+  //environment env = extract_environment(ifile);
+  //place_metadata(obj, env);
 }
 
 } // namespace moz

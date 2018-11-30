@@ -31,6 +31,7 @@ namespace filesystem = std::experimental::filesystem;
 
 /// Types.
 using std::string;
+using std::to_string;
 using strings = std::vector<std::string>;
 
 const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
