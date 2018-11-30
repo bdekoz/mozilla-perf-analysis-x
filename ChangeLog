@@ -1,7 +1,8 @@
 2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/mozilla-telemetry-names-test-fields.csv: Add test.
-
+	* data/2018-11-14-varney-main-ping-11-00.csv: Generate, add.
+	
 2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/mozilla-telemetry-environment-fields.txt: Essential
