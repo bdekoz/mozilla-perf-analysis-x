@@ -91,6 +91,16 @@ deserialize_json_to_dom(string input_file)
 }
 
 
+int
+field_value_to_int(const rj::Value& v)
+{
+  int ret(0);
+  if (v.IsNumber())
+    ret = v.GetInt();
+  return ret;
+}
+
+
 string
 field_value_to_string(const rj::Value& v)
 {

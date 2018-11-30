@@ -79,7 +79,7 @@ namespace moz
     string	sw_version;
     string	sw_build_id;
 
-    int		use_uri_count;
+    int		fx_uri_count;
   };
 } // namespace moz
 
