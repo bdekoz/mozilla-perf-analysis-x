@@ -1,5 +1,14 @@
 2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (field_value_to_string): Bool to string.
+	(extract_histogram_fields): To...
+	(extract_histogram_fields_sum): ...this.
+
+	* src/moz-telemetry-x-extract.cc (extract_environment): New.
+	* src/moz-telemetry-x.h (environment): New, in-memory structure.
+
+2018-11-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/mozilla-telemetry-names-test-fields.csv: Add test.
 	* data/2018-11-14-varney-main-ping-11-00.csv: Generate, add.
 

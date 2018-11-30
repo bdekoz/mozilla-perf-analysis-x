@@ -48,6 +48,39 @@ namespace moz
     return ipath.stem().string();
   }
 
+
+  /*
+    Environmental Metadata
+
+    distributionId
+    os.name
+    os.version
+    os.locale
+    cpu.count
+    memoryMB
+    applicationName
+    architecture
+    version
+    buildId
+    browser.engagement.total_uri_count
+   */
+  struct environment
+  {
+    string	os_vendor;
+    string	os_name;
+    string	os_version;
+    string	os_locale;
+
+    int		hw_cpu;
+    int		hw_mem;
+
+    string	sw_name;
+    string	sw_arch;
+    string	sw_version;
+    string	sw_build_id;
+
+    int		use_uri_count;
+  };
 } // namespace moz
 
 #endif
