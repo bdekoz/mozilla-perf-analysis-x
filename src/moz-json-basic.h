@@ -81,7 +81,7 @@ deserialize_json_to_dom(string input_file)
   dom.Parse(json.c_str());
   if (dom.HasParseError())
     {
-      std::cerr << "error: cannot parse document" << std::endl;
+      std::cerr << "error: cannot parse JSON file " << input_file << std::endl;
       std::cerr << rj::GetParseError_En(dom.GetParseError()) << std::endl;
       std::cerr << dom.GetErrorOffset() << std::endl;
     }
@@ -166,6 +166,7 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
 }
 
 
+// Expecting JSON input.
 environment
 extract_environment(string ifile)
 {
@@ -190,7 +191,7 @@ extract_environment(string ifile)
       const rj::Value& dcpu = dsystem[kcpu.c_str()];
       const rj::Value& dkos = dsystem[kos.c_str()];
 
-      env.os_vendor = field_value_to_string(dpartner["distributionId"]);
+      env.os_vendor = field_value_to_string(dpartner["distributor"]);
       env.os_name = field_value_to_string(dkos["name"]);
       env.os_version = field_value_to_string(dkos["version"]);
       env.os_locale = field_value_to_string(dkos["locale"]);
@@ -212,8 +213,9 @@ extract_environment(string ifile)
       const rj::Value& dproc = dpayload[kproc.c_str()];
       const rj::Value& dparents = dproc[kparent.c_str()][kscalars.c_str()];
 
-      const char* suri = "browser.engagement.total_uri_count";
-      env.fx_uri_count = field_value_to_int(dparents[suri]);
+      const char* suri = "browser.engagement.unfiltered_uri_count";
+      const rj::Value& duri = dparents[suri];
+      env.fx_uri_count = field_value_to_int(duri);
     }
   return env;
 }

@@ -33,7 +33,7 @@ using color = svg::colore;
 std::string
 usage()
 {
-  std::string s("usage: moz-telemetry-x-analyze.exe data.csv");
+  std::string s("usage: moz-telemetry-x-analyze.exe data.json");
   return s;
 }
 
@@ -55,16 +55,17 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines")
 
 
 void
-place_metadata_text(svg_form& obj, typography& typo, string text)
+place_metadata_text(svg_form& obj, typography& typo, string mtext)
 {
   // Margin in pixels.
   const int margin = 100;
   int tx = margin;
   static int ty = margin;
 
-  text_form::data dt = { tx, ty, text, typo };
+  text_form::data dt = { tx, ty, mtext, typo };
   text_form t;
   t.start_element();
+  t.add_data(dt);
   t.finish_element();
   obj.add_element(t);
 
@@ -158,14 +159,16 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
 void
 place_metadata(svg_form& obj, environment& env)
 {
-    // Common typographics.
+  // Common typographics.
   typography typo = k::zslab_typo;
+  typo._M_align = svg::typography::align::left;
+  typo._M_a = svg::typography::anchor::start;
   typo._M_size = 14;
   typo._M_style = k::b_style;
   typo._M_w = svg::typography::weight::medium;
   typo._M_style._M_fill_color = colore::gray50;
 
-  place_metadata_text(obj, typo, env.os_vendor);
+  // place_metadata_text(obj, typo, env.os_vendor);
   place_metadata_text(obj, typo, env.os_name);
   place_metadata_text(obj, typo, env.os_version);
   place_metadata_text(obj, typo, env.os_locale);
@@ -174,7 +177,8 @@ place_metadata(svg_form& obj, environment& env)
 
   typo._M_size = 20;
   place_metadata_text(obj, typo, to_string(env.hw_cpu) + " cores");
-  place_metadata_text(obj, typo, to_string(env.hw_mem * .001) + " GB");
+  int memi = std::round(env.hw_mem * .001);
+  place_metadata_text(obj, typo, to_string(memi) + " GB");
   typo._M_size = 14;
 
   place_metadata_text(obj, typo, " ");
@@ -200,7 +204,10 @@ radiating_probe_lines_viz(string ifile)
   int probe_key_max(0);
 
   const string fstem = file_path_to_stem(ifile);
-  std::ifstream ifs(ifile);
+  const string ifilecsv(datapath + fstem + extract_ext);
+  file_path_to_stem(ifilecsv);
+
+  std::ifstream ifs(ifilecsv);
   if (ifs.good())
     {
       do
@@ -211,6 +218,9 @@ radiating_probe_lines_viz(string ifile)
 	    {
 	      int pvalue;
 	      ifs >> pvalue;
+
+	      // Extract remaining newline.
+	      ifs.ignore(1, k::newline);
 
 	      probe_map.insert(make_pair(pname, pvalue));
 	      probe_key_max = std::max(pvalue, probe_key_max);
@@ -245,8 +255,8 @@ radiating_probe_lines_viz(string ifile)
     }
 
   // Metadata display.
-  //environment env = extract_environment(ifile);
-  //place_metadata(obj, env);
+  environment env = extract_environment(ifile);
+  place_metadata(obj, env);
 }
 
 } // namespace moz
