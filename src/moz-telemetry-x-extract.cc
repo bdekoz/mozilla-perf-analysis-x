@@ -80,10 +80,10 @@ update_extract_lists(const strings& total, strings& found)
 
 
 /*
-  Takes a text file with all Tier 1 probes.
+  Takes a text file with probe names to extract
  */
 void
-extract_tier_1_probes(string inames, string ifile)
+extract_probe_namess(string inames, string ifile)
 {
   const string fstem = file_path_to_stem(ifile);
 
@@ -103,13 +103,13 @@ extract_tier_1_probes(string inames, string ifile)
       while (ifs.good());
       std::sort(probes1.begin(), probes1.end());
 
-      std::clog << probes1.size() << " tier 1 probes found" << std::endl;
+      std::clog << probes1.size() << " probes names found in" << std::endl;
+      std::clog << inames << std::endl;
     }
   else
     {
       std::cerr << errorprefix
-		<< "error: cannot open input file "
-		<< datapath + fstem << std::endl;
+		<< "error: cannot open input file " << inames << std::endl;
     }
 
   // Prepare output file.
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
   // Extract data/values from json.
   list_fields(idata);
   extract_named_objects(idata);
-  extract_tier_1_probes(inames, idata);
+  extract_probe_names(inames, idata);
 
   return 0;
 }

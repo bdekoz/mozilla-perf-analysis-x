@@ -115,6 +115,14 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
   // Normalize [0, pmax] to range [0, 360] and put pvalue in it.
   //const double kangle = (360 / pmax) * static_cast<double>(pvalue);
   int angled = normalize_on_range(pvalue, 0, pmax, 0, 359);
+
+  // Rotate 90 CCW, so that the first element will be at the top
+  // vertical axis, instead of the right middle axis.
+  angled += 90;
+
+  // And then make the angle negative so as to rotate CW instead of CCW.
+  angled -= 360;
+
   std::clog << pname << " -> " << pvalue << " " << angled << std::endl;
 
   /*
@@ -245,7 +253,7 @@ radiating_probe_lines_viz(string ifile)
     {
       string pname(v.first);
       int pvalue(v.second);
-      double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / 4;
+      double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / 5;
 
       // Don't Rotate.
       //radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r, false);
