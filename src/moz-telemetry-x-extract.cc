@@ -83,7 +83,7 @@ update_extract_lists(const strings& total, strings& found)
   Takes a text file with probe names to extract
  */
 void
-extract_probe_namess(string inames, string ifile)
+extract_probe_names(string inames, string ifile)
 {
   const string fstem = file_path_to_stem(ifile);
 

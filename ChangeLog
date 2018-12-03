@@ -1,5 +1,9 @@
 2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-extract.cc: Fix typo.
+
+2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/mozilla-telemetry-names-all.txt: To uinx text, simple edits.
 	* src/moz-telemetry-x-analyze.cc (radiating_probe_lines_viz): Smaller radius.
 	(radiate_probe_by_value): Rotate to move like a timeclock, Noon
