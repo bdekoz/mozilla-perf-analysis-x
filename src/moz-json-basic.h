@@ -204,18 +204,16 @@ extract_environment(string ifile)
       env.sw_version = field_value_to_string(dbuild["version"]);
       env.sw_build_id = field_value_to_string(dbuild["buildId"]);
 
-      // payload/processes/parent/scalars
-      const string kpayload("payload");
-      const string kproc("processes");
-      const string kparent("parent");
-      const string kscalars("scalars");
-      const rj::Value& dpayload = dom[kpayload.c_str()];
-      const rj::Value& dproc = dpayload[kproc.c_str()];
-      const rj::Value& dparents = dproc[kparent.c_str()][kscalars.c_str()];
+      //payload/processes/parent/scalars
+      rj::Value* pv = rj::Pointer("/payload/processes/parent/scalars").Get(dom);
+      if (pv)
+	{
+	  const rj::Value& dscalars = *pv;
 
-      const char* suri = "browser.engagement.unfiltered_uri_count";
-      const rj::Value& duri = dparents[suri];
-      env.fx_uri_count = field_value_to_int(duri);
+	  const char* suri = "browser.engagement.unfiltered_uri_count";
+	  const rj::Value& duri = dscalars[suri];
+	  env.fx_uri_count = duri.GetInt();
+	}
     }
   return env;
 }

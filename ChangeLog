@@ -1,5 +1,10 @@
 2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (extract_environment): Use JSON Pointer to
+	navigated nested DOM.
+
+2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-extract.cc: Fix typo.
 
 2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
