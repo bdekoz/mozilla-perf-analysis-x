@@ -1,3 +1,8 @@
+2018-12-07  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/mozilla-telemetry-names-all.txt: Sort.
+	* data/mozilla-telemetry-names-tier-1.txt: Sort.
+
 2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_environment): Use JSON Pointer to
