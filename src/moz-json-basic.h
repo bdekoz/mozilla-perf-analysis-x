@@ -43,14 +43,15 @@ using jsonstream = rj::PrettyWriter<rj::StringBuffer>;
 using vcmem_iterator = rj::Value::ConstMemberIterator;
 using vcval_iterator = rj::Value::ConstValueIterator;
 
-/// RAPIDJSON constants.
+/// Constants.
 const char* kTypeNames[] =
   { "Null", "False", "True", "Object", "Array", "String", "Number" };
 
-// Telemetry data file object parition constants.
+// Telemetry data file, top-level object parition constants.
 const string sapp("application");
 const string spay("payload");
 const string senv("environment");
+
 
 void
 serialize_to_json(jsonstream&, string);
@@ -113,9 +114,23 @@ field_value_to_string(const rj::Value& v)
   else
     {
       // Array or Object.
-      ret = "non-plain old field";
+      ret = "array or object field";
     }
   return ret;
+}
+
+
+string
+extract_histogram_field_sum(const rj::Value& v, const string& probe)
+{
+  string found;
+  auto i = v.FindMember(probe.c_str());
+  if (i != v.MemberEnd())
+    {
+      const rj::Value& nv = i->value["sum"];
+      found = field_value_to_string(nv);
+    }
+  return found;
 }
 
 
@@ -129,15 +144,27 @@ extract_histogram_fields_sum(const rj::Value& v, const strings& probes,
     {
       for (const string& probe : probes)
 	{
-	  auto i = v.FindMember(probe.c_str());
-	  if (i != v.MemberEnd())
+	  string nvalue = extract_histogram_field_sum(v, probe);
+	  if (!nvalue.empty())
 	    {
-	      const rj::Value& nv = i->value["sum"];
-	      string nvalue = field_value_to_string(nv);
 	      ofs << probe << "," << nvalue << std::endl;
 	      found.push_back(probe);
 	    }
 	}
+    }
+  return found;
+}
+
+
+string
+extract_scalar_field(const rj::Value& v, const string& probe)
+{
+  string found;
+  auto i = v.FindMember(probe.c_str());
+  if (i != v.MemberEnd())
+    {
+      const rj::Value& nv = i->value;
+      found = field_value_to_string(nv);
     }
   return found;
 }
@@ -152,11 +179,9 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
     {
       for (const string& probe : probes)
 	{
-	  auto i = v.FindMember(probe.c_str());
-	  if (i != v.MemberEnd())
+	  string nvalue = extract_scalar_field(v, probe);
+	  if (!nvalue.empty())
 	    {
-	      const rj::Value& nv = i->value;
-	      string nvalue = field_value_to_string(nv);
 	      ofs << probe << "," << nvalue << std::endl;
 	      found.push_back(probe);
 	    }
