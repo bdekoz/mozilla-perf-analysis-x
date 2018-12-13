@@ -134,6 +134,68 @@ extract_histogram_field_sum(const rj::Value& v, const string& probe)
 }
 
 
+// Mean is the sum of the histogram values divided by the number of
+// values.
+string
+extract_histogram_field_mean(const rj::Value& v, const string& probe)
+{
+  string found;
+  auto i = v.FindMember(probe.c_str());
+  if (i != v.MemberEnd())
+    {
+      // Get histogram type.
+      const rj::Value& vht = i->value["histogram_type"];
+      histogram_t htype = static_cast<histogram_t>(field_value_to_int(vht));
+      bool htypecp = htype == histogram_t::categorical;
+      bool htypekp = htype == histogram_t::keyed;
+
+      // Get number of buckets.
+      const rj::Value& vbcount = i->value["bucket_count"];
+      int bcount [[gnu::unused]] = field_value_to_int(vbcount);
+
+      // Get sum.
+      const rj::Value& vsum = i->value["sum"];
+      int sum = field_value_to_int(vsum);
+
+      // Get (value, count) for each bucket, in the form of (string, int).
+      const rj::Value& vvs = i->value["values"];
+      if (vvs.IsObject())
+	{
+	  // Iterate through object.
+	  int sumcomputed(0);
+	  int nvalues(0);
+	  for (vcmem_iterator j = vvs.MemberBegin(); j != vvs.MemberEnd(); ++j)
+	    {
+	      const rj::Value& vbktcount = j->value;
+	      int bktcount = field_value_to_int(vbktcount);
+	      nvalues += bktcount;
+
+	      if (!htypecp && !htypekp)
+		{
+		  // For "most" histograms, the name of the bucket
+		  // corresponds to a particular value. So, convert the
+		  // buck name above to an int value.
+		  string bktname = j->name.GetString();
+		  int bktv(std::stoi(bktname));
+		  sumcomputed += (bktv * bktcount);
+		}
+	    }
+
+	  // Sanity check computed sum matches extracted sum.
+	  if (sumcomputed != sum || htypecp || htypekp)
+	    {
+	      std::clog << errorprefix << "computed sum of " << sumcomputed
+			<< " != extracted sum of " << sum << std::endl;
+	    }
+
+	  double mean(sum / nvalues);
+	  found = to_string(mean);
+	}
+    }
+  return found;
+}
+
+
 // Assume v is the histogram node.
 strings
 extract_histogram_fields_sum(const rj::Value& v, const strings& probes,

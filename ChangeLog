@@ -1,3 +1,10 @@
+2018-12-12  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (extract_histogram_field_mean): Add
+	extraction function for histogram mean.
+	* src/moz-telemetry-x.h (histogram_t): Add enum for histogram
+	types that matches vaules inn nsITelemetry.idl.
+
 2018-12-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_histogram_field_sum): Break out
