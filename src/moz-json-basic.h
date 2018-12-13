@@ -259,15 +259,17 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 
 // Assume v is the histogram node.
 strings
-extract_histogram_fields_sum(const rj::Value& v, const strings& probes,
-			     std::ofstream& ofs)
+extract_histogram_fields(const rj::Value& v, const strings& probes,
+			 std::ofstream& ofs)
 {
   strings found;
   if (v.IsObject())
     {
       for (const string& probe : probes)
 	{
-	  string nvalue = extract_histogram_field_sum(v, probe);
+	  //string nvalue = extract_histogram_field_sum(v, probe);
+	  string nvalue = extract_histogram_field_median(v, probe);
+	  //string nvalue = extract_histogram_field_mean(v, probe);
 	  if (!nvalue.empty())
 	    {
 	      ofs << probe << "," << nvalue << std::endl;

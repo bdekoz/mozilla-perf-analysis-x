@@ -162,17 +162,17 @@ extract_probe_names(string inames, string ifile)
       // Extract histogram values.
       // list_dom_nested_object_fields(dhistogram);
 
-      strings foundhi = extract_histogram_fields_sum(dhisto, probes1, ofs);
+      strings foundhi = extract_histogram_fields(dhisto, probes1, ofs);
       std::copy(foundhi.begin(), foundhi.end(),
 		std::back_inserter(probes1found));
       probes1r = update_extract_lists(probes1, foundhi);
 
-      strings foundco = extract_histogram_fields_sum(dcont, probes1r, ofs);
+      strings foundco = extract_histogram_fields(dcont, probes1r, ofs);
       std::copy(foundco.begin(), foundco.end(),
 		std::back_inserter(probes1found));
       probes1r = update_extract_lists(probes1r, foundco);
 
-      strings foundgp = extract_histogram_fields_sum(dgpu, probes1r, ofs);
+      strings foundgp = extract_histogram_fields(dgpu, probes1r, ofs);
       std::copy(foundgp.begin(), foundgp.end(),
 		std::back_inserter(probes1found));
       probes1r = update_extract_lists(probes1r, foundgp);
