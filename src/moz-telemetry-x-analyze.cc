@@ -105,25 +105,27 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 
 // Map a value to a point radiating out from a center.
 void
-radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
-		       double r, bool rotatep = false)
+radiate_probe_by_value(svg_form& obj, typography& typo, string pname,
+		       int pvalue, int pmax, double r, bool rotatep = true)
 {
   // Find center of SVG canvas.
   const double cx = obj._M_area._M_width / 2;
   const double cy = obj._M_area._M_height / 2;
 
-  // Normalize [0, pmax] to range [0, 360] and put pvalue in it.
-  //const double kangle = (360 / pmax) * static_cast<double>(pvalue);
-  int angled = normalize_on_range(pvalue, 0, pmax, 0, 359);
+  // Although a circle has 360 degrees, chop off the last degree so
+  // that there is more differentiation between the end and beginning.
+  const int circledeg = 359;
+
+  // Normalize [0, pmax] to range [0, circledeg] and put pvalue in it.
+  int angled = normalize_on_range(pvalue, 0, pmax, 0, circledeg);
+  std::clog << pname << " -> " << pvalue << " " << angled << std::endl;
+
+  // Change rotation to CW instead of CCW (or anti-clockwise).
+  angled = circledeg - angled;
 
   // Rotate 90 CCW, so that the first element will be at the top
   // vertical axis, instead of the right middle axis.
   angled += 90;
-
-  // And then make the angle negative so as to rotate CW instead of CCW.
-  angled -= 360;
-
-  std::clog << pname << " -> " << pvalue << " " << angled << std::endl;
 
   /*
     Draw text on the circumference of a circle of radius r centered (cx, cy)
@@ -141,18 +143,10 @@ radiate_probe_by_value(svg_form& obj, string pname, int pvalue, int pmax,
   oss << pvalue << " -> " << pname;
   string label = oss.str();
 
-  // Common typographics.
-  typography typo = k::ccode_typo;
-  typo._M_size = 12;
-  typo._M_style = k::b_style;
-  typo._M_w = svg::typography::weight::xlight;
-  // typo._M_style._M_fill_color = c;
-
   if (rotatep)
     {
       typo._M_a = svg::typography::anchor::start;
       typo._M_align = svg::typography::align::left;
-      //      typo._M_a = svg::typography::anchor::middle;
       place_probe_text(obj, typo, label, x, y, angled);
     }
   else
@@ -202,9 +196,22 @@ place_metadata(svg_form& obj, environment& env)
 }
 
 
-// Create radial viz
+/*
+  Create radial viz of names from input file arranged clockwise around
+  the edge of a circle circumference. The text of the names can be
+  rotated, or not.
+
+ Arguments are:
+
+ ifile == CSV file of marker/probe names to display.
+
+ rdenom == scaling factor for radius of circle used for display, where
+ larger values (used as a denominator) make smaller (tighter) circles.
+
+ rotatep == rotate name text to be on an arc from the origin of the circle.
+*/
 void
-radiating_probe_lines_viz(string ifile)
+radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
 {
   // Read CSV file of [marker name || probe name] and value, and
   // store in hash_map, along with the max value.
@@ -247,19 +254,22 @@ radiating_probe_lines_viz(string ifile)
   // Create svg canvas.
   svg_form obj = initialize_svg(fstem);
 
+  // Common typographics.
+  typography typo = k::ccode_typo;
+  typo._M_size = 9;
+  typo._M_style = k::b_style;
+  typo._M_w = svg::typography::weight::xlight;
+  // typo._M_style._M_fill_color = c;
+
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
   for (const auto& v : probe_map)
     {
       string pname(v.first);
       int pvalue(v.second);
-      double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / 5;
-
-      // Don't Rotate.
-      //radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r, false);
-
-      // Rotate
-      radiate_probe_by_value(obj, pname, pvalue, probe_key_max, r, true);
+      double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom;
+      radiate_probe_by_value(obj, typo, pname, pvalue, probe_key_max, r,
+			     rotatep);
     }
 
   // Metadata display.
@@ -286,7 +296,7 @@ int main(int argc, char* argv[])
   std::string idata = argv[1];
   std::clog << "input files: " << idata << std::endl;
 
-  radiating_probe_lines_viz(idata);
+  radiating_probe_lines_viz(idata, 6, true);
 
   return 0;
 }

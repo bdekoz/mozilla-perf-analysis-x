@@ -1,3 +1,11 @@
+2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* moz-telemetry-x-analyze.cc (radiate_probe_by_value): Add
+	typography parameter. Rotate clockwise starting at the noon position,
+	like a clock.
+	(radiating_probe_lines_viz): Add radius scaling and rotate parameters.
+	Scale text so that it fits on the SVG canvas.
+
 2018-12-12  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_histogram_fields_sum): To
