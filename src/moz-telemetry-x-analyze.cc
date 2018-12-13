@@ -81,7 +81,7 @@ place_metadata_text(svg_form& obj, typography& typo, string mtext)
 
 
 void
-place_probe_text(svg_form& obj, typography& typo, string label, int tx, int ty,
+place_name_text(svg_form& obj, typography& typo, string label, int tx, int ty,
 		 const double deg = 0.0)
 {
   text_form::data dt = { tx, ty, label, typo };
@@ -111,7 +111,7 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 
 // Map a value to a point radiating out from a center.
 void
-radiate_probe_by_value(svg_form& obj, typography& typo, string pname,
+radiate_name_by_value(svg_form& obj, typography& typo, string pname,
 		       int pvalue, int pmax, double r, bool rotatep = true)
 {
   // Find center of SVG canvas.
@@ -153,13 +153,13 @@ radiate_probe_by_value(svg_form& obj, typography& typo, string pname,
     {
       typo._M_a = svg::typography::anchor::start;
       typo._M_align = svg::typography::align::left;
-      place_probe_text(obj, typo, label, x, y, angled);
+      place_name_text(obj, typo, label, x, y, angled);
     }
   else
     {
       typo._M_align = svg::typography::align::left;
       typo._M_a = svg::typography::anchor::start;
-      place_probe_text(obj, typo, label, x, y, 0);
+      place_name_text(obj, typo, label, x, y, 0);
     }
 }
 
@@ -200,7 +200,7 @@ place_metadata(svg_form& obj, typography& typo, environment& env)
 
  Arguments are:
 
- ifile == CSV file of marker/probe names to display.
+ ifile == CSV file of extracted marker/probe names to display.
 
  rdenom == scaling factor for radius of circle used for display, where
  larger values (used as a denominator) make smaller (tighter) circles.
@@ -208,7 +208,7 @@ place_metadata(svg_form& obj, typography& typo, environment& env)
  rotatep == rotate name text to be on an arc from the origin of the circle.
 */
 void
-radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
+radiate_names_per_value_on_arc(string ifile, uint rdenom, bool rotatep)
 {
   // Read CSV file of [marker name || probe name] and value, and
   // store in hash_map, along with the max value.
@@ -265,8 +265,8 @@ radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
       string pname(v.first);
       int pvalue(v.second);
       double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom;
-      radiate_probe_by_value(obj, typo, pname, pvalue, probe_value_max, r,
-			     rotatep);
+      radiate_name_by_value(obj, typo, pname, pvalue, probe_value_max, r,
+			    rotatep);
     }
 
   // Metadata typographics.
@@ -307,7 +307,7 @@ int main(int argc, char* argv[])
   std::string idata = argv[1];
   std::clog << "input files: " << idata << std::endl;
 
-  radiating_probe_lines_viz(idata, 6, true);
+  radiate_names_per_value_on_arc(idata, 6, true);
 
   return 0;
 }

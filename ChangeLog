@@ -1,5 +1,10 @@
 2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.cc: Rename *_probe_* to name to
+	prepare for markers.
+
+2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.cc (radiating_probe_lines_viz): Display
 	total time.
 	(place_text_at_point): Consolidate common text handling in this
