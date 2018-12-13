@@ -1,7 +1,11 @@
 2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* image.generated: New.
+
+2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* scripts/json-pretty-print.sh: New.
-	
+
 2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.cc: Rename *_probe_* to name to
