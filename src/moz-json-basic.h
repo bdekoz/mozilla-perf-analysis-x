@@ -196,6 +196,56 @@ extract_histogram_field_mean(const rj::Value& v, const string& probe)
 }
 
 
+// Median is the value computed from a set of numbers such that the
+// probability is equal that any number picked from the set has a
+// value higher or lower than it.
+string
+extract_histogram_field_median(const rj::Value& v, const string& probe)
+{
+  string found;
+  auto i = v.FindMember(probe.c_str());
+  if (i != v.MemberEnd())
+    {
+      // Get histogram type.
+      const rj::Value& vht = i->value["histogram_type"];
+      histogram_t htype = static_cast<histogram_t>(field_value_to_int(vht));
+      bool htypecp = htype == histogram_t::categorical;
+      bool htypekp = htype == histogram_t::keyed;
+
+      // Get (value, count) for each bucket, in the form of (string, int).
+      const rj::Value& vvs = i->value["values"];
+      if (vvs.IsObject())
+	{
+	  // Iterate through object.
+	  std::vector<int> vvalues;
+	  for (vcmem_iterator j = vvs.MemberBegin(); j != vvs.MemberEnd(); ++j)
+	    {
+	      const rj::Value& vbktcount = j->value;
+	      int bktcount = field_value_to_int(vbktcount);
+
+	      if (bktcount != 0 && !htypecp && !htypekp)
+		{
+		  // For "most" histograms, the name of the bucket
+		  // corresponds to a particular value. So, convert the
+		  // buck name above to an int value.
+		  string bktname = j->name.GetString();
+		  int bktv(std::stoi(bktname));
+
+		  // Add bktcount number of bktv values to histogram vector.
+		  vvalues.insert(vvalues.end(), bktcount, bktv);
+		}
+	    }
+
+	  std::nth_element(vvalues.begin(), vvalues.begin() + vvalues.size()/2,
+			   vvalues.end());
+	  double median(vvalues[vvalues.size() / 2]);
+	  found = to_string(median);
+	}
+    }
+  return found;
+}
+
+
 // Assume v is the histogram node.
 strings
 extract_histogram_fields_sum(const rj::Value& v, const strings& probes,

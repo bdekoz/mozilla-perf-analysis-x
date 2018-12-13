@@ -40,17 +40,17 @@ const string errorprefix("error -> ");
 
 // Common output file extentions.
 const char* extract_ext = ".csv";
-//const char* analyze_ext = ".svg";
+const char* analyze_ext = ".svg";
 
 /*
   Histogram types, from nsITelemetry.idl
 
-  * HISTOGRAM_EXPONENTIAL - buckets increase exponentially
-  * HISTOGRAM_LINEAR - buckets increase linearly
-  * HISTOGRAM_BOOLEAN - For storing 0/1 values
-  * HISTOGRAM_FLAG - For storing a single value; its count is always == 1.
-  * HISTOGRAM_COUNT - For storing counter values without bucketing.
-  * HISTOGRAM_CATEGORICAL - For storing enumerated values by label.
+  HISTOGRAM_EXPONENTIAL - buckets increase exponentially
+  HISTOGRAM_LINEAR - buckets increase linearly
+  HISTOGRAM_BOOLEAN - For storing 0/1 values
+  HISTOGRAM_FLAG - For storing a single value; its count is always == 1.
+  HISTOGRAM_COUNT - For storing counter values without bucketing.
+  HISTOGRAM_CATEGORICAL - For storing enumerated values by label.
   */
 enum class histogram_t
 {

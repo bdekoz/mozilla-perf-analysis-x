@@ -1,5 +1,10 @@
 2018-12-12  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (extract_histogram_field_median): Add.
+	* src/moz-telemetry-x.h: Tweak comments.
+
+2018-12-12  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (extract_histogram_field_mean): Add
 	extraction function for histogram mean.
 	* src/moz-telemetry-x.h (histogram_t): Add enum for histogram
@@ -28,7 +33,8 @@
 2018-12-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/mozilla-telemetry-names-all.txt: To uinx text, simple edits.
-	* src/moz-telemetry-x-analyze.cc (radiating_probe_lines_viz): Smaller radius.
+	* src/moz-telemetry-x-analyze.cc (radiating_probe_lines_viz):
+	Smaller radius.
 	(radiate_probe_by_value): Rotate to move like a timeclock, Noon
 	top, clockwise rotation.
 	* src/moz-telemetry-x-extract.cc (extract_tier_1_probes): To...
