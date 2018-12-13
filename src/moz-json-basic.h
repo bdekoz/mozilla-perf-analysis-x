@@ -236,9 +236,20 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 		}
 	    }
 
-	  std::nth_element(vvalues.begin(), vvalues.begin() + vvalues.size()/2,
+	  const uint vvsize = vvalues.size();
+	  std::nth_element(vvalues.begin(), vvalues.begin() + vvsize / 2,
 			   vvalues.end());
-	  double median(vvalues[vvalues.size() / 2]);
+
+	  // Median differs by even/odd number of elements...
+	  double median(0);
+	  if (vvsize % 2 != 0)
+	    median = vvalues[vvsize / 2];
+	  else
+	    {
+	      auto m1 = vvalues[vvsize / 2];
+	      auto m2 = vvalues[(vvsize / 2) - 1];
+	      median = (m1 + m2) / 2;
+	    }
 	  found = to_string(median);
 	}
     }
