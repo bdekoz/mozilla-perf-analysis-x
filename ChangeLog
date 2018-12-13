@@ -1,5 +1,13 @@
 2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.cc (radiating_probe_lines_viz): Display
+	total time.
+	(place_text_at_point): Consolidate common text handling in this
+	function.
+	* src/moz-telemetry-x.h: Put margin constant here.
+
+2018-12-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* moz-telemetry-x-analyze.cc (radiate_probe_by_value): Add
 	typography parameter. Rotate clockwise starting at the noon position,
 	like a clock.

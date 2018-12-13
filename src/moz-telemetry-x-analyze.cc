@@ -55,19 +55,25 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines")
 
 
 void
-place_metadata_text(svg_form& obj, typography& typo, string mtext)
+place_text_at_point(svg_form& obj, typography& typo, string mtext,
+		    int tx, int ty)
 {
-  // Margin in pixels.
-  const int margin = 100;
-  int tx = margin;
-  static int ty = margin;
-
   text_form::data dt = { tx, ty, mtext, typo };
   text_form t;
   t.start_element();
   t.add_data(dt);
   t.finish_element();
   obj.add_element(t);
+}
+
+
+void
+place_metadata_text(svg_form& obj, typography& typo, string mtext)
+{
+  int tx = margin;
+  static int ty = margin;
+
+  place_text_at_point(obj, typo, mtext, tx, ty);
 
   // Increment vertical, assume higher moves text down the page.
   ty += typo._M_size;
@@ -159,17 +165,8 @@ radiate_probe_by_value(svg_form& obj, typography& typo, string pname,
 
 
 void
-place_metadata(svg_form& obj, environment& env)
+place_metadata(svg_form& obj, typography& typo, environment& env)
 {
-  // Common typographics.
-  typography typo = k::zslab_typo;
-  typo._M_align = svg::typography::align::left;
-  typo._M_a = svg::typography::anchor::start;
-  typo._M_size = 14;
-  typo._M_style = k::b_style;
-  typo._M_w = svg::typography::weight::medium;
-  typo._M_style._M_fill_color = colore::gray50;
-
   // place_metadata_text(obj, typo, env.os_vendor);
   place_metadata_text(obj, typo, env.os_name);
   place_metadata_text(obj, typo, env.os_version);
@@ -216,7 +213,7 @@ radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
   // Read CSV file of [marker name || probe name] and value, and
   // store in hash_map, along with the max value.
   std::unordered_map<string, int> probe_map;
-  int probe_key_max(0);
+  int probe_value_max(0);
 
   const string fstem = file_path_to_stem(ifile);
   const string ifilecsv(datapath + fstem + extract_ext);
@@ -238,7 +235,7 @@ radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
 	      ifs.ignore(1, k::newline);
 
 	      probe_map.insert(make_pair(pname, pvalue));
-	      probe_key_max = std::max(pvalue, probe_key_max);
+	      probe_value_max = std::max(pvalue, probe_value_max);
 	    }
 	}
       while (ifs.good());
@@ -249,12 +246,12 @@ radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
 		<< ifile << std::endl;
     }
   std::clog << probe_map.size() << " probes found with max value "
-	    << probe_key_max << std::endl;
+	    << probe_value_max << std::endl;
 
   // Create svg canvas.
   svg_form obj = initialize_svg(fstem);
 
-  // Common typographics.
+  // Probe/Marker name/value typographics.
   typography typo = k::ccode_typo;
   typo._M_size = 9;
   typo._M_style = k::b_style;
@@ -268,13 +265,27 @@ radiating_probe_lines_viz(string ifile, uint rdenom, bool rotatep)
       string pname(v.first);
       int pvalue(v.second);
       double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom;
-      radiate_probe_by_value(obj, typo, pname, pvalue, probe_key_max, r,
+      radiate_probe_by_value(obj, typo, pname, pvalue, probe_value_max, r,
 			     rotatep);
     }
 
+  // Metadata typographics.
+  typography typom = k::zslab_typo;
+  typom._M_align = svg::typography::align::left;
+  typom._M_a = svg::typography::anchor::start;
+  typom._M_size = 14;
+  typom._M_style = k::b_style;
+  typom._M_w = svg::typography::weight::medium;
+  typom._M_style._M_fill_color = colore::gray50;
+
   // Metadata display.
   environment env = extract_environment(ifile);
-  place_metadata(obj, env);
+  place_metadata(obj, typom, env);
+
+  // Total time.
+  typom._M_size = 48;
+  place_text_at_point(obj, typom, to_string(probe_value_max) + " ms",
+		      margin, obj._M_area._M_height - margin);
 }
 
 } // namespace moz

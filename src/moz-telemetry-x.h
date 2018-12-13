@@ -42,6 +42,9 @@ const string errorprefix("error -> ");
 const char* extract_ext = ".csv";
 const char* analyze_ext = ".svg";
 
+// Margin in pixels.
+const int margin = 100;
+
 /*
   Histogram types, from nsITelemetry.idl
 
