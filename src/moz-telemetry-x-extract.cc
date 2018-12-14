@@ -114,7 +114,12 @@ extract_probe_names(string inames, string ifile)
 
   // Prepare output file.
   std::ofstream ofs(datapath + fstem + extract_ext);
-  if (!ofs.good())
+  if (ofs.good())
+    {
+      // Add zero as starting point so that scaling is reliable.
+      ofs << "S T A R T" << "," << 0 << std::endl;
+    }
+ else
     {
       std::cerr << errorprefix
 		<< "cannot open output file " << datapath + fstem

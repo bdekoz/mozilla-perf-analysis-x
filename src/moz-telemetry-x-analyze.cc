@@ -118,9 +118,7 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
   const double cx = obj._M_area._M_width / 2;
   const double cy = obj._M_area._M_height / 2;
 
-  // Although a circle has 360 degrees, chop off the last degree so
-  // that there is more differentiation between the end and beginning.
-  const int circledeg = 359;
+  const int circledeg = 360;
 
   // Normalize [0, pmax] to range [0, circledeg] and put pvalue in it.
   int angled = normalize_on_range(pvalue, 0, pmax, 0, circledeg);
@@ -193,6 +191,12 @@ place_metadata(svg_form& obj, typography& typo, environment& env)
 }
 
 
+// Given rdenom scaling factor and SVG canvas, compute radius value.
+inline double
+find_radius(const svg_form& obj, const uint rdenom)
+{ return std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom; }
+
+
 /*
   Create radial viz of names from input file arranged clockwise around
   the edge of a circle circumference. The text of the names can be
@@ -203,12 +207,12 @@ place_metadata(svg_form& obj, typography& typo, environment& env)
  ifile == CSV file of extracted marker/probe names to display.
 
  rdenom == scaling factor for radius of circle used for display, where
- larger values (used as a denominator) make smaller (tighter) circles.
+  larger values (used as a denominator) make smaller (tighter) circles.
 
  rotatep == rotate name text to be on an arc from the origin of the circle.
 */
 void
-radiate_names_per_value_on_arc(string ifile, uint rdenom, bool rotatep)
+radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 {
   // Read CSV file of [marker name || probe name] and value, and
   // store in hash_map, along with the max value.
@@ -251,6 +255,16 @@ radiate_names_per_value_on_arc(string ifile, uint rdenom, bool rotatep)
   // Create svg canvas.
   svg_form obj = initialize_svg(fstem);
 
+  // Circle glyph for center of arc.
+  const double r = find_radius(obj, rdenom);
+  style sty = k::b_style;
+  sty._M_stroke_color = colore::red;
+  sty._M_stroke_opacity = 1.0;
+  sty._M_stroke_size = 2.0;
+  sty._M_fill_opacity = 0.0;
+  point_2d_to_circle(obj, obj._M_area._M_width/2, obj._M_area._M_height/2,
+		     sty, r/2);
+
   // Probe/Marker name/value typographics.
   typography typo = k::ccode_typo;
   typo._M_size = 9;
@@ -264,7 +278,6 @@ radiate_names_per_value_on_arc(string ifile, uint rdenom, bool rotatep)
     {
       string pname(v.first);
       int pvalue(v.second);
-      double r = std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom;
       radiate_name_by_value(obj, typo, pname, pvalue, probe_value_max, r,
 			    rotatep);
     }
@@ -282,10 +295,15 @@ radiate_names_per_value_on_arc(string ifile, uint rdenom, bool rotatep)
   environment env = extract_environment(ifile);
   place_metadata(obj, typom, env);
 
+  // Input data file.
+  place_text_at_point(obj, typom, file_path_to_stem(ifile),
+		      margin, obj._M_area._M_height - margin);
+
   // Total time.
   typom._M_size = 48;
+  typom._M_style._M_fill_color = colore::red;
   place_text_at_point(obj, typom, to_string(probe_value_max) + " ms",
-		      margin, obj._M_area._M_height - margin);
+		      margin, obj._M_area._M_height - margin - 14 * 2);
 }
 
 } // namespace moz

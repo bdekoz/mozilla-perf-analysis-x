@@ -1,5 +1,12 @@
 2018-12-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.cc (radiate_names_per_value_on_arc):
+	Add input file, circle outline.
+	(find_radius): New.
+	* src/moz-telemetry-x-extract.cc: Add start marker.
+
+2018-12-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/mozilla-telemetry-names-all.txt: To...
 	* data/mozilla-telemetry-probes-all.txt: ..this.
 	* data/mozilla-telemetry-names-tier-1.txt: To...
