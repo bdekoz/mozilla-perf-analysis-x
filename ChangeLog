@@ -1,5 +1,9 @@
 2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/mozilla-telemetry-probes-all.txt: New.
+
+2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (extract_and_flatten_scalar_probes): New.
 	* src/moz-telemetry-x-extract.cc: Calll it.
 
