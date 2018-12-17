@@ -1,6 +1,8 @@
 2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/mozilla-telemetry-probes-all.txt: New.
+	* data/mozilla-telemetry-probes-histograms.20181218.txt: Generated.
+	* data/mozilla-telemetry-probes-scalars.20181218.txt: Generated.
 
 2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
