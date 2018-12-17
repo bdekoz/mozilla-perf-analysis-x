@@ -369,6 +369,38 @@ extract_environment(string ifile)
 }
 
 
+/*
+ Assuming a 'Scalars.json' file generated from the canonical source file:
+ gecko/toolkit/components/telemetry/Scalars.yaml
+ Take it and parse out the individual scalar probe names, like
+ timestamps.first_paint
+*/
+void
+extract_and_flatten_scalar_probes(string ifile)
+{
+  rj::Document dom(deserialize_json_to_dom(ifile));
+  if (!dom.HasParseError())
+    {
+      for (vcmem_iterator i = dom.MemberBegin(); i != dom.MemberEnd(); ++i)
+	{
+	  string tname(i->name.GetString());
+	  const rj::Value& nv = i->value;
+
+	  if (nv.IsObject())
+	    {
+	      for (vcmem_iterator j = nv.MemberBegin(); j != nv.MemberEnd(); ++j)
+		{
+		  // Iterate through object
+		  string sname = j->name.GetString();
+		  string field(tname + "." + sname);
+		  std::clog << field << std::endl;
+		}
+	    }
+	}
+    }
+}
+
+
 void
 list_dom_nested_object_fields(const rj::Value& v)
 {
@@ -405,26 +437,26 @@ search_dom_object_field_contents(const rj::Document& dom, const string match)
 
 
 /// Search DOM for objects.
+/// Arguments: first is DOM object, second is display field type
 void
-list_dom_fields(const rj::Document& dom)
+list_dom_fields(const rj::Document& dom, bool ftypep = false)
 {
   if (!dom.HasParseError())
     {
       for (vcmem_iterator i = dom.MemberBegin(); i != dom.MemberEnd(); ++i)
 	{
-	  string fname(i->name.GetString());
-	  string ftype(kTypeNames[i->value.GetType()]);
-	  std::clog << fname << " " << ftype << std::endl;
+	  string nname(i->name.GetString());
+	  std::clog << nname;
+
+	  if (ftypep)
+	    {
+	      const rj::Value& nv = i->value;
+	      string ntype(kTypeNames[nv.GetType()]);
+	      std::clog << " " << ntype;
+	    }
+	  std::clog << std::endl;
 	}
     }
-}
-
-
-void
-list_fields(std::string ifile)
-{
-  rj::Document dom(deserialize_json_to_dom(ifile));
-  list_dom_fields(dom);
 }
 
 
@@ -444,6 +476,7 @@ search_dom_for_string_field(const rj::Document& dom, const string finds)
   return ret;
 }
 
+
 /// Search DOM for integer values.
 int
 search_dom_for_int_field(const rj::Document& dom, const string finds)
@@ -458,5 +491,12 @@ search_dom_for_int_field(const rj::Document& dom, const string finds)
   return ret;
 }
 
+
+void
+list_json_fields(std::string ifile)
+{
+  rj::Document dom(deserialize_json_to_dom(ifile));
+  list_dom_fields(dom);
+}
 } // namespace moz
 #endif

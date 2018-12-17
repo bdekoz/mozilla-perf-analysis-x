@@ -225,8 +225,13 @@ int main(int argc, char* argv[])
   std::clog << "input files: " << inames << " , " << idata << std::endl;
 
   // Extract data/values from json.
-  list_fields(idata);
-  extract_named_objects(idata);
+  // This is useful for generating a list of Histograms and Scalar probe names.
+
+  // list_json_fields(idata);
+  // extract_and_flatten_scalar_probes(idata);
+
+  //extract_named_objects(idata);
+
   extract_probe_names(inames, idata);
 
   return 0;
