@@ -142,9 +142,10 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
   double y(cy - (r * std::sin(angler)));
 
   // Consolidate label text to be "VALUE -> NAME"
+  constexpr uint valuewidth(9);
   std::ostringstream oss;
   oss.imbue(std::locale(""));
-  oss << std::setfill(' ') << std::setw(6) << std::left << pvalue;
+  oss << std::setfill(' ') << std::setw(valuewidth) << std::left << pvalue;
   oss << " -> " << pname;
   string label = oss.str();
 

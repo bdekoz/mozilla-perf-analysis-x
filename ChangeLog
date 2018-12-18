@@ -1,5 +1,14 @@
 2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (extract_histogram_field_median): Program
+	defensively.
+	* src/moz-telemetry-x-analyze.cc (radiate_name_by_value):
+	Set width of value string to 9.
+
+	* data/mozilla-telemetry-probes-all.txt: Re-generate.
+
+2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.cc (radiate_name_by_value):
 	Fix offset, aligned position.
 
