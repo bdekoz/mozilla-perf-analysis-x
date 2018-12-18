@@ -15,6 +15,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
 
+#include <cmath>
 #include <chrono>
 #include <iostream>
 #include <iomanip>
@@ -118,14 +119,14 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
   const double cx = obj._M_area._M_width / 2;
   const double cy = obj._M_area._M_height / 2;
 
-  const int circledeg = 360;
+  // Max number of non-overlapping degrees in circle.
+  const double maxdeg = 360;
 
-  // Normalize [0, pmax] to range [0, circledeg] and put pvalue in it.
-  int angled = normalize_on_range(pvalue, 0, pmax, 0, circledeg);
-  std::clog << pname << " -> " << pvalue << " " << angled << std::endl;
+  // Normalize [0, pmax] to range [0, maxdeg] and put pvalue in it.
+  double angled = normalize_on_range(pvalue, 0, pmax, 0, maxdeg);
 
   // Change rotation to CW instead of CCW (or anti-clockwise).
-  angled = circledeg - angled;
+  angled = 360 - angled;
 
   // Rotate 90 CCW, so that the first element will be at the top
   // vertical axis, instead of the right middle axis.
@@ -135,30 +136,25 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
     Draw text on the circumference of a circle of radius r centered (cx, cy)
     corresponding to the angle above.
   */
-  constexpr double kpi(22/7);
-  double angler = (kpi / 180) * angled;
+  constexpr double kpi(3.14159);
+  double angler = (kpi / 180.0) * angled;
   double x(cx + (r * std::cos(angler)));
   double y(cy - (r * std::sin(angler)));
 
   // Consolidate label text to be "VALUE -> NAME"
   std::ostringstream oss;
   oss.imbue(std::locale(""));
-  oss << std::setfill(' ') << std::setw(6);
-  oss << pvalue << " -> " << pname;
+  oss << std::setfill(' ') << std::setw(6) << std::left << pvalue;
+  oss << " -> " << pname;
   string label = oss.str();
 
   if (rotatep)
-    {
-      typo._M_a = svg::typography::anchor::start;
-      typo._M_align = svg::typography::align::left;
-      place_name_text(obj, typo, label, x, y, angled);
-    }
+    place_name_text(obj, typo, label, x, y, angled);
   else
-    {
-      typo._M_align = svg::typography::align::left;
-      typo._M_a = svg::typography::anchor::start;
-      place_name_text(obj, typo, label, x, y, 0);
-    }
+    place_name_text(obj, typo, label, x, y, 0);
+
+  std::clog << label << " " << angled << " " << '(' << x << ',' << y << ')'
+	    << std::endl;
 }
 
 
@@ -204,7 +200,7 @@ find_radius(const svg_form& obj, const uint rdenom)
 
  Arguments are:
 
- ifile == CSV file of extracted marker/probe names to display.
+ ifile == CSV or JSON file of extracted marker/probe names to display.
 
  rdenom == scaling factor for radius of circle used for display, where
   larger values (used as a denominator) make smaller (tighter) circles.
@@ -219,9 +215,21 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   std::unordered_map<string, int> probe_map;
   int probe_value_max(0);
 
-  const string fstem = file_path_to_stem(ifile);
-  const string ifilecsv(datapath + fstem + extract_ext);
-  file_path_to_stem(ifilecsv);
+  string fstem;
+  string ifilecsv;
+  bool jsonp = false;
+  if (ifile.find(".json") != string::npos)
+    {
+      fstem = file_path_to_stem(ifile);
+      ifilecsv = string(datapath + fstem + extract_ext);
+      file_path_to_stem(ifilecsv);
+      jsonp = true;
+    }
+  else
+    {
+      fstem = file_path_to_stem(ifile);
+      ifilecsv = ifile;
+    }
 
   std::ifstream ifs(ifilecsv);
   if (ifs.good())
@@ -256,21 +264,27 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   svg_form obj = initialize_svg(fstem);
 
   // Circle glyph for center of arc.
+  const double cx = obj._M_area._M_width / 2;
+  const double cy = obj._M_area._M_height / 2;
   const double r = find_radius(obj, rdenom);
+
+  std::clog << "r is " << r << std::endl;
+  std::clog << "origin (x,y) == " << cx << ',' << cy << std::endl;
+
   style sty = k::b_style;
   sty._M_stroke_color = colore::red;
   sty._M_stroke_opacity = 1.0;
   sty._M_stroke_size = 2.0;
   sty._M_fill_opacity = 0.0;
-  point_2d_to_circle(obj, obj._M_area._M_width/2, obj._M_area._M_height/2,
-		     sty, r/2);
+  point_2d_to_circle(obj, cx, cy, sty, r/2);
 
   // Probe/Marker name/value typographics.
   typography typo = k::ccode_typo;
   typo._M_size = 9;
   typo._M_style = k::b_style;
   typo._M_w = svg::typography::weight::xlight;
-  // typo._M_style._M_fill_color = c;
+  typo._M_align = svg::typography::align::left;
+  typo._M_a = svg::typography::anchor::start;
 
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
@@ -292,8 +306,11 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   typom._M_style._M_fill_color = colore::gray50;
 
   // Metadata display.
-  environment env = extract_environment(ifile);
-  place_metadata(obj, typom, env);
+  if (jsonp)
+    {
+      environment env = extract_environment(ifile);
+      place_metadata(obj, typom, env);
+    }
 
   // Input data file.
   place_text_at_point(obj, typom, file_path_to_stem(ifile),
