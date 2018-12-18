@@ -120,7 +120,7 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
   const double cy = obj._M_area._M_height / 2;
 
   // Max number of non-overlapping degrees in circle.
-  const double maxdeg = 360;
+  const double maxdeg = 359;
 
   // Normalize [0, pmax] to range [0, maxdeg] and put pvalue in it.
   double angled = normalize_on_range(pvalue, 0, pmax, 0, maxdeg);
@@ -146,8 +146,7 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
   std::ostringstream oss;
   oss.imbue(std::locale(""));
   oss << std::setfill(' ') << std::setw(valuewidth) << std::left << pvalue;
-  oss << " -> " << pname;
-  string label = oss.str();
+  string label = oss.str() + " -> " + pname;
 
   if (rotatep)
     place_name_text(obj, typo, label, x, y, angled);
@@ -293,8 +292,9 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
     {
       string pname(v.first);
       int pvalue(v.second);
-      radiate_name_by_value(obj, typo, pname, pvalue, probe_value_max, r,
-			    rotatep);
+      if (pvalue)
+	radiate_name_by_value(obj, typo, pname, pvalue, probe_value_max, r,
+			      rotatep);
     }
 
   // Metadata typographics.

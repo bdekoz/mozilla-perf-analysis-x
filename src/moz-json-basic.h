@@ -252,7 +252,7 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 		  auto m2 = vvalues[(vvsize / 2) - 1];
 		  median = (m1 + m2) / 2;
 		}
-	      found = to_string(median);
+	      found = to_string(static_cast<uint>(median));
 	    }
 	}
     }

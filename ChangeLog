@@ -1,5 +1,16 @@
 2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (extract_histogram_field_median):
+	Cast to integer.
+	* src/moz-telemetry-x-analyze.cc (radiate_name_by_value):
+	Don't print zero value fields.
+
+2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/2018-11-14-varney-main-ping-11-00.csv: Remove generated file.
+
+2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (extract_histogram_field_median): Program
 	defensively.
 	* src/moz-telemetry-x-analyze.cc (radiate_name_by_value):
