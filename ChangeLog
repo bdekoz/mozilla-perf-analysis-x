@@ -1,6 +1,11 @@
+2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/mozilla-telemetry-probes-tier-1-2-3.txt
+
 2018-12-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_histogram_field_median):
+
 	Cast to integer.
 	* src/moz-telemetry-x-analyze.cc (radiate_name_by_value):
 	Don't print zero value fields.
