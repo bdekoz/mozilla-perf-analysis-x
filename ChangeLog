@@ -1,5 +1,12 @@
 2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.cc (initialize_svg): Add in circle
+	glyph here.
+	(radiate_names_per_value_on_arc): ... move from here.
+	* data/circle-arrow-red.png: New.
+
+2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/circle-arrow-red.svg: New.
 
 2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>

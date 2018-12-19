@@ -41,16 +41,27 @@ usage()
 
 // Create an svg object with 1080p dimensions and return it.
 svg_form
-initialize_svg(string ofile = "moz-telemetry-radiating-lines")
+initialize_svg(string ofile = "moz-telemetry-radiating-lines",
+	       const int width = 1920, const int height = 1080)
 {
-  area<> a = { unit::pixel, 1920, 1080 };
+  area<> a = { unit::pixel, width, height };
   svg_form obj(ofile, a);
 
   group_form g;
-  g.start_element("mozilla viz experiment 20181127.v2", k::b_style);
+  g.start_element("mozilla viz experiment 20181127.v2");
   g.finish_element();
   obj.add_element(g);
 
+  // Circle glyph for center of arc.
+  image_form i;
+  const int isize(182);
+  std::string ifile(datapath + "circle-arrow-red.png");
+  image_form::data di = { ifile, width/2 - isize/2, height/2 - isize/2,
+			  isize, isize };
+  i.start_element();
+  i.add_data(di);
+  i.finish_element();
+  obj.add_element(i);
   return obj;
 }
 
@@ -262,21 +273,7 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 
   // Create svg canvas.
   svg_form obj = initialize_svg(fstem);
-
-  // Circle glyph for center of arc.
-  const double cx = obj._M_area._M_width / 2;
-  const double cy = obj._M_area._M_height / 2;
   const double r = find_radius(obj, rdenom);
-
-  std::clog << "r is " << r << std::endl;
-  std::clog << "origin (x,y) == " << cx << ',' << cy << std::endl;
-
-  style sty = k::b_style;
-  sty._M_stroke_color = colore::red;
-  sty._M_stroke_opacity = 1.0;
-  sty._M_stroke_size = 2.0;
-  sty._M_fill_opacity = 0.0;
-  point_2d_to_circle(obj, cx, cy, sty, r/2);
 
   // Probe/Marker name/value typographics.
   typography typo = k::ccode_typo;
@@ -320,7 +317,10 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   // Total time.
   typom._M_size = 48;
   typom._M_style._M_fill_color = colore::red;
-  place_text_at_point(obj, typom, to_string(probe_value_max) + " ms",
+  std::ostringstream oss;
+  oss.imbue(std::locale(""));
+  oss << probe_value_max << " ms";
+  place_text_at_point(obj, typom, oss.str(),
 		      margin, obj._M_area._M_height - margin - 14 * 2);
 }
 
