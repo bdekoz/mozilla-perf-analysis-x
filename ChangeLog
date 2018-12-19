@@ -1,5 +1,9 @@
 2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/circle-arrow-red.svg: New.
+
+2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/a60-svg-base.h (transform, group_form): Towards nested svgs...
 
 2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
