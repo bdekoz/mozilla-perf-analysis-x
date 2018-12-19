@@ -130,8 +130,9 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
   const double cx = obj._M_area._M_width / 2;
   const double cy = obj._M_area._M_height / 2;
 
-  // Max number of non-overlapping degrees in circle.
-  const double maxdeg = 359;
+  // Max number of non-overlapping degrees in circle, such that the
+  // beginning and the end have a discernable gap.
+  const double maxdeg = 358;
 
   // Normalize [0, pmax] to range [0, maxdeg] and put pvalue in it.
   double angled = normalize_on_range(pvalue, 0, pmax, 0, maxdeg);

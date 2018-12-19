@@ -1,5 +1,15 @@
 2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Import browsertime result files.
+	* data/2018-11-27-browsertime-reddit-1.json
+	* data/2018-11-27-browsertime-reddit-2.json
+	* data/2018-11-27-browsertime-youtube-1.json
+	* data/2018-11-27-browsertime-youtube-2.json
+
+	* src/moz-telemetry-x-analyze.cc: Arc to 358 degrees.
+
+2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* viz.sunburst-v5: Remove.
 
 2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
