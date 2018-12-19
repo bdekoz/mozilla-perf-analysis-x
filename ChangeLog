@@ -1,3 +1,11 @@
+2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/2018-12-17-mabini-guardian-main.json: New.
+	* data/2018-12-18-mabini-twitch-main.json: New.
+
+	* data/mozilla-telemetry-probes-time-ms-timestamps.txt: Edited
+	list of timing probes from histogram and scalar scrapes.
+
 2018-12-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.cc (initialize_svg): Add in circle
