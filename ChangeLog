@@ -1,5 +1,9 @@
 2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* viz.sunburst-v5: Remove.
+
+2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/2018-12-17-mabini-guardian-main.json: New.
 	* data/2018-12-18-mabini-twitch-main.json: New.
 
