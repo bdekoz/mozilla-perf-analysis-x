@@ -810,7 +810,7 @@ namespace svg
       std::ostringstream stream;
       stream << k::space;
       stream << "transform=" << k::quote;
-      stream << "rotate(" << std::to_string(deg)
+      stream << "rotate(" << deg
 	     << ")" << k::quote;
       return stream.str();
     }
@@ -821,9 +821,25 @@ namespace svg
       std::ostringstream stream;
       stream << k::space;
       stream << "transform=" << k::quote;
-      stream << "rotate(" << std::to_string(deg)
+      stream << "rotate(" << deg
 	     << k::comma << x << k::comma << y
 	     << ")" << k::quote;
+      return stream.str();
+    }
+
+    static string
+    scale(int factor)
+    {
+      std::ostringstream stream;
+      stream << "scale(" << factor << ")";
+      return stream.str();
+    }
+
+    static string
+    translate(int x, int y)
+    {
+      std::ostringstream stream;
+      stream << "translate(" << x << k::comma << y << ")";
       return stream.str();
     }
   };
@@ -1434,6 +1450,13 @@ line_form::finish_element()
  */
 struct group_form : virtual public element_base
 {
+  // Although one can nest SVG elements inside another SVG by using an 'image_form',
+  // the display quality is lacking in inkscape. To work around this,
+  // insert the contents of the nested SVG into a group element instead.
+  void
+  add_raw(string s)
+  { _M_sstream << k::space << s << std::endl; }
+
   void
   start_element()
   { _M_sstream << "<g>" << std::endl; }
@@ -1441,23 +1464,22 @@ struct group_form : virtual public element_base
   // For groups of elements that have the same name.
   void
   start_element(string name)
-  { _M_sstream << "<g id=" << '"' << name <<'"' << ">" << std::endl; }
+  { _M_sstream << "<g id=" << k::quote << name << k::quote << ">" << std::endl; }
 
   // For groups of elements that have the same style.
   void
   start_element(string name, const style& sty)
   {
-    _M_sstream << "<g id=" << '"' << name <<'"' << ' ';
+    _M_sstream << "<g id=" << k::quote << name << k::quote << k::space;
     add_style(sty);
     _M_sstream << '>' << std::endl;
   }
 
-  // For groups of elements that have the same transform.
-  // This overload is for rotation.
   void
-  start_element(const svg::transform, int deg, int x, int y)
+  start_element(string name, const transform, const string ts)
   {
-    _M_sstream << "<g " << svg::transform::rotate(deg, x, y);
+    _M_sstream << "<g id=" << k::quote << name << k::quote << k::space;
+    add_transform(ts);
     _M_sstream << '>' << std::endl;
   }
 
