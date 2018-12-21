@@ -50,8 +50,58 @@ update_extract_lists(const strings& total, strings& found)
 }
 
 
+// Convert from input file name to an in-memory vector of strings
+// representing names to match against field names in a JSON file.
+strings
+deserialize_extract_names(string inames)
+{
+  strings probes;
+
+  std::ifstream ifs(inames);
+  if (ifs.good())
+    {
+      string line;
+      do
+	{
+	  std::getline(ifs, line);
+	  probes.push_back(line);
+	}
+      while (ifs.good());
+      std::sort(probes.begin(), probes.end());
+
+      std::clog << probes.size() << " match names found in: " << std::endl;
+      std::clog << inames << std::endl;
+    }
+  else
+    {
+      std::cerr << errorprefix
+		<< "error: cannot open input file " << inames << std::endl;
+    }
+
+  return probes;
+}
+
+
+std::ofstream
+make_extracted_data_file(string ifile)
+{
+  // Prepare output file.
+  const string fstem = file_path_to_stem(ifile);
+  const string ofile(datapath + fstem + extract_ext);
+  std::ofstream ofs(ofile);
+  if (ofs.good())
+    {
+      // Add zero as starting point.
+      ofs << "S T A R T" << "," << 0 << std::endl;
+    }
+  else
+    std::cerr << errorprefix << "cannot open output file " << ofile << std::endl;
+  return ofs;
+}
+
+
 /*
-  Extracts top level objects from Mozilla telemetry.
+  Extract top level objects from Mozilla telemetry.
  */
 void
 extract_moz_named_objects(std::string ifile)
@@ -77,53 +127,17 @@ extract_moz_named_objects(std::string ifile)
 void
 extract_moz_probe_names(string inames, string ifile)
 {
-  const string fstem = file_path_to_stem(ifile);
-
   // Read probe names from input file, and put into vector<string>
-  std::ifstream ifs(inames);
-  strings probes1;
-  strings probes1found;
-  strings probes1r;
-  if (ifs.good())
-    {
-      string line;
-      do
-	{
-	  std::getline(ifs, line);
-	  probes1.push_back(line);
-	}
-      while (ifs.good());
-      std::sort(probes1.begin(), probes1.end());
+  strings probes = deserialize_extract_names(inames);
 
-      std::clog << probes1.size() << " probes names found in" << std::endl;
-      std::clog << inames << std::endl;
-    }
-  else
-    {
-      std::cerr << errorprefix
-		<< "error: cannot open input file " << inames << std::endl;
-    }
-
-  // Prepare output file.
-  std::ofstream ofs(datapath + fstem + extract_ext);
-  if (ofs.good())
-    {
-      // Add zero as starting point so that scaling is reliable.
-      ofs << "S T A R T" << "," << 0 << std::endl;
-    }
- else
-    {
-      std::cerr << errorprefix
-		<< "cannot open output file " << datapath + fstem
-		<< std::endl;
-    }
+  std::ofstream ofs(make_extracted_data_file(ifile));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
 
-  // Given the known details of the telemetry data schema, save off
-  // the most used data nodes for speedier manipulation for specific
-  // probes.
+  // Given the known details of the Mozilla telemetry data schema,
+  // save off the most used data nodes for speedier manipulation for
+  // specific probes.
 
   // Iff using RapidJSON pointers...
   // constexpr string ksimple("/payload/processes/parent/scalars");
@@ -131,6 +145,9 @@ extract_moz_probe_names(string inames, string ifile)
   const string kpayload("payload");
   if (dom.HasMember(kpayload.c_str()))
     {
+      strings probesfound;
+      strings probesr;
+
       // payload
       // payload/histograms
       // payload/simple
@@ -159,37 +176,37 @@ extract_moz_probe_names(string inames, string ifile)
       // Extract histogram values.
       // list_dom_nested_object_fields(dhistogram);
 
-      strings foundhi = extract_histogram_fields(dhisto, probes1, ofs);
+      strings foundhi = extract_histogram_fields(dhisto, probes, ofs);
       std::copy(foundhi.begin(), foundhi.end(),
-		std::back_inserter(probes1found));
-      probes1r = update_extract_lists(probes1, foundhi);
+		std::back_inserter(probesfound));
+      probesr = update_extract_lists(probes, foundhi);
 
-      strings foundco = extract_histogram_fields(dcont, probes1r, ofs);
+      strings foundco = extract_histogram_fields(dcont, probesr, ofs);
       std::copy(foundco.begin(), foundco.end(),
-		std::back_inserter(probes1found));
-      probes1r = update_extract_lists(probes1r, foundco);
+		std::back_inserter(probesfound));
+      probesr = update_extract_lists(probesr, foundco);
 
-      strings foundgp = extract_histogram_fields(dgpu, probes1r, ofs);
+      strings foundgp = extract_histogram_fields(dgpu, probesr, ofs);
       std::copy(foundgp.begin(), foundgp.end(),
-		std::back_inserter(probes1found));
-      probes1r = update_extract_lists(probes1r, foundgp);
+		std::back_inserter(probesfound));
+      probesr = update_extract_lists(probesr, foundgp);
 
       // Extract scalar values.
       // list_dom_nested_object_fields(dsimple);
 
-      strings foundsc = extract_scalar_fields(dsimple, probes1r, ofs);
+      strings foundsc = extract_scalar_fields(dsimple, probesr, ofs);
       std::copy(foundsc.begin(), foundsc.end(),
-		std::back_inserter(probes1found));
-      probes1r = update_extract_lists(probes1r, foundsc);
+		std::back_inserter(probesfound));
+      probesr = update_extract_lists(probesr, foundsc);
 
-      strings foundpa = extract_scalar_fields(dparent, probes1r, ofs);
+      strings foundpa = extract_scalar_fields(dparent, probesr, ofs);
       std::copy(foundpa.begin(), foundpa.end(),
-		std::back_inserter(probes1found));
-      probes1r = update_extract_lists(probes1r, foundpa);
+		std::back_inserter(probesfound));
+      probesr = update_extract_lists(probesr, foundpa);
 
       // List remaining.
       std::clog << std::endl << "remaining probes" << std::endl;
-      for (const string& s : probes1r)
+      for (const string& s : probesr)
 	std::clog << s << std::endl;
     }
   else

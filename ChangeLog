@@ -1,5 +1,12 @@
 2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-extract.cc (deserialize_extract_names): New,
+	consolidate logic here.
+	(make_extracted_data_file): Same.
+	(extract_moz_probe_names): From here.
+
+2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-extract.cc: Add "moz" prefix to extraction
 	routines specifically for Mozilla telemetry json.
 
