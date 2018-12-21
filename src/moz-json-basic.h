@@ -47,11 +47,6 @@ using vcval_iterator = rj::Value::ConstValueIterator;
 const char* kTypeNames[] =
   { "Null", "False", "True", "Object", "Array", "String", "Number" };
 
-// Telemetry data file, top-level object parition constants.
-const string sapp("application");
-const string spay("payload");
-const string senv("environment");
-
 
 void
 serialize_to_json(jsonstream&, string);
@@ -379,33 +374,8 @@ extract_environment(string ifile)
  timestamps.first_paint
 */
 void
-extract_and_flatten_scalar_probes(string ifile)
-{
-  rj::Document dom(deserialize_json_to_dom(ifile));
-  if (!dom.HasParseError())
-    {
-      for (vcmem_iterator i = dom.MemberBegin(); i != dom.MemberEnd(); ++i)
-	{
-	  string tname(i->name.GetString());
-	  const rj::Value& nv = i->value;
-
-	  if (nv.IsObject())
-	    {
-	      for (vcmem_iterator j = nv.MemberBegin(); j != nv.MemberEnd(); ++j)
-		{
-		  // Iterate through object
-		  string sname = j->name.GetString();
-		  string field(tname + "." + sname);
-		  std::clog << field << std::endl;
-		}
-	    }
-	}
-    }
-}
-
-
-void
-list_dom_nested_object_fields(const rj::Value& v)
+list_dom_nested_object_fields(const string& parentfield, const rj::Value& v,
+			      bool recursionp = true, bool ftypevalp = false)
 {
   if (v.IsObject())
     {
@@ -413,28 +383,21 @@ list_dom_nested_object_fields(const rj::Value& v)
 	{
 	  // Iterate through object
 	  string nname = i->name.GetString();
-	  std::clog << nname;
+	  string nfield(parentfield + "." + nname);
+	  std::clog << nfield;
 
 	  const rj::Value& nv = i->value;
-	  string ntype(kTypeNames[nv.GetType()]);
-	  string nvalue = field_value_to_string(nv);
-	  std::clog << " : " << ntype << " : " << nvalue << std::endl;
+	  if (ftypevalp)
+	    {
+	      string ntype(kTypeNames[nv.GetType()]);
+	      string nvalue = field_value_to_string(nv);
+	      std::clog << " " << ntype << " " << nvalue;
+	    }
+	  std::clog << std::endl;
 
-	  //const rj::Value& nestedv = v[nname.c_str()];
+	  if (recursionp)
+	    list_dom_nested_object_fields(nfield, nv);
 	}
-    }
-}
-
-
-void
-search_dom_object_field_contents(const rj::Document& dom, const string match)
-{
-
-  if (!dom.HasParseError() && dom.HasMember(match.c_str()))
-    {
-      std::clog << match << " nested object found with members:" << std::endl;
-      const rj::Value& v = dom[match.c_str()];
-      list_dom_nested_object_fields(v);
     }
 }
 
@@ -451,15 +414,26 @@ list_dom_fields(const rj::Document& dom, bool ftypep = false)
 	  string nname(i->name.GetString());
 	  std::clog << nname;
 
+	  const rj::Value& nv = i->value;
 	  if (ftypep)
 	    {
-	      const rj::Value& nv = i->value;
 	      string ntype(kTypeNames[nv.GetType()]);
 	      std::clog << " " << ntype;
 	    }
 	  std::clog << std::endl;
+
+	  list_dom_nested_object_fields(nname, nv, true);
 	}
     }
+}
+
+
+// List fields in ifile.json.
+void
+list_json_fields(std::string ifile)
+{
+  rj::Document dom(deserialize_json_to_dom(ifile));
+  list_dom_fields(dom);
 }
 
 
@@ -494,12 +468,5 @@ search_dom_for_int_field(const rj::Document& dom, const string finds)
   return ret;
 }
 
-
-void
-list_json_fields(std::string ifile)
-{
-  rj::Document dom(deserialize_json_to_dom(ifile));
-  list_dom_fields(dom);
-}
 } // namespace moz
 #endif

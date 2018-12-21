@@ -101,27 +101,6 @@ make_extracted_data_file(string ifile)
 
 
 /*
-  Extract top level objects from Mozilla telemetry.
- */
-void
-extract_moz_named_objects(std::string ifile)
-{
-  rj::Document dom(deserialize_json_to_dom(ifile));
-
-  std::cout << " 1 " << std::endl;
-  search_dom_object_field_contents(dom, sapp);
-
-  std::cout << " 2 " << std::endl;
-  search_dom_object_field_contents(dom, spay);
-
-  std::cout << " 3 " << std::endl;
-  search_dom_object_field_contents(dom, senv);
-
-  std::cout << std::endl;
-}
-
-
-/*
   Takes a text file with probe names to extract from Mozilla telemetry.
  */
 void
@@ -213,6 +192,43 @@ extract_moz_probe_names(string inames, string ifile)
     std::cerr << errorprefix << kpayload << " not found " << std::endl;
 }
 
+
+/*
+  Takes a text file with probe names to extract from a browsertime JSON file.
+
+  Browsertime
+  https://www.sitespeed.io/documentation/browsertime/
+
+  See the following for more detail
+
+  Navigation Timing
+  https://w3c.github.io/navigation-timing/
+
+  User Timing
+  https://www.w3.org/TR/user-timing/
+
+  HAR 1.2
+  http://www.softwareishard.com/blog/har-12-spec/
+ */
+void
+extract_browsertime_probe_names(string inames, string ifile)
+{
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_extract_names(inames);
+
+  std::ofstream ofs(make_extracted_data_file(ifile));
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  const string kinfo("info");
+  if (dom.HasMember(kinfo.c_str()))
+    {
+      strings probesfound;
+      strings probesr;
+    }
+}
+
 } // namespace moz
 
 
@@ -229,18 +245,19 @@ int main(int argc, char* argv[])
     }
 
   // Input names file, input data file
+
   std::string inames = argv[1];
   std::string idata = argv[2];
   std::clog << "input files: " << inames << " , " << idata << std::endl;
+  std::clog << std::endl;
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
 
   list_json_fields(idata);
-  extract_and_flatten_scalar_probes(idata);
 
-  extract_moz_named_objects(idata);
-  extract_moz_probe_names(inames, idata);
+   extract_moz_probe_names(inames, idata);
+  //extract_browsertime_probe_names(inames, idata);
 
   return 0;
 }
