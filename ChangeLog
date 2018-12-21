@@ -1,3 +1,8 @@
+2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-extract.cc: Add "moz" prefix to extraction
+	routines specifically for Mozilla telemetry json.
+
 2018-12-19  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Import browsertime result files.

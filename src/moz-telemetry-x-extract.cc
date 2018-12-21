@@ -31,34 +31,6 @@ usage()
 }
 
 
-/*
-  network
-  parse
-  style
-  layout
-  paint/composite
-
-  TIME_TO_*
-  *_MS
- */
-void
-extract_named_objects(std::string ifile)
-{
-  rj::Document dom(deserialize_json_to_dom(ifile));
-
-  std::cout << " 1 " << std::endl;
-  search_dom_object_field_contents(dom, sapp);
-
-  std::cout << " 2 " << std::endl;
-  search_dom_object_field_contents(dom, spay);
-
-  std::cout << " 3 " << std::endl;
-  search_dom_object_field_contents(dom, senv);
-
-  std::cout << std::endl;
-}
-
-
 strings
 update_extract_lists(const strings& total, strings& found)
 {
@@ -78,12 +50,32 @@ update_extract_lists(const strings& total, strings& found)
 }
 
 
-
 /*
-  Takes a text file with probe names to extract
+  Extracts top level objects from Mozilla telemetry.
  */
 void
-extract_probe_names(string inames, string ifile)
+extract_moz_named_objects(std::string ifile)
+{
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  std::cout << " 1 " << std::endl;
+  search_dom_object_field_contents(dom, sapp);
+
+  std::cout << " 2 " << std::endl;
+  search_dom_object_field_contents(dom, spay);
+
+  std::cout << " 3 " << std::endl;
+  search_dom_object_field_contents(dom, senv);
+
+  std::cout << std::endl;
+}
+
+
+/*
+  Takes a text file with probe names to extract from Mozilla telemetry.
+ */
+void
+extract_moz_probe_names(string inames, string ifile)
 {
   const string fstem = file_path_to_stem(ifile);
 
@@ -227,12 +219,11 @@ int main(int argc, char* argv[])
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
 
-  // list_json_fields(idata);
-  // extract_and_flatten_scalar_probes(idata);
+  list_json_fields(idata);
+  extract_and_flatten_scalar_probes(idata);
 
-  //extract_named_objects(idata);
-
-  extract_probe_names(inames, idata);
+  extract_moz_named_objects(idata);
+  extract_moz_probe_names(inames, idata);
 
   return 0;
 }
