@@ -52,17 +52,39 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines",
   g.finish_element();
   obj.add_element(g);
 
-  // Circle glyph for center of arc.
-  image_form i;
+  // Read SVG to insert.
+  std::string ifile(datapath + "circle-arrow-red.svg");
+  std::ifstream ifs(ifile);
+  string isvg;
+  if (ifs.good())
+    {
+      // Strip out any XML version line in the SVG file.
+      // Search for and discard lines with "xml version", iff exists
+      string xmlheader;
+      getline(ifs, xmlheader);
+      if (xmlheader.find("xml version") == string::npos)
+	ifs.seekg(0, ifs.beg);
+
+      std::ostringstream oss;
+      oss << ifs.rdbuf();
+      isvg = oss.str();
+    }
+  else
+    throw std::runtime_error("initialize_svg:: insertion of nested SVG failed");
+
+  // Insert nested SVG element of red arc with arrow (scaled and with offset).
   const int isize(182);
-  std::string ifile(datapath + "circle-arrow-red.png");
-  image_form::data di = { ifile, width/2 - isize/2, height/2 - isize/2,
-			  isize, isize };
-  i.start_element();
-  i.add_data(di);
-  i.finish_element();
-  obj.add_element(i);
-  return obj;
+  const int x = width / 2 - isize / 2;
+  const int y = height / 2 - isize / 2;
+
+  string ts(transform::translate(x, y));
+  group_form gsvg;
+  gsvg.start_element("mozilla inset radial svg", transform(), ts);
+  gsvg.add_raw(isvg);
+  gsvg.finish_element();
+  obj.add_element(gsvg);
+
+   return obj;
 }
 
 
@@ -274,7 +296,6 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 
   // Create svg canvas.
   svg_form obj = initialize_svg(fstem);
-  const double r = find_radius(obj, rdenom);
 
   // Probe/Marker name/value typographics.
   typography typo = k::ccode_typo;
@@ -286,6 +307,7 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
+  const double r = find_radius(obj, rdenom);
   for (const auto& v : probe_map)
     {
       string pname(v.first);

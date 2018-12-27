@@ -808,10 +808,7 @@ namespace svg
     rotate(int deg)
     {
       std::ostringstream stream;
-      stream << k::space;
-      stream << "transform=" << k::quote;
-      stream << "rotate(" << deg
-	     << ")" << k::quote;
+      stream << "rotate(" << deg << ")";
       return stream.str();
     }
 
@@ -819,11 +816,7 @@ namespace svg
     rotate(int deg, int x, int y)
     {
       std::ostringstream stream;
-      stream << k::space;
-      stream << "transform=" << k::quote;
-      stream << "rotate(" << deg
-	     << k::comma << x << k::comma << y
-	     << ")" << k::quote;
+      stream << "rotate(" << deg << k::comma << x << k::comma << y << ")";
       return stream.str();
     }
 
@@ -1085,7 +1078,10 @@ struct element_base
   // Common transforms include rotate(180)
   void
   add_transform(const string s)
-  { _M_sstream << k::space << "transform=" << k::quote << s << k::quote; }
+  {
+    if (!s.empty())
+      _M_sstream << k::space << "transform=" << k::quote << s << k::quote;
+  }
 };
 
 
@@ -1116,24 +1112,27 @@ struct text_form : virtual public element_base
   // Either serialize immediately (as below), or create data structure
   // that adds data to data_vec and then finish_element serializes.
   void
-  add_data(const data& d, string transform = " ")
+  add_data(const data& d, string trans = "")
   {
     const std::string x("__x");
     const std::string y("__y");
     const std::string anchor("__anchor");
     const std::string attr("__attr");
     const std::string style("__style");
-    const std::string trans("__trans");
 
-    std::string strip = R"_delimiter_(x="__x" y="__y" text-anchor="__anchor"  __attr __style __trans>)_delimiter_";
+    std::string strip = R"_delimiter_(x="__x" y="__y" text-anchor="__anchor"  __attr __style)_delimiter_";
 
+    // Add attributes.
     string_replace(strip, x, std::to_string(d._M_x_origin));
     string_replace(strip, y, std::to_string(d._M_y_origin));
     string_replace(strip, anchor, d._M_typo.to_string(d._M_typo._M_a));
     string_replace(strip, attr, d._M_typo.add_attribute());
     string_replace(strip, style, svg::style::str(d._M_typo._M_style));
-    string_replace(strip, trans, transform);
     _M_sstream << strip;
+    add_transform(trans);
+    _M_sstream << '>';
+
+    // Add text data.
     _M_sstream << d._M_text;
   }
 
@@ -1354,21 +1353,19 @@ struct circle_form : virtual public element_base
   // Either serialize immediately (as below), or create data structure
   // that adds data to data_vec and then finish_element serializes.
   void
-  add_data(const data& d, string transform = " ")
+  add_data(const data& d, string trans = "")
   {
     const std::string x("__x");
     const std::string y("__y");
     const std::string r("__r");
-    const std::string trans("__trans");
 
-    std::string strip = R"_delimiter_(cx="__x" cy="__y" r="__r" __trans
-)_delimiter_";
+    std::string strip = R"_delimiter_(cx="__x" cy="__y" r="__r")_delimiter_";
 
     string_replace(strip, x, std::to_string(d._M_x_origin));
     string_replace(strip, y, std::to_string(d._M_y_origin));
     string_replace(strip, r, std::to_string(d._M_radius));
-    string_replace(strip, trans, transform);
     _M_sstream << strip;
+    add_transform(trans);
   }
 
   void
@@ -1478,7 +1475,7 @@ struct group_form : virtual public element_base
   void
   start_element(string name, const transform, const string ts)
   {
-    _M_sstream << "<g id=" << k::quote << name << k::quote << k::space;
+    _M_sstream << "<g id=" << k::quote << name << k::quote;
     add_transform(ts);
     _M_sstream << '>' << std::endl;
   }
@@ -1606,7 +1603,7 @@ make_2_channel_insert(svg_form& obj, string insert1, string insert2)
 // Draws a circle around a point (x,y), of style (s), of radius (r).
 void
 point_2d_to_circle(svg_form& obj, double x, double y, svg::style s,
-		   const int r = 4, const string transform = " ")
+		   const int r = 4, const string transform = "")
 {
   circle_form c;
   using size_type = svg::size_type;
