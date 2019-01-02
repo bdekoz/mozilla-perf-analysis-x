@@ -1,3 +1,18 @@
+2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data: Nest into...
+	* data/match-identifier-files: ...this.
+	* data/json-files: ...and this.
+
+	* src/moz-telemetry-x-extract.cc: Clean up output file placement.
+	* src/moz-telemetry-x-analyze.cc: Same, separate out CSV from JSON
+	input file requirements.
+
+2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-extract.cc: Update comment, use browsertime
+	analytics.
+
 2018-12-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.cc (initialize_svg): Nest svg inside

@@ -34,7 +34,7 @@ using color = svg::colore;
 std::string
 usage()
 {
-  std::string s("usage: moz-telemetry-x-analyze.exe data.json");
+  std::string s("usage: moz-telemetry-x-analyze.exe data.csv data.json");
   return s;
 }
 
@@ -48,12 +48,12 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines",
   svg_form obj(ofile, a);
 
   group_form g;
-  g.start_element("mozilla viz experiment 20181127.v2");
+  g.start_element("mozilla viz experiment 20190102.v3");
   g.finish_element();
   obj.add_element(g);
 
   // Read SVG to insert.
-  std::string ifile(datapath + "circle-arrow-red.svg");
+  std::string ifile(datapath + "image/circle-arrow-red.svg");
   std::ifstream ifs(ifile);
   string isvg;
   if (ifs.good())
@@ -234,14 +234,15 @@ find_radius(const svg_form& obj, const uint rdenom)
 
  Arguments are:
 
- ifile == CSV or JSON file of extracted marker/probe names to display.
+ ifile == CSV file of extracted marker/probe names to display.
 
  rdenom == scaling factor for radius of circle used for display, where
   larger values (used as a denominator) make smaller (tighter) circles.
 
  rotatep == rotate name text to be on an arc from the origin of the circle.
+
 */
-void
+svg_form
 radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 {
   // Read CSV file of [marker name || probe name] and value, and
@@ -249,23 +250,8 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   std::unordered_map<string, int> probe_map;
   int probe_value_max(0);
 
-  string fstem;
-  string ifilecsv;
-  bool jsonp = false;
-  if (ifile.find(".json") != string::npos)
-    {
-      fstem = file_path_to_stem(ifile);
-      ifilecsv = string(datapath + fstem + extract_ext);
-      file_path_to_stem(ifilecsv);
-      jsonp = true;
-    }
-  else
-    {
-      fstem = file_path_to_stem(ifile);
-      ifilecsv = ifile;
-    }
-
-  std::ifstream ifs(ifilecsv);
+  string fstem = file_path_to_stem(ifile);
+  std::ifstream ifs(ifile);
   if (ifs.good())
     {
       do
@@ -278,7 +264,7 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 	      ifs >> pvalue;
 
 	      // Extract remaining newline.
-	      ifs.ignore(1, k::newline);
+	      ifs.ignore(79, k::newline);
 
 	      probe_map.insert(make_pair(pname, pvalue));
 	      probe_value_max = std::max(pvalue, probe_value_max);
@@ -326,15 +312,8 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   typom._M_w = svg::typography::weight::medium;
   typom._M_style._M_fill_color = colore::gray50;
 
-  // Metadata display.
-  if (jsonp)
-    {
-      environment env = extract_environment(ifile);
-      place_metadata(obj, typom, env);
-    }
-
   // Input data file.
-  place_text_at_point(obj, typom, file_path_to_stem(ifile),
+  place_text_at_point(obj, typom, fstem,
 		      margin, obj._M_area._M_height - margin);
 
   // Total time.
@@ -345,6 +324,25 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
   oss << probe_value_max << " ms";
   place_text_at_point(obj, typom, oss.str(),
 		      margin, obj._M_area._M_height - margin - 14 * 2);
+
+  return obj;
+}
+
+void
+render_analysis_metadata(svg_form& obj, string ifile)
+{
+  // Metadata typographics.
+  typography typom = k::zslab_typo;
+  typom._M_align = svg::typography::align::left;
+  typom._M_a = svg::typography::anchor::start;
+  typom._M_size = 14;
+  typom._M_style = k::b_style;
+  typom._M_w = svg::typography::weight::medium;
+  typom._M_style._M_fill_color = colore::gray50;
+
+  // Metadata display.
+  environment env = extract_environment(ifile);
+  place_metadata(obj, typom, env);
 }
 
 } // namespace moz
@@ -356,17 +354,20 @@ int main(int argc, char* argv[])
   using namespace moz;
 
    // Sanity check.
-  if (argc != 2)
+  if (argc != 3)
     {
       std::cerr << usage() << std::endl;
       return 1;
     }
 
-  // Input names file, input data file
-  std::string idata = argv[1];
-  std::clog << "input files: " << idata << std::endl;
+  // Input CSV, JSON files.
+  std::string idatacsv = argv[1];
+  std::string idatajson = argv[2];
+  std::clog << "input files: " << idatacsv << " , " << idatajson << std::endl;
 
-  radiate_names_per_value_on_arc(idata, 6, true);
+
+  svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
+  render_analysis_metadata(obj, idatajson);
 
   return 0;
 }

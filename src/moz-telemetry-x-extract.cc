@@ -83,25 +83,30 @@ deserialize_extract_names(string inames)
 
 
 std::ofstream
-make_extracted_data_file(string ifile)
+make_extracted_data_file(string fstem)
 {
   // Prepare output file.
-  const string fstem = file_path_to_stem(ifile);
-  const string ofile(datapath + fstem + extract_ext);
+  const string ofile(fstem + extract_ext);
   std::ofstream ofs(ofile);
   if (ofs.good())
     {
       // Add zero as starting point.
-      ofs << "S T A R T" << "," << 0 << std::endl;
+      ofs << "START" << "," << 0 << std::endl;
     }
   else
-    std::cerr << errorprefix << "cannot open output file " << ofile << std::endl;
+    std::cerr << errorprefix << "cannot open output file "
+	      << ofile << std::endl;
   return ofs;
 }
 
 
 /*
-  Takes a text file with probe names to extract from Mozilla telemetry.
+  Takes two arguments
+
+  1. text file with probe names to extract from Mozilla telemetry.
+  2. input telemetry main ping JSON file
+
+  Output is a CSV file of probe names with extracted values
  */
 void
 extract_moz_probe_names(string inames, string ifile)
@@ -109,7 +114,8 @@ extract_moz_probe_names(string inames, string ifile)
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_extract_names(inames);
 
-  std::ofstream ofs(make_extracted_data_file(ifile));
+  string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
+  std::ofstream ofs(make_extracted_data_file(ofname));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -184,9 +190,10 @@ extract_moz_probe_names(string inames, string ifile)
       probesr = update_extract_lists(probesr, foundpa);
 
       // List remaining.
-      std::clog << std::endl << "remaining probes" << std::endl;
+      std::clog << std::endl;
+      std::clog << probesr.size() << " remaining probes: " << std::endl;
       for (const string& s : probesr)
-	std::clog << s << std::endl;
+	std::clog << '\t' << s << std::endl;
     }
   else
     std::cerr << errorprefix << kpayload << " not found " << std::endl;
@@ -195,6 +202,8 @@ extract_moz_probe_names(string inames, string ifile)
 
 /*
   Takes a text file with probe names to extract from a browsertime JSON file.
+
+  Output is a CSV file of probe names with extracted values
 
   Browsertime
   https://www.sitespeed.io/documentation/browsertime/
@@ -216,7 +225,8 @@ extract_browsertime_probe_names(string inames, string ifile)
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_extract_names(inames);
 
-  std::ofstream ofs(make_extracted_data_file(ifile));
+  string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
+  std::ofstream ofs(make_extracted_data_file(ofname));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -244,7 +254,7 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-  // Input names file, input data file
+  // Input match names file, input JSON data file
 
   std::string inames = argv[1];
   std::string idata = argv[2];
@@ -256,8 +266,8 @@ int main(int argc, char* argv[])
 
   list_json_fields(idata);
 
-   extract_moz_probe_names(inames, idata);
-  //extract_browsertime_probe_names(inames, idata);
+  // extract_moz_probe_names(inames, idata);
+  extract_browsertime_probe_names(inames, idata);
 
   return 0;
 }
