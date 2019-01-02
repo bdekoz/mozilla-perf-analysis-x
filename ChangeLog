@@ -1,3 +1,10 @@
+2018-12-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze.cc (initialize_svg): Nest svg inside
+	main svg.
+
+	* src/a60-svg-base.h: Sync with master sources.
+
 2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-extract.cc (deserialize_extract_names): New,
