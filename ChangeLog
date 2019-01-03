@@ -1,5 +1,17 @@
 2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (extract_environment): To...
+	(extract_environment_mozilla): To...
+	(extract_environment_browsertime): To...
+	* src/moz-telemetry-x.h (environment): Add url, date_time_stamp
+	members.
+	(enum class json_t): JSON formats supported.
+	* src/moz-telemetry-x-analyze.cc (place_metadata_text): Check for
+	zero length strings.
+	(place_metadata): Print URL, datestamp if be.
+
+2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data: Nest into...
 	* data/match-identifier-files: ...this.
 	* data/json-files: ...and this.
@@ -7,6 +19,7 @@
 	* src/moz-telemetry-x-extract.cc: Clean up output file placement.
 	* src/moz-telemetry-x-analyze.cc: Same, separate out CSV from JSON
 	input file requirements.
+	(render_analysis_metadata): Split JSON inputs into this routine.
 
 2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 

@@ -1,6 +1,6 @@
 // mozilla serialize/deserialize forward declarations -*- mode: C++ -*-
 
-// Copyright (c) 2018, Mozilla
+// Copyright (c) 2018-2019, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -67,15 +67,13 @@ enum class histogram_t
 };
 
 
-// Sanity check input file and path exist, and then return stem.
-string
-file_path_to_stem(string ifile)
+/// Compile time switches for input data processing, JSON format.
+enum class json_t
 {
-  filesystem::path ipath(ifile);
-  if (!exists(ipath))
-    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
-  return ipath.stem().string();
-}
+  browsertime,
+  mozilla,
+  w3c
+};
 
 
 /*
@@ -108,8 +106,21 @@ struct environment
   string	sw_version;
   string	sw_build_id;
 
-  int		fx_uri_count;
+  int		uri_count;
+  string	url;
+  string	date_time_stamp;
 };
+
+
+// Sanity check input file and path exist, and then return stem.
+string
+file_path_to_stem(string ifile)
+{
+  filesystem::path ipath(ifile);
+  if (!exists(ipath))
+    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
+  return ipath.stem().string();
+}
 
 } // namespace moz
 

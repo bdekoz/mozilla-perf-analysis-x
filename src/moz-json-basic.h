@@ -314,9 +314,8 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
 }
 
 
-// Expecting JSON input.
 environment
-extract_environment(string ifile)
+extract_environment_mozilla(string ifile)
 {
   const string fstem = file_path_to_stem(ifile);
 
@@ -360,10 +359,70 @@ extract_environment(string ifile)
 
 	  const char* suri = "browser.engagement.unfiltered_uri_count";
 	  const rj::Value& duri = dscalars[suri];
-	  env.fx_uri_count = duri.GetInt();
+	  env.uri_count = duri.GetInt();
 	}
     }
   return env;
+}
+
+
+environment
+extract_environment_browsertime(string ifile)
+{
+  const string fstem = file_path_to_stem(ifile);
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  environment env = { };
+  const string kinfo("info");
+  if (dom.HasMember(kinfo.c_str()))
+    {
+      const rj::Value& dinfo = dom[kinfo.c_str()];
+
+      const string kurl("url");
+      const rj::Value& durl = dinfo[kurl.c_str()];
+
+      const string ktimestamp("timestamp");
+      const rj::Value& dts = dinfo[ktimestamp.c_str()];
+
+      env.uri_count = 1;
+      env.url = field_value_to_string(durl);
+      env.date_time_stamp = field_value_to_string(dts);
+
+      const string kbrowsers("browserScripts");
+      const rj::Value& dbscripts = dom[kbrowsers.c_str()];
+
+      if (dbscripts.IsArray())
+	{
+	  vcval_iterator j = dbscripts.Begin();
+	  if (j != dbscripts.End())
+	    {
+	      const rj::Value& vbscript = *j;
+
+	      const rj::Value& dbrowser = vbscript["browser"];
+	      const rj::Value& dua = dbrowser["userAgent"];
+	      env.sw_name = dua.GetString();
+	    }
+	}
+    }
+  return env;
+}
+
+
+// Expecting JSON input.
+environment
+extract_environment(string ifile, const json_t dformat)
+{
+  // Extract from known format.
+  if (dformat == json_t::mozilla)
+    return extract_environment_mozilla(ifile);
+  if (dformat == json_t::browsertime)
+    return extract_environment_browsertime(ifile);
+
+  // Else error.
+  string m(errorprefix + "extract_environment unsupported JSON format");
+  throw std::runtime_error(m);
 }
 
 

@@ -107,10 +107,13 @@ place_metadata_text(svg_form& obj, typography& typo, string mtext)
   int tx = margin;
   static int ty = margin;
 
-  place_text_at_point(obj, typo, mtext, tx, ty);
+  if (!mtext.empty())
+    {
+      place_text_at_point(obj, typo, mtext, tx, ty);
 
-  // Increment vertical, assume higher moves text down the page.
-  ty += typo._M_size;
+      // Increment vertical, assume higher moves text down the page.
+      ty += typo._M_size;
+    }
 }
 
 
@@ -217,7 +220,9 @@ place_metadata(svg_form& obj, typography& typo, environment& env)
 
   place_metadata_text(obj, typo, " ");
 
-  place_metadata_text(obj, typo, to_string(env.fx_uri_count) + " uri count");
+  place_metadata_text(obj, typo, to_string(env.uri_count) + " uri count");
+  place_metadata_text(obj, typo, env.url);
+  place_metadata_text(obj, typo, env.date_time_stamp);
 }
 
 
@@ -329,7 +334,7 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 }
 
 void
-render_analysis_metadata(svg_form& obj, string ifile)
+render_environment_metadata(svg_form& obj, string ifile, const json_t dformat)
 {
   // Metadata typographics.
   typography typom = k::zslab_typo;
@@ -341,7 +346,7 @@ render_analysis_metadata(svg_form& obj, string ifile)
   typom._M_style._M_fill_color = colore::gray50;
 
   // Metadata display.
-  environment env = extract_environment(ifile);
+  environment env = extract_environment(ifile, dformat);
   place_metadata(obj, typom, env);
 }
 
@@ -367,7 +372,7 @@ int main(int argc, char* argv[])
 
 
   svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
-  render_analysis_metadata(obj, idatajson);
+  render_environment_metadata(obj, idatajson, json_t::browsertime);
 
   return 0;
 }
