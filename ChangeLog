@@ -35,6 +35,14 @@
 
 2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h: Cleanups.
+	(extract_and_flatten_scalar_probes): Remove, consolidate in
+	(list_dom_nested_object_fields): Make consistent with non-nested.
+	(search_dom_object_field_contents): Remove.
+	* src/moz-telemetry-x-extract.cc (extract_browsertime_probe_names): New.
+
+2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-extract.cc (deserialize_extract_names): New,
 	consolidate logic here.
 	(make_extracted_data_file): Same.
