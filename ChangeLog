@@ -1,5 +1,12 @@
 2019-01-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (extract_pseudo_histogram_field): New.
+	* src/moz-telemetry-x-extract.cc
+	(extract_nested_browsertime_probe_names): New.
+	(extract_browsertime_probe_names): Re-work.
+
+2019-01-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (extract_histogram_field): Dispatch function.
 	(extract_histogram_fields): Use it.
 	* src/moz-telemetry-x.h (histogram_view_t): New, type of histogram
