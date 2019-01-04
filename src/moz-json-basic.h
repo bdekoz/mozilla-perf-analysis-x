@@ -255,6 +255,33 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 }
 
 
+// Use with Browsertime pre-calculated histogram summary types.
+int
+extract_pseudo_histogram_field(const rj::Value& v, const histogram_view_t hview)
+{
+  int nvalue;
+  switch (hview)
+    {
+      case histogram_view_t::median:
+	{
+	  const rj::Value& dnmedian = v["median"];
+	  nvalue = dnmedian.GetInt();
+	  break;
+	}
+      case histogram_view_t::mean:
+	{
+	  const rj::Value& dnmean = v["mean"];
+	  nvalue = dnmean.GetInt();
+	  break;
+	}
+      default:
+	throw std::runtime_error(errorprefix + "histogram extract quantile");
+	break;
+    }
+  return nvalue;
+}
+
+
 string
 extract_histogram_field(const rj::Value& v, const string& probe,
 			const histogram_view_t hview)
@@ -276,9 +303,6 @@ extract_histogram_field(const rj::Value& v, const string& probe,
       default:
 	break;
     }
-
-  //  if (hview == histogram_view_t::median)
-
   return nvalue;
 }
 
