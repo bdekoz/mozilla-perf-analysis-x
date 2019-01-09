@@ -1,3 +1,10 @@
+2019-01-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/config/user.js: Add. Smallest user.js such that wmctrl -c TITLE
+	cleanly kills firefox such that datareporting/archive* is written out.
+	* data/match-identifier-files/url-list.txt: Move...
+	* data/config/url-list.txt: ..here.
+
 2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_environment): To...
