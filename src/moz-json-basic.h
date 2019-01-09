@@ -255,22 +255,73 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 }
 
 
+// Use with Browsertime pre-calculated histogram summary types.
+int
+extract_pseudo_histogram_field(const rj::Value& v, const histogram_view_t hview)
+{
+  int nvalue;
+  switch (hview)
+    {
+      case histogram_view_t::median:
+	{
+	  const rj::Value& dnmedian = v["median"];
+	  nvalue = dnmedian.GetInt();
+	  break;
+	}
+      case histogram_view_t::mean:
+	{
+	  const rj::Value& dnmean = v["mean"];
+	  nvalue = dnmean.GetInt();
+	  break;
+	}
+      default:
+	throw std::runtime_error(errorprefix + "histogram extract quantile");
+	break;
+    }
+  return nvalue;
+}
+
+
+string
+extract_histogram_field(const rj::Value& v, const string& probe,
+			const histogram_view_t hview)
+{
+  string nvalue;
+  switch (hview)
+    {
+      case histogram_view_t::median:
+	nvalue = extract_histogram_field_median(v, probe);
+	break;
+      case histogram_view_t::mean:
+	nvalue = extract_histogram_field_mean(v, probe);
+	break;
+      case histogram_view_t::sum:
+	nvalue = extract_histogram_field_sum(v, probe);
+	break;
+      case histogram_view_t::quantile:
+	throw std::runtime_error(errorprefix + "histogram extract quantile");
+      default:
+	break;
+    }
+  return nvalue;
+}
+
+
 // Assume v is the histogram node.
 strings
 extract_histogram_fields(const rj::Value& v, const strings& probes,
-			 std::ofstream& ofs)
+			 std::ofstream& ofs,
+			 const histogram_view_t hview = histogram_view_t::median)
 {
   strings found;
   if (v.IsObject())
     {
       for (const string& probe : probes)
 	{
-	  //string nvalue = extract_histogram_field_sum(v, probe);
-	  string nvalue = extract_histogram_field_median(v, probe);
-	  //string nvalue = extract_histogram_field_mean(v, probe);
-	  if (!nvalue.empty())
+	  string hvalue = extract_histogram_field(v, probe, hview);
+	  if (!hvalue.empty())
 	    {
-	      ofs << probe << "," << nvalue << std::endl;
+	      ofs << probe << "," << hvalue << std::endl;
 	      found.push_back(probe);
 	    }
 	}
@@ -295,7 +346,7 @@ extract_scalar_field(const rj::Value& v, const string& probe)
 
 strings
 extract_scalar_fields(const rj::Value& v, const strings& probes,
-			  std::ofstream& ofs)
+		      std::ofstream& ofs)
 {
   strings found;
   if (v.IsObject())

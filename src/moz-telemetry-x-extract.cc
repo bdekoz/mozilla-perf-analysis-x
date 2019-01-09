@@ -200,6 +200,28 @@ extract_moz_probe_names(string inames, string ifile)
 }
 
 
+// Extract nested objects from Browsertime format.
+void
+extract_nested_browsertime_probe_names(const rj::Value& v, strings& probes,
+				       std::ofstream& ofs,
+				       const histogram_view_t dview)
+{
+  if (v.IsObject())
+    {
+      for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
+	{
+	  string nname = i->name.GetString();
+	  probes.push_back(nname);
+
+	  const rj::Value& nv = i->value;
+	  int iv = extract_pseudo_histogram_field(nv, dview);
+
+	  ofs << nname << "," << iv << std::endl;
+	}
+    }
+}
+
+
 /*
   Takes a text file with probe names to extract from a browsertime JSON file.
 
@@ -220,10 +242,11 @@ extract_moz_probe_names(string inames, string ifile)
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime_probe_names(string inames, string ifile)
+extract_browsertime_probe_names(string inames, string ifile,
+		       const histogram_view_t dview = histogram_view_t::median)
 {
   // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_extract_names(inames);
+  strings probes;
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
   std::ofstream ofs(make_extracted_data_file(ofname));
@@ -231,12 +254,43 @@ extract_browsertime_probe_names(string inames, string ifile)
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
 
-  const string kinfo("info");
-  if (dom.HasMember(kinfo.c_str()))
+  //statistics/timing
+  //statistics/timing/navigationTiming
+  //statistics/timing/pageTimings
+  rj::Value* pv = rj::Pointer("/statistics/timings").Get(dom);
+  if (pv)
     {
-      strings probesfound;
-      strings probesr;
+      const rj::Value& v = *pv;
+
+      // Walk top level timings.
+      // firstPaint
+      // fullyLoaded
+      const char* kfp = "firstPaint";
+      const rj::Value& dfp = v[kfp];
+      int ifp = extract_pseudo_histogram_field(dfp, dview);
+      ofs << kfp << "," << ifp << std::endl;
+      probes.push_back(kfp);
+
+      const char* kfl = "fullyLoaded";
+      const rj::Value& dfl = v[kfl];
+      int ifl = extract_pseudo_histogram_field(dfl, dview);
+      ofs << kfl << "," << ifl << std::endl;
+      probes.push_back(kfl);
+
+      // Walk navigation timing.
+      const char* knavt = "navigationTiming";
+      const rj::Value& dnavt = v[knavt];
+      extract_nested_browsertime_probe_names(dnavt, probes, ofs, dview);
+
+      // Walk page timings.
+      const char* kpaget = "pageTimings";
+      const rj::Value& dpaget = v[kpaget];
+      extract_nested_browsertime_probe_names(dpaget, probes, ofs, dview);
+
+      std::clog << "probes found: " << probes.size() << std::endl;
     }
+  else
+    std::cerr << "statistics/timings not found" << std::endl;
 }
 
 } // namespace moz

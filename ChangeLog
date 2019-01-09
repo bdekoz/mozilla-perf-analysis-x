@@ -5,6 +5,20 @@
 	* data/match-identifier-files/url-list.txt: Move...
 	* data/config/url-list.txt: ..here.
 
+2019-01-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (extract_pseudo_histogram_field): New.
+	* src/moz-telemetry-x-extract.cc
+	(extract_nested_browsertime_probe_names): New.
+	(extract_browsertime_probe_names): Re-work.
+
+2019-01-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (extract_histogram_field): Dispatch function.
+	(extract_histogram_fields): Use it.
+	* src/moz-telemetry-x.h (histogram_view_t): New, type of histogram
+	extraction and value display.
+
 2019-01-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_environment): To...
@@ -39,6 +53,14 @@
 	main svg.
 
 	* src/a60-svg-base.h: Sync with master sources.
+
+2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h: Cleanups.
+	(extract_and_flatten_scalar_probes): Remove, consolidate in
+	(list_dom_nested_object_fields): Make consistent with non-nested.
+	(search_dom_object_field_contents): Remove.
+	* src/moz-telemetry-x-extract.cc (extract_browsertime_probe_names): New.
 
 2018-12-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
 

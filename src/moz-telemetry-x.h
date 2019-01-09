@@ -67,6 +67,16 @@ enum class histogram_t
 };
 
 
+/// Compile time switches for histogram extraction.
+enum class histogram_view_t
+{
+  sum = 0,
+  median = 1,
+  mean = 2,
+  quantile = 3
+};
+
+
 /// Compile time switches for input data processing, JSON format.
 enum class json_t
 {
