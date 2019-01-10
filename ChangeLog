@@ -1,5 +1,9 @@
 2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* scripts/decompress-mozlz4a.sh: Helper script for decompression.
+
+2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x.h (djson_t): Add default json schema type.
 	* src/moz-telemetry-x-analyze.cc: Use it to dispatch.
 	* src/moz-telemetry-x-extract.cc: Same plus renames.
