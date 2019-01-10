@@ -477,45 +477,63 @@ extract_environment(string ifile, const json_t dformat)
 }
 
 
+void
+serialize_environment(const environment & env, string ofname)
+{
+}
+
+
 /*
  Assuming a 'Scalars.json' file generated from the canonical source file:
  gecko/toolkit/components/telemetry/Scalars.yaml
  Take it and parse out the individual scalar probe names, like
  timestamps.first_paint
 */
-void
-list_dom_nested_object_fields(const string& parentfield, const rj::Value& v,
-			      bool recursionp = true, bool ftypevalp = false)
+uint
+list_object_fields(const string parentfield, const rj::Value& v,
+		   bool recursep = true, bool ftypep = false,
+		   bool fvalp = false)
 {
+  uint nfields(0);
   if (v.IsObject())
     {
       for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
 	{
 	  // Iterate through object
 	  string nname = i->name.GetString();
-	  string nfield(parentfield + "." + nname);
+	  string nfield;
+	  if (!parentfield.empty())
+	    nfield += parentfield + ".";
+	  nfield += nname;
 	  std::clog << nfield;
 
 	  const rj::Value& nv = i->value;
-	  if (ftypevalp)
+	  if (ftypep)
 	    {
 	      string ntype(kTypeNames[nv.GetType()]);
-	      string nvalue = field_value_to_string(nv);
-	      std::clog << " " << ntype << " " << nvalue;
+	      std::clog << " " << ntype;
+	      if (fvalp)
+		{
+		  string nvalue = field_value_to_string(nv);
+		  std::clog << " " << nvalue;
+		}
 	    }
 	  std::clog << std::endl;
 
-	  if (recursionp)
-	    list_dom_nested_object_fields(nfield, nv);
+	  if (recursep)
+	    list_object_fields(nfield, nv);
+	  ++nfields;
 	}
     }
+  return nfields;
 }
 
 
 /// Search DOM for objects.
 /// Arguments: first is DOM object, second is display field type
 void
-list_dom_fields(const rj::Document& dom, bool ftypep = false)
+list_dom_fields(const rj::Document& dom,
+		bool nestedp = true, bool ftypep = false)
 {
   if (!dom.HasParseError())
     {
@@ -532,7 +550,8 @@ list_dom_fields(const rj::Document& dom, bool ftypep = false)
 	    }
 	  std::clog << std::endl;
 
-	  list_dom_nested_object_fields(nname, nv, true);
+	  if (nestedp)
+	    list_object_fields(nname, nv, true);
 	}
     }
 }

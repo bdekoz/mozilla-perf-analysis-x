@@ -1,5 +1,14 @@
 2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (serialize_environment): Save off
+	environment off during extraction.
+	(list_dom_nested_object_fields): To...
+	(list_object_fields): ...this. Separate out type and value arguments.
+	* src/moz-telemetry-x-extract.cc: Adjust as per above.
+	(extract_browsertime_names): Handle either object or array.
+
+2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/match-identifier-files/w3c-performance-timings.txt: Add
 	empty file.
 
