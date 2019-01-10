@@ -1,6 +1,12 @@
 2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
-	* scripts/decompress-mozlz4a.sh: Helper script for decompression.
+	* data/match-identifier-files/w3c-performance-timings.txt: Add
+	empty file.
+
+2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* scripts/decompress-mozlz4a.sh: Helper script for decompression
+	of archived telemetry pings.
 
 2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
