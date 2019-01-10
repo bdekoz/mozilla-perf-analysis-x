@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
+SCRIPTSDIR=/home/bkoz/src/mozilla-telemetry-x/scripts
 FILE=$1
-OFILE=`echo $CCFILE | sed 's/.jsonlz4/.json/g'`
+OFILE=`echo $FILE | sed 's/.jsonlz4/.json/g'`
 
-./mozlz4a.py -d $FILE $OFILE
+$SCRIPTSDIR/mozlz4a.py -d $FILE $OFILE

@@ -1,5 +1,13 @@
 2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* scripts/decompress-mozlz4a.sh: Fixup locations, names.
+
+	New baseline JSON files for browsertime and telemetry.
+	* data/json-files/2019-01-10-mabini-browsertime-steezy.json
+	* data/json-files/2019-01-10-mabini-main-steezy.json
+
+2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* scripts/linux-command-line-testing.sh: New, from Tuesday's experiments.
 
 2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
