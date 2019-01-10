@@ -1,3 +1,14 @@
+2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x.h (djson_t): Add default json schema type.
+	* src/moz-telemetry-x-analyze.cc: Use it to dispatch.
+	* src/moz-telemetry-x-extract.cc: Same plus renames.
+	(extract_mozilla_names)
+	(extract_browsertime_names)
+	(extract_browsertime_nexted_objects)
+	(extract_browsertime_object)
+	(extract_identifiers)
+
 2019-01-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Baseline compare data files, telemetry and browsertime.

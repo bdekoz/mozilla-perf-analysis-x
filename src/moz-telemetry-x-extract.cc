@@ -109,7 +109,7 @@ make_extracted_data_file(string fstem)
   Output is a CSV file of probe names with extracted values
  */
 void
-extract_moz_probe_names(string inames, string ifile)
+extract_mozilla_names(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_extract_names(inames);
@@ -202,9 +202,9 @@ extract_moz_probe_names(string inames, string ifile)
 
 // Extract nested objects from Browsertime format.
 void
-extract_nested_browsertime_probe_names(const rj::Value& v, strings& probes,
-				       std::ofstream& ofs,
-				       const histogram_view_t dview)
+extract_browsertime_nested_object(const rj::Value& v, strings& probes,
+				  std::ofstream& ofs,
+				  const histogram_view_t dview)
 {
   if (v.IsObject())
     {
@@ -220,6 +220,41 @@ extract_nested_browsertime_probe_names(const rj::Value& v, strings& probes,
 	}
     }
 }
+
+
+// Extract nested objects from Browsertime format.
+void
+extract_browsertime_object(const rj::Value& v, strings& probes,
+			   std::ofstream& ofs, const histogram_view_t dview)
+{
+  // Walk top level timings.
+  // firstPaint
+  // fullyLoaded
+  const char* kfp = "firstPaint";
+  const rj::Value& dfp = v[kfp];
+  int ifp = extract_pseudo_histogram_field(dfp, dview);
+  ofs << kfp << "," << ifp << std::endl;
+  probes.push_back(kfp);
+
+  const char* kfl = "fullyLoaded";
+  const rj::Value& dfl = v[kfl];
+  int ifl = extract_pseudo_histogram_field(dfl, dview);
+  ofs << kfl << "," << ifl << std::endl;
+  probes.push_back(kfl);
+
+  // Walk navigation timing.
+  const char* knavt = "navigationTiming";
+  const rj::Value& dnavt = v[knavt];
+  extract_browsertime_nested_object(dnavt, probes, ofs, dview);
+
+  // Walk page timings.
+  const char* kpaget = "pageTimings";
+  const rj::Value& dpaget = v[kpaget];
+  extract_browsertime_nested_object(dpaget, probes, ofs, dview);
+
+  std::clog << "probes found: " << probes.size() << std::endl;
+}
+
 
 
 /*
@@ -242,7 +277,7 @@ extract_nested_browsertime_probe_names(const rj::Value& v, strings& probes,
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime_probe_names(string inames, string ifile,
+extract_browsertime_names(string inames, string ifile,
 		       const histogram_view_t dview = histogram_view_t::median)
 {
   // Read probe names from input file, and put into vector<string>
@@ -254,45 +289,45 @@ extract_browsertime_probe_names(string inames, string ifile,
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
 
-  //statistics/timing
-  //statistics/timing/navigationTiming
-  //statistics/timing/pageTimings
-  rj::Value* pv = rj::Pointer("/statistics/timings").Get(dom);
-  if (pv)
+  // Data is either an array of objects or just one object. IF it is
+  // an array, just use the first one.
+
+  if (dom.IsObject())
     {
-      const rj::Value& v = *pv;
-
-      // Walk top level timings.
-      // firstPaint
-      // fullyLoaded
-      const char* kfp = "firstPaint";
-      const rj::Value& dfp = v[kfp];
-      int ifp = extract_pseudo_histogram_field(dfp, dview);
-      ofs << kfp << "," << ifp << std::endl;
-      probes.push_back(kfp);
-
-      const char* kfl = "fullyLoaded";
-      const rj::Value& dfl = v[kfl];
-      int ifl = extract_pseudo_histogram_field(dfl, dview);
-      ofs << kfl << "," << ifl << std::endl;
-      probes.push_back(kfl);
-
-      // Walk navigation timing.
-      const char* knavt = "navigationTiming";
-      const rj::Value& dnavt = v[knavt];
-      extract_nested_browsertime_probe_names(dnavt, probes, ofs, dview);
-
-      // Walk page timings.
-      const char* kpaget = "pageTimings";
-      const rj::Value& dpaget = v[kpaget];
-      extract_nested_browsertime_probe_names(dpaget, probes, ofs, dview);
-
-      std::clog << "probes found: " << probes.size() << std::endl;
+      //statistics/timing
+      //statistics/timing/navigationTiming
+      //statistics/timing/pageTimings
+      rj::Value* pv = rj::Pointer("/statistics/timings").Get(dom);
+      if (pv)
+	{
+	  const rj::Value& v = *pv;
+	  extract_browsertime_object(v, probes, ofs, dview);
+	}
+      else
+	std::cerr << "dom object statistics/timings not found" << std::endl;
     }
-  else
-    std::cerr << "statistics/timings not found" << std::endl;
+
+  if (dom.IsArray())
+    {
+      vcval_iterator j = dom.Begin();
+      if (j != dom.End())
+	{
+	  const rj::Value& v = *j;
+	  extract_browsertime_object(v, probes, ofs, dview);
+	}
+      else
+	std::cerr << "dom array error" << std::endl;
+    }
 }
 
+void
+extract_identifiers(string inames, string idata)
+{
+  if constexpr (djson_t == json_t::browsertime)
+    extract_browsertime_names(inames, idata);
+  if constexpr (djson_t == json_t::mozilla)
+    extract_mozilla_names(inames, idata);
+}
 } // namespace moz
 
 
@@ -318,10 +353,9 @@ int main(int argc, char* argv[])
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
 
-  list_json_fields(idata);
+  // list_json_fields(idata);
 
-  // extract_moz_probe_names(inames, idata);
-  extract_browsertime_probe_names(inames, idata);
+  extract_identifiers(inames, idata);
 
   return 0;
 }

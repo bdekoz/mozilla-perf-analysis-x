@@ -372,7 +372,7 @@ int main(int argc, char* argv[])
 
 
   svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
-  render_environment_metadata(obj, idatajson, json_t::browsertime);
+  render_environment_metadata(obj, idatajson, djson_t);
 
   return 0;
 }
