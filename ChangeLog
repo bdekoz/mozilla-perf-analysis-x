@@ -1,3 +1,7 @@
+2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/config/user.js: Add from browsertime's firefoxPreferences.js.
+
 2019-01-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (serialize_environment): Save off
