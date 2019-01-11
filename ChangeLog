@@ -1,5 +1,10 @@
 2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (coalesce_environments): Unify environment
+	metadata between telemetry and browsertime samples.
+
+2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-radial.cc: One level ring.
 	* src/moz-telemetry-x-analyze-ripple.cc: Two levels of rings.
 	* src/moz-telemetry-x-analyze.cc: To...

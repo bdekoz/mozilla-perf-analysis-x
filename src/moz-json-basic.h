@@ -452,6 +452,21 @@ extract_environment_browsertime(const rj::Value& v)
 }
 
 
+/*
+  Take environment objects from both the browsertime and mozilla
+  telemetry data, and make one unified environment object that
+  contains all the fields missing from the separate environment objects.
+ */
+environment
+coalesce_environments(const environment& envmoz, const environment& envbt)
+{
+  environment env(envmoz);
+  env.url = envbt.url;
+  env.date_time_stamp = envbt.date_time_stamp;
+  return env;
+}
+
+
 void
 serialize_environment(const environment& env, string ofile)
 {
