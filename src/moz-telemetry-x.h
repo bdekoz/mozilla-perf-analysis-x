@@ -38,8 +38,9 @@ const string datapath(prefixpath + "data/");
 
 const string errorprefix("error -> ");
 
-// Common output file extentions.
-const char* extract_ext = ".csv";
+// Output file extentions.
+const char* extract_csv_ext = ".csv";
+const char* extract_environment_ext = ".environment.json";
 const char* analyze_ext = ".svg";
 
 // Margin in pixels.
@@ -85,7 +86,7 @@ enum class json_t
   w3c
 };
 
-constexpr json_t djson_t = json_t::browsertime;
+constexpr json_t djson_t = json_t::mozilla;
 
 /*
   Environmental Metadata

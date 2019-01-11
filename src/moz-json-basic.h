@@ -366,13 +366,8 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
 
 
 environment
-extract_environment_mozilla(string ifile)
+extract_environment_mozilla(const rj::Document& dom)
 {
-  const string fstem = file_path_to_stem(ifile);
-
-  // Load input JSON data file into DOM.
-  rj::Document dom(deserialize_json_to_dom(ifile));
-
   environment env = { };
   const string kenv("environment");
   if (dom.HasMember(kenv.c_str()))
@@ -403,7 +398,8 @@ extract_environment_mozilla(string ifile)
       env.sw_build_id = field_value_to_string(dbuild["buildId"]);
 
       //payload/processes/parent/scalars
-      rj::Value* pv = rj::Pointer("/payload/processes/parent/scalars").Get(dom);
+      const char* kparentscalars = "/payload/processes/parent/scalars";
+      const rj::Value* pv = rj::Pointer(kparentscalars).Get(dom);
       if (pv)
 	{
 	  const rj::Value& dscalars = *pv;
@@ -418,18 +414,13 @@ extract_environment_mozilla(string ifile)
 
 
 environment
-extract_environment_browsertime(string ifile)
+extract_environment_browsertime(const rj::Value& v)
 {
-  const string fstem = file_path_to_stem(ifile);
-
-  // Load input JSON data file into DOM.
-  rj::Document dom(deserialize_json_to_dom(ifile));
-
   environment env = { };
   const string kinfo("info");
-  if (dom.HasMember(kinfo.c_str()))
+  if (v.HasMember(kinfo.c_str()))
     {
-      const rj::Value& dinfo = dom[kinfo.c_str()];
+      const rj::Value& dinfo = v[kinfo.c_str()];
 
       const string kurl("url");
       const rj::Value& durl = dinfo[kurl.c_str()];
@@ -442,7 +433,7 @@ extract_environment_browsertime(string ifile)
       env.date_time_stamp = field_value_to_string(dts);
 
       const string kbrowsers("browserScripts");
-      const rj::Value& dbscripts = dom[kbrowsers.c_str()];
+      const rj::Value& dbscripts = v[kbrowsers.c_str()];
 
       if (dbscripts.IsArray())
 	{
@@ -461,25 +452,86 @@ extract_environment_browsertime(string ifile)
 }
 
 
-// Expecting JSON input.
-environment
-extract_environment(string ifile, const json_t dformat)
+void
+serialize_environment(const environment& env, string ofile)
 {
-  // Extract from known format.
-  if (dformat == json_t::mozilla)
-    return extract_environment_mozilla(ifile);
-  if (dformat == json_t::browsertime)
-    return extract_environment_browsertime(ifile);
+  rj::StringBuffer sb;
+  rj::PrettyWriter<rj::StringBuffer> writer(sb);
 
-  // Else error.
-  string m(errorprefix + "extract_environment unsupported JSON format");
-  throw std::runtime_error(m);
+  writer.StartObject();
+
+  writer.String("os_vendor");
+  writer.String(env.os_vendor);
+  writer.String("os_name");
+  writer.String(env.os_name);
+  writer.String("os_version");
+  writer.String(env.os_version);
+  writer.String("os_locale");
+  writer.String(env.os_locale);
+
+  writer.String("hw_cpu");
+  writer.Int(env.hw_cpu);
+  writer.String("hw_mem");
+  writer.Int(env.hw_mem);
+
+  writer.String("sw_name");
+  writer.String(env.sw_name);
+  writer.String("sw_arch");
+  writer.String(env.sw_arch);
+  writer.String("sw_version");
+  writer.String(env.sw_version);
+  writer.String("sw_build_id");
+  writer.String(env.sw_build_id);
+
+  writer.String("uri_count");
+  writer.Int(env.uri_count);
+  writer.String("url");
+  writer.String(env.url);
+  writer.String("date_time_stamp");
+  writer.String(env.date_time_stamp);
+
+  writer.EndObject();
+
+  // Serialize generated output to JSON data file.
+  std::ofstream of(ofile + extract_environment_ext);
+  if (of.good())
+    of << sb.GetString();
 }
 
 
-void
-serialize_environment(const environment & env, string ofname)
+environment
+deserialize_environment(string ifile)
 {
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  environment env { };
+  if (dom.IsObject() && dom.HasMember("sw_name"))
+    {
+      env.os_vendor = dom["os_vendor"].GetString();
+      env.os_name = dom["os_name"].GetString();
+      env.os_version = dom["os_version"].GetString();
+      env.os_locale = dom["os_locale"].GetString();
+
+      env.hw_cpu = dom["hw_cpu"].GetInt();
+      env.hw_mem = dom["hw_mem"].GetInt();
+
+      env.sw_name = dom["sw_name"].GetString();
+      env.sw_arch = dom["sw_arch"].GetString();
+      env.sw_version = dom["sw_version"].GetString();
+      env.sw_build_id = dom["sw_build_id"].GetString();
+
+      env.uri_count = dom["uri_count"].GetInt();
+      env.url = dom["url"].GetString();
+      env.date_time_stamp = dom["date_time_stamp"].GetString();
+    }
+  else
+    {
+      string m(errorprefix + "deserialize_environment:: JSON error in " + ifile);
+      throw std::runtime_error(m);
+    }
+
+  return env;
 }
 
 

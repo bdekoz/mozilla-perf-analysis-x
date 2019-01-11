@@ -86,7 +86,7 @@ std::ofstream
 make_extracted_data_file(string fstem)
 {
   // Prepare output file.
-  const string ofile(fstem + extract_ext);
+  const string ofile(fstem + extract_csv_ext);
   std::ofstream ofs(ofile);
   if (ofs.good())
     {
@@ -123,10 +123,6 @@ extract_mozilla_names(string inames, string ifile)
   // Given the known details of the Mozilla telemetry data schema,
   // save off the most used data nodes for speedier manipulation for
   // specific probes.
-
-  // Iff using RapidJSON pointers...
-  // constexpr string ksimple("/payload/processes/parent/scalars");
-
   const string kpayload("payload");
   if (dom.HasMember(kpayload.c_str()))
     {
@@ -194,6 +190,10 @@ extract_mozilla_names(string inames, string ifile)
       std::clog << probesr.size() << " remaining probes: " << std::endl;
       for (const string& s : probesr)
 	std::clog << '\t' << s << std::endl;
+
+      // Extract and serialize environmental metadata.
+      environment env = extract_environment_mozilla(dom);
+      serialize_environment(env, ofname);
     }
   else
     std::cerr << errorprefix << kpayload << " not found " << std::endl;
@@ -321,6 +321,10 @@ extract_browsertime_names(string inames, string ifile,
 	{
 	  const rj::Value& v = *pv;
 	  extract_browsertime_object(v, probes, ofs, dview);
+
+	  // Extract and serialize environmental metadata.
+	  environment env = extract_environment_browsertime(dom);
+	  serialize_environment(env, ofname);
 	}
       else
 	std::cerr << "dom object statistics/timings not found" << std::endl;
@@ -342,6 +346,10 @@ extract_browsertime_names(string inames, string ifile,
 		  const rj::Value& vs = v[kstat];
 		  const rj::Value& vst = vs[ktime];
 		  extract_browsertime_object(vst, probes, ofs, dview);
+
+		  // Extract and serialize environmental metadata.
+		  environment env = extract_environment_browsertime(v);
+		  serialize_environment(env, ofname);
 		  break;
 		}
 	      else
@@ -385,7 +393,6 @@ int main(int argc, char* argv[])
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
-
   // list_json_fields(idata);
 
   extract_identifiers(inames, idata);

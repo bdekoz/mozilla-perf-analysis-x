@@ -34,7 +34,7 @@ using color = svg::colore;
 std::string
 usage()
 {
-  std::string s("usage: moz-telemetry-x-analyze.exe data.csv data.json");
+  std::string s("usage: moz-telemetry-x-analyze.exe data.csv");
   return s;
 }
 
@@ -196,7 +196,7 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
 
 
 void
-place_metadata(svg_form& obj, typography& typo, environment& env)
+place_metadata(svg_form& obj, typography& typo, const environment& env)
 {
   // place_metadata_text(obj, typo, env.os_vendor);
   place_metadata_text(obj, typo, env.os_name);
@@ -334,7 +334,7 @@ radiate_names_per_value_on_arc(string ifile, const uint rdenom, bool rotatep)
 }
 
 void
-render_environment_metadata(svg_form& obj, string ifile, const json_t dformat)
+render_environment_metadata(svg_form& obj, const environment& env)
 {
   // Metadata typographics.
   typography typom = k::zslab_typo;
@@ -346,7 +346,6 @@ render_environment_metadata(svg_form& obj, string ifile, const json_t dformat)
   typom._M_style._M_fill_color = colore::gray50;
 
   // Metadata display.
-  environment env = extract_environment(ifile, dformat);
   place_metadata(obj, typom, env);
 }
 
@@ -359,7 +358,7 @@ int main(int argc, char* argv[])
   using namespace moz;
 
    // Sanity check.
-  if (argc != 3)
+  if (argc != 2)
     {
       std::cerr << usage() << std::endl;
       return 1;
@@ -367,12 +366,14 @@ int main(int argc, char* argv[])
 
   // Input CSV, JSON files.
   std::string idatacsv = argv[1];
-  std::string idatajson = argv[2];
-  std::clog << "input files: " << idatacsv << " , " << idatajson << std::endl;
-
+  std::clog << "input files: " << idatacsv << std::endl;
 
   svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
-  render_environment_metadata(obj, idatajson, djson_t);
+
+  // Add environment metadata.
+  string idataenv = file_path_to_stem(idatacsv) + extract_environment_ext;
+  environment env = deserialize_environment(idataenv);
+  render_environment_metadata(obj, env);
 
   return 0;
 }
