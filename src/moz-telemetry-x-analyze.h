@@ -1,6 +1,6 @@
 // telemetry radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018, Mozilla
+// Copyright (c) 2018-2019, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -14,6 +14,9 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
+
+#ifndef moz_TELEMETRY_X_ANALYZE_H
+#define moz_TELEMETRY_X_ANALYZE_H 1
 
 #include <cmath>
 #include <chrono>
@@ -30,13 +33,6 @@ namespace moz {
 
 using namespace svg;
 using color = svg::colore;
-
-std::string
-usage()
-{
-  std::string s("usage: moz-telemetry-x-analyze.exe data.csv");
-  return s;
-}
 
 
 // Create an svg object with 1080p dimensions and return it.
@@ -87,7 +83,7 @@ initialize_svg(string ofile = "moz-telemetry-radiating-lines",
    return obj;
 }
 
-
+#endif
 void
 place_text_at_point(svg_form& obj, typography& typo, string mtext,
 		    int tx, int ty)
@@ -350,30 +346,3 @@ render_environment_metadata(svg_form& obj, const environment& env)
 }
 
 } // namespace moz
-
-
-int main(int argc, char* argv[])
-{
-  using namespace rapidjson;
-  using namespace moz;
-
-   // Sanity check.
-  if (argc != 2)
-    {
-      std::cerr << usage() << std::endl;
-      return 1;
-    }
-
-  // Input CSV, JSON files.
-  std::string idatacsv = argv[1];
-  std::clog << "input files: " << idatacsv << std::endl;
-
-  svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
-
-  // Add environment metadata.
-  string idataenv = file_path_to_stem(idatacsv) + extract_environment_ext;
-  environment env = deserialize_environment(idataenv);
-  render_environment_metadata(obj, env);
-
-  return 0;
-}

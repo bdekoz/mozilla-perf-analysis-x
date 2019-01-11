@@ -1,5 +1,12 @@
 2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze-radial.cc: One level ring.
+	* src/moz-telemetry-x-analyze-ripple.cc: Two levels of rings.
+	* src/moz-telemetry-x-analyze.cc: To...
+	* src/moz-telemetry-x-analyze.h: ...this.
+
+2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.cc: Prep for split to .cc and .h.
 
 2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
