@@ -1,5 +1,9 @@
 2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/type: Add otf files for specified layout.
+
+2019-01-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.cc: Read in previously serialized
 	metadata about environment, and change usage to just require the
 	input csv file, from which the environment.json file is deduced.
