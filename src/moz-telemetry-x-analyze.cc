@@ -136,6 +136,37 @@ place_name_text(svg_form& obj, typography& typo, string label, int tx, int ty,
 }
 
 
+void
+place_metadata(svg_form& obj, typography& typo, const environment& env)
+{
+  // place_metadata_text(obj, typo, env.os_vendor);
+  place_metadata_text(obj, typo, env.os_name);
+  place_metadata_text(obj, typo, env.os_version);
+  place_metadata_text(obj, typo, env.os_locale);
+
+  place_metadata_text(obj, typo, " ");
+
+  typo._M_size = 20;
+  place_metadata_text(obj, typo, to_string(env.hw_cpu) + " cores");
+  int memi = std::round(env.hw_mem * .001);
+  place_metadata_text(obj, typo, to_string(memi) + " GB");
+  typo._M_size = 14;
+
+  place_metadata_text(obj, typo, " ");
+
+  place_metadata_text(obj, typo, env.sw_name);
+  place_metadata_text(obj, typo, env.sw_arch);
+  place_metadata_text(obj, typo, env.sw_version);
+  place_metadata_text(obj, typo, env.sw_build_id);
+
+  place_metadata_text(obj, typo, " ");
+
+  place_metadata_text(obj, typo, to_string(env.uri_count) + " uri count");
+  place_metadata_text(obj, typo, env.url);
+  place_metadata_text(obj, typo, env.date_time_stamp);
+}
+
+
 double
 normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 {
@@ -192,37 +223,6 @@ radiate_name_by_value(svg_form& obj, typography& typo, string pname,
 
   std::clog << label << " " << angled << " " << '(' << x << ',' << y << ')'
 	    << std::endl;
-}
-
-
-void
-place_metadata(svg_form& obj, typography& typo, const environment& env)
-{
-  // place_metadata_text(obj, typo, env.os_vendor);
-  place_metadata_text(obj, typo, env.os_name);
-  place_metadata_text(obj, typo, env.os_version);
-  place_metadata_text(obj, typo, env.os_locale);
-
-  place_metadata_text(obj, typo, " ");
-
-  typo._M_size = 20;
-  place_metadata_text(obj, typo, to_string(env.hw_cpu) + " cores");
-  int memi = std::round(env.hw_mem * .001);
-  place_metadata_text(obj, typo, to_string(memi) + " GB");
-  typo._M_size = 14;
-
-  place_metadata_text(obj, typo, " ");
-
-  place_metadata_text(obj, typo, env.sw_name);
-  place_metadata_text(obj, typo, env.sw_arch);
-  place_metadata_text(obj, typo, env.sw_version);
-  place_metadata_text(obj, typo, env.sw_build_id);
-
-  place_metadata_text(obj, typo, " ");
-
-  place_metadata_text(obj, typo, to_string(env.uri_count) + " uri count");
-  place_metadata_text(obj, typo, env.url);
-  place_metadata_text(obj, typo, env.date_time_stamp);
 }
 
 
