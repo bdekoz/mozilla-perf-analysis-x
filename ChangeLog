@@ -1,5 +1,17 @@
 2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (serialize_environment): Use stem not file path.
+	* src/moz-telemetry-x-analyze-ripple.cc: Fully-formed dual data input
+	methods.
+	* src/moz-telemetry-x-analyze.h (id_value_map): New alias for
+	unordered_has_map of string and int.
+	Re-name helper functions for consistency.
+	(deserialize_id_value_map): New, break out from ...
+	(radiate_ids_per_value_on_arc): ... this, adjust.
+	(make_typography_metadata): Consolidate typo here for metadata.
+
+2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (coalesce_environments): Unify environment
 	metadata between telemetry and browsertime samples.
 

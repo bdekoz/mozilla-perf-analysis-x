@@ -36,8 +36,6 @@ namespace moz {
 namespace rj = rapidjson;
 
 /// Types.
-using std::string;
-using strings = std::vector<std::string>;
 using jsonstream = rj::PrettyWriter<rj::StringBuffer>;
 
 using vcmem_iterator = rj::Value::ConstMemberIterator;
@@ -514,11 +512,12 @@ serialize_environment(const environment& env, string ofile)
 }
 
 
+// Take stem of environment JSON file and return in-memory enviornment object.
 environment
 deserialize_environment(string ifile)
 {
   // Load input JSON data file into DOM.
-  rj::Document dom(deserialize_json_to_dom(ifile));
+  rj::Document dom(deserialize_json_to_dom(ifile + extract_environment_ext));
 
   environment env { };
   if (dom.IsObject() && dom.HasMember("sw_name"))

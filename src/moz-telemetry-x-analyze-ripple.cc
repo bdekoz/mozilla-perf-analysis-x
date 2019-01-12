@@ -27,10 +27,13 @@
 
 namespace moz {
 
-std::string
+string
 usage()
 {
-  std::string s("usage: moz-telemetry-x-analyze-ripple.exe data1.csv data2.csv");
+  string s("usage: moz-telemetry-x-analyze-ripple.exe data1.csv data2.csv");
+  s += '\n';
+  s += "data1.csv is a JSON file containing a mozilla telemetry main ping";
+  s += "data2.csv is a JSON file containing a browsertime results file";
   return s;
 }
 
@@ -50,20 +53,35 @@ int main(int argc, char* argv[])
     }
 
   // Input CSV, JSON files.
-  std::string idata1csv = argv[1];
-  std::string idata2csv = argv[2];
+  string idata1csv = argv[1];
+  string idata2csv = argv[2];
   std::clog << "input files: " << std::endl
 	    << idata1csv << std::endl
 	    << idata2csv << std::endl;
 
-#if 0
-  svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
+  // Create svg canvas.
+  const string fstem1 = file_path_to_stem(idata1csv);
+  const string fstem2 = file_path_to_stem(idata2csv);
+  const string fstem(fstem1 + "-X-" + fstem2);
+  svg_form obj = initialize_svg(fstem);
 
-  // Add environment metadata.
-  string idataenv = file_path_to_stem(idatacsv) + extract_environment_ext;
-  environment env = deserialize_environment(idataenv);
-  render_environment_metadata(obj, env);
-#endif
+  // Deserialize CSV files and find max value.
+  int maxv1(0);
+  id_value_map iv1 = deserialize_id_value_map(idata1csv, maxv1);
+
+  int maxv2(0);
+  id_value_map iv2 = deserialize_id_value_map(idata2csv, maxv2);
+
+  int value_max(std::max(maxv1, maxv2));
+  radiate_ids_per_value_on_arc(obj, iv1, value_max, 7, true);
+  radiate_ids_per_value_on_arc(obj, iv2, value_max, 5, true);
+
+  // Add metadata.
+  environment env1 = deserialize_environment(fstem1);
+  environment env2 = deserialize_environment(fstem2);
+  environment env = coalesce_environments(env1, env2);
+  render_metadata_environment(obj, env);
+  render_metadata_title(obj, fstem, value_max);
 
   return 0;
 }
