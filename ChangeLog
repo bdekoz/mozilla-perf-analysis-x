@@ -1,3 +1,8 @@
+2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze-radial.cc: Re-work for shared routines.
+	* src/moz-telemetry-x-analyze-ripple.cc: Fix comment.
+
 2019-01-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (serialize_environment): Use stem not file path.

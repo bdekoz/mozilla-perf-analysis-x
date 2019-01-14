@@ -49,16 +49,23 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-  // Input CSV, JSON files.
+  // Input CSV file.
   std::string idatacsv = argv[1];
   std::clog << "input files: " << idatacsv << std::endl;
 
-  svg_form obj = radiate_names_per_value_on_arc(idatacsv, 6, true);
+ // Create svg canvas.
+  const string fstem = file_path_to_stem(idatacsv);
+  svg_form obj = initialize_svg(fstem);
 
-  // Add environment metadata.
-  string idataenv = file_path_to_stem(idatacsv) + extract_environment_ext;
-  environment env = deserialize_environment(idataenv);
-  render_environment_metadata(obj, env);
+  // Deserialize CSV files and find max value.
+  int value_max(0);
+  id_value_map iv = deserialize_id_value_map(idatacsv, value_max);
+  radiate_ids_per_value_on_arc(obj, iv, value_max, 6, true);
+
+  // Add metadata.
+  environment env = deserialize_environment(fstem);
+  render_metadata_environment(obj, env);
+  render_metadata_title(obj, fstem, value_max);
 
   return 0;
 }

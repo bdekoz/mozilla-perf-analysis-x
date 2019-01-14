@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-  // Input CSV, JSON files.
+  // Input CSV files.
   string idata1csv = argv[1];
   string idata2csv = argv[2];
   std::clog << "input files: " << std::endl
