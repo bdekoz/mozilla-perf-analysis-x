@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
   // Add metadata.
   environment env = deserialize_environment(fstem);
   render_metadata_environment(obj, env);
-  render_metadata_title(obj, fstem, value_max);
+  render_metadata_title(obj, value_max, fstem);
 
   return 0;
 }

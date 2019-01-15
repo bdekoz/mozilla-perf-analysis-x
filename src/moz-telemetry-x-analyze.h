@@ -366,20 +366,38 @@ render_metadata_environment(svg_form& obj, const environment& env)
 
 
 void
-render_metadata_title(svg_form& obj, const string fstem, const int time_max)
+render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
+		      const string fstem2 = "", const string hilights = "")
 {
-  // Input data file.
-  typography typom = make_typography_metadata();
-  place_text_at_point(obj, typom, fstem, margin, obj._M_area._M_height - margin);
+  // Vertical offset.
+  const typography typom = make_typography_metadata();
+  int y = obj._M_area._M_height - margin;
+  int ydelta  = typom._M_size * 1.5;
+
+  // Input data files.
+  place_text_at_point(obj, typom, fstem1, margin, y);
+  y -= ydelta;
+
+  if (!fstem2.empty())
+    {
+      place_text_at_point(obj, typom, fstem2, margin, y);
+      y -= ydelta;
+    }
+
+  if (!hilights.empty())
+    {
+      place_text_at_point(obj, typom, hilights, margin, y);
+      y -= ydelta;
+    }
 
   // Total time.
-  typom._M_size = 48;
-  typom._M_style._M_fill_color = colore::red;
+  typography typot(typom);
+  typot._M_size = 48;
+  typot._M_style._M_fill_color = colore::red;
   std::ostringstream oss;
   oss.imbue(std::locale(""));
   oss << time_max << " ms";
-  place_text_at_point(obj, typom, oss.str(),
-		      margin, obj._M_area._M_height - margin - 14 * 2);
+  place_text_at_point(obj, typot, oss.str(), margin, obj._M_area._M_height / 2);
 }
 
 } // namespace moz

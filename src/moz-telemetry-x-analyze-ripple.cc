@@ -123,7 +123,8 @@ int main(int argc, char* argv[])
   environment env2 = deserialize_environment(fstem2);
   environment env = coalesce_environments(env1, env2);
   render_metadata_environment(obj, env);
-  render_metadata_title(obj, fstem, value_max);
+  render_metadata_title(obj, value_max, fstem1, fstem2,
+			file_path_to_stem(idatatxt));
 
   return 0;
 }
