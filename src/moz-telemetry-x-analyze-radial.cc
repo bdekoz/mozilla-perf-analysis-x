@@ -59,8 +59,9 @@ int main(int argc, char* argv[])
 
   // Deserialize CSV files and find max value.
   int value_max(0);
+  typography typo = make_typography_id();
   id_value_map iv = deserialize_id_value_map(idatacsv, value_max);
-  radiate_ids_per_value_on_arc(obj, iv, value_max, 6);
+  radiate_ids_per_value_on_arc(obj, typo, iv, value_max, 6);
 
   // Add metadata.
   environment env = deserialize_environment(fstem);

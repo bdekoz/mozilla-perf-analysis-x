@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
 
   // Find max value of all inputs.
   const int value_max(std::max(maxv1, maxv2));
+  typography typo = make_typography_id();
 
   // Draw radial rings on canvas  from inner to outter ripple.
   // Size is inverse of denomenator argument below.
@@ -86,7 +87,7 @@ int main(int argc, char* argv[])
   if (argc == 3)
     {
       // 1. Moz Telemetry baseline ripple
-      radiate_ids_per_value_on_arc(obj, iv1, value_max, 7);
+      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
     }
   else
     {
@@ -110,21 +111,22 @@ int main(int argc, char* argv[])
 
       // 1. Moz Telemetry baseline ripple.
       id_value_map iv1hi = remove_matches_id_value_map(iv1, matches);
-      radiate_ids_per_value_on_arc(obj, iv1, value_max, 7);
+      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
 	{
-	  style histyl = k::b_style;
-	  histyl._M_fill_color = colore::asagiiro;
-	  radiate_ids_per_value_on_arc(obj, iv1hi, value_max, 7, histyl);
+	  typography typohi = typo;
+	  typohi._M_size = 18;
+	  typohi._M_style._M_fill_color = colore::asagiiro;
+	  radiate_ids_per_value_on_arc(obj, typohi, iv1hi, value_max, 7);
 	}
     }
 
   // 3. Browsertime performance timings green ripple, next bigger size
-  style browstyl = k::b_style;
-  browstyl._M_fill_color = colore::green;
-  radiate_ids_per_value_on_arc(obj, iv2, value_max, 5, browstyl);
+  typography typobt = typo;
+  typobt._M_style._M_fill_color = colore::green;
+  radiate_ids_per_value_on_arc(obj, typobt, iv2, value_max, 5);
 
   // Add metadata.
   environment env1 = deserialize_environment(fstem1);

@@ -1,5 +1,18 @@
 2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h: Constant-ify typography parameters.
+	(radiate_ids_per_value_on_arc): Typography argument not style.
+	* src/moz-telemetry-x-analyze-radial.cc: Adjust.
+	* src/moz-telemetry-x-analyze-ripple.cc: Adjust, set independent hilight
+	typograhy style.
+
+2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/match-identifier-files/
+	mozilla-telemetry-probes-2019-performance.txt: As proposed.
+
+2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h (remove_matches_id_value_map): New.
 	Split maps based on match lists.
 	* src/moz-telemetry-x-analyze-ripple.cc: Use it, adjust usage

@@ -115,8 +115,8 @@ make_typography_metadata()
 
 
 void
-place_text_at_point(svg_form& obj, typography& typo, string mtext,
-		    int tx, int ty)
+place_text_at_point(svg_form& obj, const typography& typo, const string mtext,
+		    const int tx, const int ty)
 {
   text_form::data dt = { tx, ty, mtext, typo };
   text_form t;
@@ -128,7 +128,7 @@ place_text_at_point(svg_form& obj, typography& typo, string mtext,
 
 
 void
-place_text_metadata(svg_form& obj, typography& typo, string mtext)
+place_text_metadata(svg_form& obj, const typography& typo, string mtext)
 {
   int tx = margin;
   static int ty = margin;
@@ -144,8 +144,8 @@ place_text_metadata(svg_form& obj, typography& typo, string mtext)
 
 
 void
-place_text_id(svg_form& obj, typography& typo, string label, int tx, int ty,
-		 const double deg = 0.0)
+place_text_id(svg_form& obj, const typography& typo, string label,
+	      int tx, int ty, const double deg = 0.0)
 {
   text_form::data dt = { tx, ty, label, typo };
   text_form t;
@@ -163,7 +163,7 @@ place_text_id(svg_form& obj, typography& typo, string label, int tx, int ty,
 
 
 void
-place_metadata(svg_form& obj, typography& typo, const environment& env)
+place_metadata(svg_form& obj, const typography& typo, const environment& env)
 {
   // place_text_metadata(obj, typo, env.os_vendor);
   place_text_metadata(obj, typo, env.os_name);
@@ -172,11 +172,11 @@ place_metadata(svg_form& obj, typography& typo, const environment& env)
 
   place_text_metadata(obj, typo, " ");
 
-  typo._M_size = 20;
-  place_text_metadata(obj, typo, to_string(env.hw_cpu) + " cores");
+  typography typolarge = typo;
+  typolarge._M_size = 20;
+  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores");
   int memi = std::round(env.hw_mem * .001);
-  place_text_metadata(obj, typo, to_string(memi) + " GB");
-  typo._M_size = 14;
+  place_text_metadata(obj, typolarge, to_string(memi) + " GB");
 
   place_text_metadata(obj, typo, " ");
 
@@ -205,7 +205,7 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 
 // Map a value to a point radiating out from a center.
 void
-radiate_name_by_value(svg_form& obj, typography& typo, string pname,
+radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
 		       int pvalue, int pmax, double r, bool rotatep)
 {
   // Find center of SVG canvas.
@@ -334,15 +334,13 @@ remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 
 */
 svg_form
-radiate_ids_per_value_on_arc(svg_form& obj, const id_value_map& probe_map,
+radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
+			     const id_value_map& probe_map,
 			     const int value_max, const int rdenom,
-			     const style& styl = k::b_style,
 			     bool rotatep = true)
 {
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
-  typography typo = make_typography_id();
-  typo._M_style = styl;
   const double r = find_radius(obj, rdenom);
   for (const auto& v : probe_map)
     {
