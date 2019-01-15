@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   using namespace moz;
 
    // Sanity check.
-  if (argc != 3 || argc != 4)
+  if (argc < 3 || argc > 4)
     {
       std::cerr << usage() << std::endl;
       return 1;
@@ -57,9 +57,13 @@ int main(int argc, char* argv[])
   // Input CSV files.
   string idata1csv = argv[1];
   string idata2csv = argv[2];
+  string idatatxt;
+  if (argc == 4)
+    idatatxt = argv[3];
   std::clog << "input files: " << std::endl
 	    << idata1csv << std::endl
-	    << idata2csv << std::endl;
+	    << idata2csv << std::endl
+	    << idatatxt << std::endl;
 
   // Create svg canvas.
   const string fstem1 = file_path_to_stem(idata1csv);
@@ -92,7 +96,6 @@ int main(int argc, char* argv[])
   else
     {
       // Split map into highlights and remaining...
-      string idatatxt = argv[3];
       strings matches;
       std::ifstream ifs(idatatxt);
       while (ifs.good())
@@ -106,27 +109,31 @@ int main(int argc, char* argv[])
 	    break;
 	}
 
-      if (matches.empty())
-	std::clog << "no matches found in: " << idatatxt << std::endl;
+      std::clog << matches.size() << " matches found in: " << std::endl
+		<< idatatxt << std::endl;
+      for (const auto& s: matches)
+	std::clog << s << std::endl;
 
       // 1. Moz Telemetry baseline ripple.
       id_value_map iv1hi = remove_matches_id_value_map(iv1, matches);
+      std::clog << iv1.size() << " orig map size" << std::endl;
+      std::clog << iv1hi.size() << " found map size" << std::endl;
       radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
 	{
 	  typography typohi = typo;
-	  typohi._M_size = 18;
-	  typohi._M_style._M_fill_color = colore::asagiiro;
+	  typohi._M_size = 28;
+	  typohi._M_style._M_fill_color = colore::aquamarine;
 	  radiate_ids_per_value_on_arc(obj, typohi, iv1hi, value_max, 7);
 	}
     }
 
   // 3. Browsertime performance timings green ripple, next bigger size
   typography typobt = typo;
-  typobt._M_style._M_fill_color = colore::green;
-  radiate_ids_per_value_on_arc(obj, typobt, iv2, value_max, 5);
+  typobt._M_style._M_fill_color = colore::limegreen;
+  radiate_ids_per_value_on_arc(obj, typobt, iv2, value_max, 7);
 
   // Add metadata.
   environment env1 = deserialize_environment(fstem1);

@@ -301,18 +301,23 @@ deserialize_id_value_map(const string ifile, int& value_max)
 id_value_map
 remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 {
+  for (auto& e: ivm)
+    std::log << e.first << std::endl;
+
   id_value_map foundmap;
   for (const string& s: matches)
     {
-      auto finditer = ivm.find(s);
-      if (finditer != ivm.end())
+      id_value_map::iterator iter = ivm.find(s);
+      if (iter != ivm.end())
 	{
 	  // Insert found element into return map....
-	  foundmap.insert(*finditer);
+	  foundmap.insert(*iter);
 
 	  // Remove found elment from originating map (ivm)
-	  ivm.erase(finditer);
+	  ivm.erase(iter);
 	}
+      else
+	std::clog << s << " not found" << std::endl;
     }
   return foundmap;
 }
