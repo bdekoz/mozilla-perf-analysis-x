@@ -85,6 +85,35 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
 }
 
 
+typography
+make_typography_id()
+{
+  // Probe/Marker name/value typographics.
+  typography typo = k::ccode_typo;
+  typo._M_size = 9;
+  typo._M_style = k::b_style;
+  typo._M_w = svg::typography::weight::xlight;
+  typo._M_align = svg::typography::align::left;
+  typo._M_a = svg::typography::anchor::start;
+  return typo;
+}
+
+
+typography
+make_typography_metadata()
+{
+  // Metadata typographics.
+  typography typom = k::zslab_typo;
+  typom._M_align = svg::typography::align::left;
+  typom._M_a = svg::typography::anchor::start;
+  typom._M_size = 14;
+  typom._M_style = k::b_style;
+  typom._M_w = svg::typography::weight::medium;
+  typom._M_style._M_fill_color = colore::gray50;
+  return typom;
+}
+
+
 void
 place_text_at_point(svg_form& obj, typography& typo, string mtext,
 		    int tx, int ty)
@@ -177,7 +206,7 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 // Map a value to a point radiating out from a center.
 void
 radiate_name_by_value(svg_form& obj, typography& typo, string pname,
-		       int pvalue, int pmax, double r, bool rotatep = true)
+		       int pvalue, int pmax, double r, bool rotatep)
 {
   // Find center of SVG canvas.
   const double cx = obj._M_area._M_width / 2;
@@ -267,6 +296,16 @@ deserialize_id_value_map(const string ifile, int& value_max)
 }
 
 
+// Remove all from map that match the input (matches) strings.
+// Return found match entries.
+id_value_map
+remove_matches_id_value_map(id_value_map& /*map*/, const strings& /*matches*/)
+{
+  id_value_map foundmap;
+  return foundmap;
+}
+
+
 /*
   Create radial viz of names from input file arranged clockwise around
   the edge of a circle circumference. The text of the names can be
@@ -284,18 +323,14 @@ deserialize_id_value_map(const string ifile, int& value_max)
 */
 svg_form
 radiate_ids_per_value_on_arc(svg_form& obj, const id_value_map& probe_map,
-			     const int value_max, const int rdenom, bool rotatep)
+			     const int value_max, const int rdenom,
+			     const style& styl = k::b_style,
+			     bool rotatep = true)
 {
-  // Probe/Marker name/value typographics.
-  typography typo = k::ccode_typo;
-  typo._M_size = 9;
-  typo._M_style = k::b_style;
-  typo._M_w = svg::typography::weight::xlight;
-  typo._M_align = svg::typography::align::left;
-  typo._M_a = svg::typography::anchor::start;
-
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
+  typography typo = make_typography_id();
+  typo._M_style = styl;
   const double r = find_radius(obj, rdenom);
   for (const auto& v : probe_map)
     {
@@ -306,21 +341,6 @@ radiate_ids_per_value_on_arc(svg_form& obj, const id_value_map& probe_map,
     }
 
   return obj;
-}
-
-
-typography
-make_typography_metadata()
-{
-  // Metadata typographics.
-  typography typom = k::zslab_typo;
-  typom._M_align = svg::typography::align::left;
-  typom._M_a = svg::typography::anchor::start;
-  typom._M_size = 14;
-  typom._M_style = k::b_style;
-  typom._M_w = svg::typography::weight::medium;
-  typom._M_style._M_fill_color = colore::gray50;
-  return typom;
 }
 
 

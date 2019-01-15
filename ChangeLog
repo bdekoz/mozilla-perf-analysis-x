@@ -1,5 +1,15 @@
 2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h (make_typography_id): New, move up
+	in file.
+	(radiate_ids_per_value_on_arc): Add style parameter, add default
+	on rotatep.
+	* src/moz-telemetry-x-analyze-radial.cc: Adjust for calling conventions.
+	* src/moz-telemetry-x-analyze-ripple.cc: Use different colors for
+	ripple layers.
+
+2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-radial.cc: Re-work for shared routines.
 	* src/moz-telemetry-x-analyze-ripple.cc: Fix comment.
 

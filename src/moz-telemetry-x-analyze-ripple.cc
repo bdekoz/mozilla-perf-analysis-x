@@ -73,8 +73,22 @@ int main(int argc, char* argv[])
   id_value_map iv2 = deserialize_id_value_map(idata2csv, maxv2);
 
   int value_max(std::max(maxv1, maxv2));
-  radiate_ids_per_value_on_arc(obj, iv1, value_max, 7, true);
-  radiate_ids_per_value_on_arc(obj, iv2, value_max, 5, true);
+
+
+  // Then draw radial image from inner to outter ripple.
+  // Size is inverse of denomenator argument below.
+
+  // 1. Moz Telemetry baseline ripple
+  radiate_ids_per_value_on_arc(obj, iv1, value_max, 7);
+
+  // 2. Moz Telemetry highlight blue ripple, same size as first
+  style histyl = k::b_style;
+  histyl._M_fill_color = colore::asagiiro;
+
+  // 3. Browsertime performance timings green ripple, next bigger size
+  style browstyl = k::b_style;
+  browstyl._M_fill_color = colore::green;
+  radiate_ids_per_value_on_arc(obj, iv2, value_max, 5, browstyl);
 
   // Add metadata.
   environment env1 = deserialize_environment(fstem1);
