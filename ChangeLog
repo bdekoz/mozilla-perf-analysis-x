@@ -1,5 +1,16 @@
 2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/match-identifier-files/
+	mozilla-telemetry-probes-2019-performance.txt: To unix linefeeds.
+
+	* src/moz-telemetry-x-extract.cc (deserialize_extract_names): Move...
+	* src/moz-json-basic.h (deserialize_text_to_strings): ... here.
+	* src/moz-telemetry-x-analyze.h (remove_matches_id_value_map):
+	Remove debug code and clean up error messages.
+	* src/moz-telemetry-x-analyze-ripple.cc: Fix highlight representation.
+
+2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h (remove_matches_id_value_map): WIP debug.
 	* src/moz-telemetry-x-analyze-ripple.cc: Same.
 

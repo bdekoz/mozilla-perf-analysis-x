@@ -50,38 +50,6 @@ update_extract_lists(const strings& total, strings& found)
 }
 
 
-// Convert from input file name to an in-memory vector of strings
-// representing names to match against field names in a JSON file.
-strings
-deserialize_extract_names(string inames)
-{
-  strings probes;
-
-  std::ifstream ifs(inames);
-  if (ifs.good())
-    {
-      string line;
-      do
-	{
-	  std::getline(ifs, line);
-	  probes.push_back(line);
-	}
-      while (ifs.good());
-      std::sort(probes.begin(), probes.end());
-
-      std::clog << probes.size() << " match names found in: " << std::endl;
-      std::clog << inames << std::endl;
-    }
-  else
-    {
-      std::cerr << errorprefix
-		<< "error: cannot open input file " << inames << std::endl;
-    }
-
-  return probes;
-}
-
-
 std::ofstream
 make_extracted_data_file(string fstem)
 {
@@ -112,7 +80,7 @@ void
 extract_mozilla_names(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_extract_names(inames);
+  strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
   std::ofstream ofs(make_extracted_data_file(ofname));

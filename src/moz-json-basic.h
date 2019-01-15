@@ -46,6 +46,39 @@ const char* kTypeNames[] =
   { "Null", "False", "True", "Object", "Array", "String", "Number" };
 
 
+// Convert from input file name to an in-memory vector of strings
+// representing identifiers/names to match against field names in a
+// JSON file.
+strings
+deserialize_text_to_strings(string inames)
+{
+  strings probes;
+  std::ifstream ifs(inames);
+  if (ifs.good())
+    {
+      string line;
+      do
+	{
+	  std::getline(ifs, line);
+	  if (ifs.good())
+	    probes.push_back(line);
+	}
+      while (!ifs.eof());
+      std::sort(probes.begin(), probes.end());
+
+      std::clog << probes.size() << " match names found in: " << std::endl;
+      std::clog << inames << std::endl;
+    }
+  else
+    {
+      std::cerr << errorprefix
+		<< "error: cannot open input file " << inames << std::endl;
+    }
+
+  return probes;
+}
+
+
 void
 serialize_to_json(jsonstream&, string);
 

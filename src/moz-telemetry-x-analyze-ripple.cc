@@ -95,44 +95,27 @@ int main(int argc, char* argv[])
     }
   else
     {
-      // Split map into highlights and remaining...
-      strings matches;
-      std::ifstream ifs(idatatxt);
-      while (ifs.good())
-	{
-	  string line;
-	  std::getline(ifs, line);
-
-	  if (ifs)
-	    matches.push_back(line);
-	  else
-	    break;
-	}
-
-      std::clog << matches.size() << " matches found in: " << std::endl
-		<< idatatxt << std::endl;
-      for (const auto& s: matches)
-	std::clog << s << std::endl;
-
       // 1. Moz Telemetry baseline ripple.
-      id_value_map iv1hi = remove_matches_id_value_map(iv1, matches);
-      std::clog << iv1.size() << " orig map size" << std::endl;
+      const strings hilights = deserialize_text_to_strings(idatatxt);
+      std::clog << iv1.size() << " original map size" << std::endl;
+      id_value_map iv1hi = remove_matches_id_value_map(iv1, hilights);
       std::clog << iv1hi.size() << " found map size" << std::endl;
+      std::clog << iv1.size() << " reduced map size" << std::endl;
       radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
 	{
 	  typography typohi = typo;
-	  typohi._M_size = 28;
-	  typohi._M_style._M_fill_color = colore::aquamarine;
+	  typohi._M_size = 22;
+	  typohi._M_style._M_fill_color = colore::ruriiro;
 	  radiate_ids_per_value_on_arc(obj, typohi, iv1hi, value_max, 7);
 	}
     }
 
-  // 3. Browsertime performance timings green ripple, next bigger size
+  // 3. Browsertime performance timings orange ripple, next bigger size
   typography typobt = typo;
-  typobt._M_style._M_fill_color = colore::limegreen;
+  typobt._M_style._M_fill_color = colore::asamaorange;
   radiate_ids_per_value_on_arc(obj, typobt, iv2, value_max, 7);
 
   // Add metadata.
