@@ -299,9 +299,21 @@ deserialize_id_value_map(const string ifile, int& value_max)
 // Remove all from map that match the input (matches) strings.
 // Return found match entries.
 id_value_map
-remove_matches_id_value_map(id_value_map& /*map*/, const strings& /*matches*/)
+remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 {
   id_value_map foundmap;
+  for (const string& s: matches)
+    {
+      auto finditer = ivm.find(s);
+      if (finditer != ivm.end())
+	{
+	  // Insert found element into return map....
+	  foundmap.insert(*finditer);
+
+	  // Remove found elment from originating map (ivm)
+	  ivm.erase(finditer);
+	}
+    }
   return foundmap;
 }
 

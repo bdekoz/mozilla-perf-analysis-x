@@ -1,5 +1,13 @@
 2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h (remove_matches_id_value_map): New.
+	Split maps based on match lists.
+	* src/moz-telemetry-x-analyze-ripple.cc: Use it, adjust usage
+	and flow to account for optionalthird input file, and edit list of
+	identifiers to highlight.
+
+2019-01-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h (make_typography_id): New, move up
 	in file.
 	(radiate_ids_per_value_on_arc): Add style parameter, add default

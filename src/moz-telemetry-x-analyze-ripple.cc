@@ -30,10 +30,12 @@ namespace moz {
 string
 usage()
 {
-  string s("usage: moz-telemetry-x-analyze-ripple.exe data1.csv data2.csv");
+  string binname("moz-telemetry-x-analyze-ripple.exe");
+  string s("usage:  " + binname + " data1.csv data2.csv (edit.txt)");
   s += '\n';
   s += "data1.csv is a JSON file containing a mozilla telemetry main ping";
   s += "data2.csv is a JSON file containing a browsertime results file";
+  s += "edit.xt is an optional TEXT file containing higlight id matches";
   return s;
 }
 
@@ -46,7 +48,7 @@ int main(int argc, char* argv[])
   using namespace moz;
 
    // Sanity check.
-  if (argc != 3)
+  if (argc != 3 || argc != 4)
     {
       std::cerr << usage() << std::endl;
       return 1;
@@ -65,25 +67,59 @@ int main(int argc, char* argv[])
   const string fstem(fstem1 + "-X-" + fstem2);
   svg_form obj = initialize_svg(fstem);
 
-  // Deserialize CSV files and find max value.
+  // Deserialize CSV files.
   int maxv1(0);
   id_value_map iv1 = deserialize_id_value_map(idata1csv, maxv1);
 
   int maxv2(0);
   id_value_map iv2 = deserialize_id_value_map(idata2csv, maxv2);
 
-  int value_max(std::max(maxv1, maxv2));
+  // Find max value of all inputs.
+  const int value_max(std::max(maxv1, maxv2));
 
-
-  // Then draw radial image from inner to outter ripple.
+  // Draw radial rings on canvas  from inner to outter ripple.
   // Size is inverse of denomenator argument below.
 
-  // 1. Moz Telemetry baseline ripple
-  radiate_ids_per_value_on_arc(obj, iv1, value_max, 7);
+  // If a highlight input file exists, split the first
+  // id_value_map object into a found matches object and a remaining object.
+  // Otherwise, just use the first id_value_map as-is.
+  if (argc == 3)
+    {
+      // 1. Moz Telemetry baseline ripple
+      radiate_ids_per_value_on_arc(obj, iv1, value_max, 7);
+    }
+  else
+    {
+      // Split map into highlights and remaining...
+      string idatatxt = argv[3];
+      strings matches;
+      std::ifstream ifs(idatatxt);
+      while (ifs.good())
+	{
+	  string line;
+	  std::getline(ifs, line);
 
-  // 2. Moz Telemetry highlight blue ripple, same size as first
-  style histyl = k::b_style;
-  histyl._M_fill_color = colore::asagiiro;
+	  if (ifs)
+	    matches.push_back(line);
+	  else
+	    break;
+	}
+
+      if (matches.empty())
+	std::clog << "no matches found in: " << idatatxt << std::endl;
+
+      // 1. Moz Telemetry baseline ripple.
+      id_value_map iv1hi = remove_matches_id_value_map(iv1, matches);
+      radiate_ids_per_value_on_arc(obj, iv1, value_max, 7);
+
+      // 2. Moz Telemetry highlight blue ripple, same size as first
+      if (!iv1hi.empty())
+	{
+	  style histyl = k::b_style;
+	  histyl._M_fill_color = colore::asagiiro;
+	  radiate_ids_per_value_on_arc(obj, iv1hi, value_max, 7, histyl);
+	}
+    }
 
   // 3. Browsertime performance timings green ripple, next bigger size
   style browstyl = k::b_style;
