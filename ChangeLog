@@ -1,5 +1,17 @@
 2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h (radiate_name_by_value): Set radial
+	max to 345 to make the beginning and end more distinct.
+
+2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze.h (render_metadata_title): Add
+	support for multiple input files.
+	* src/moz-telemetry-x-analyze-radial.cc: Adjust.
+	* src/moz-telemetry-x-analyze-ripple.cc: Same.
+
+2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/match-identifier-files/
 	mozilla-telemetry-probes-2019-performance.txt: To unix linefeeds.
 
