@@ -1,3 +1,18 @@
+2019-01-16  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Add all 5 URLs fromXS the 2019-01-10 sample set.
+	* data/json-files/
+	2019-01-10-mabini-guardian.browsertime.json
+	2019-01-10-mabini-guardian.main.json
+	2019-01-10-mabini-reddit.browsertime.json
+	2019-01-10-mabini-reddit.main.json
+	2019-01-10-mabini-twitch.browsertime.json
+	2019-01-10-mabini-twitch.main.json
+	2019-01-10-mabini-twitter.browsertime.json
+	2019-01-10-mabini-twitter.main.json
+	2019-01-10-mabini-youtube.browsertime.json
+	2019-01-10-mabini-youtube.main.json
+
 2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.h: find_* to get_* name changes.
