@@ -29,6 +29,10 @@
 
 namespace moz {
 
+namespace {
+constexpr double kpi(3.14159);
+}
+
 using namespace svg;
 using color = svg::colore;
 
@@ -202,14 +206,12 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 
 // Given rdenom scaling factor and SVG canvas, compute effective radius value.
 inline double
-find_radius(const svg_form& obj, const uint rdenom)
+get_radius(const svg_form& obj, const uint rdenom)
 { return std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom; }
 
 
-// Map a value to a point radiating out from a center.
-void
-radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
-		      int pvalue, int pmax, double r, bool rotatep)
+inline double
+get_angle(int pvalue, int pmax)
 {
   // Max number of non-overlapping degrees in circle, such that the
   // beginning and the end have a discernable gap. Total degrees in a
@@ -227,16 +229,73 @@ radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
   // vertical axis, instead of the right middle axis.
   angled += 90;
 
-  /*
-    Draw text on the circumference of a circle of radius r centered at (cx, cy)
-    corresponding to the angle above.
-  */
-  const double cx = obj._M_area._M_width / 2;
-  const double cy = obj._M_area._M_height / 2;
-  constexpr double kpi(3.14159);
-  double angler = (kpi / 180.0) * angled;
+  return angled;
+}
+
+
+point
+get_circumference_point(double angler, double r, const point origin)
+{
+  auto [ cx, cy ] = origin;
+  //  const double cy = obj._M_area._M_height / 2;
   double x(cx + (r * std::cos(angler)));
   double y(cy - (r * std::sin(angler)));
+
+  return std::make_tuple(x, y);
+}
+
+
+// Map ids with one value to a point cluster radiating out from a center.
+void
+radiate_ids_by_uvalue(svg_form& obj, const typography& typo, strings ids,
+		      int pvalue, int pmax, double r)
+{
+  auto& area = obj._M_area;
+  const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
+
+  const double angled = get_angle(pvalue, pmax);
+  double angler = (kpi / 180.0) * angled;
+  auto [ x, y ] = get_circumference_point(angler, r, origin);
+
+  // Consolidate label text to be "VALUE -> "
+  constexpr uint valuewidth(9);
+  std::ostringstream oss;
+  oss.imbue(std::locale(""));
+  oss << std::setfill(' ') << std::setw(valuewidth) << std::left << pvalue;
+  string label = oss.str() + " -> ";
+  place_text_id(obj, typo, label, x, y, angled);
+
+  // Then print out the various id's on an arc with a bigger radius.
+  const string charwidth("         ");
+  const string wslabel = charwidth + " -> ";
+
+  const double rr = r + 70; // Larger radius.
+  const double spacedeg = 2;
+  const double maxdeg = spacedeg * (ids.size() - 1);
+  double angled2 = angled - maxdeg/2;
+  for (const string& s: ids)
+    {
+      double angler2 = (kpi / 180.0) * angled2;
+      auto [ x2, y2 ] = get_circumference_point(angler2, rr, origin);
+      place_text_id(obj, typo, s, x2, y2, angled2);
+      angled2 += spacedeg;
+    }
+}
+
+
+/*
+  Draw text on the circumference of a circle of radius r centered at (cx, cy)
+  corresponding to the angle above.
+*/
+void
+radiate_id_by_value(svg_form& obj, const typography& typo, string pname,
+		    int pvalue, int pmax, double r, bool rotatep)
+{
+  const double angled = get_angle(pvalue, pmax);
+  double angler = (kpi / 180.0) * angled;
+  auto& area = obj._M_area;
+  const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
+  auto [ x, y ] = get_circumference_point(angler, r, origin);
 
   // Consolidate label text to be "VALUE -> NAME"
   constexpr uint valuewidth(9);
@@ -249,9 +308,6 @@ radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
     place_text_id(obj, typo, label, x, y, angled);
   else
     place_text_id(obj, typo, label, x, y, 0);
-
-  std::clog << label << " " << angled << " " << '(' << x << ',' << y << ')'
-	    << std::endl;
 }
 
 
@@ -278,13 +334,51 @@ radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
 {
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
-  const double r = find_radius(obj, rdenom);
+  const double r = get_radius(obj, rdenom);
   for (const auto& v : ivm)
     {
       string pname(v.first);
       int pvalue(v.second);
       if (pvalue)
-	radiate_name_by_value(obj, typo, pname, pvalue, value_max, r, rotatep);
+	radiate_id_by_value(obj, typo, pname, pvalue, value_max, r, rotatep);
+    }
+
+  return obj;
+}
+
+
+// Radiate as above, but group similar values such that they are
+// splayed, and not written on top of each other on the same
+// arc/angle.
+svg_form
+radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
+			      const id_value_map& ivm,
+			      const int value_max, const int rdenom)
+{
+  const double r = get_radius(obj, rdenom);
+
+  // Convert from string id-keys to int value-keys, plus a set of all
+  // the unique values.
+  uvalue_set uvalues;
+  value_id_mmap uvaluemm = to_value_id_mmap(ivm, uvalues);
+  for (const auto& v : uvalues)
+    {
+      auto count = uvaluemm.count(v);
+      if (count == 1)
+	{
+	  auto i = uvaluemm.find(v);
+	  radiate_id_by_value(obj, typo, i->second, v, value_max, r, true);
+	}
+      else
+	{
+	  auto irange = uvaluemm.equal_range(v);
+	  auto ibegin = irange.first;
+	  auto iend = irange.second;
+	  strings ids;
+	  for (auto i = ibegin; i != iend; ++i)
+	    ids.push_back(i->second);
+	  radiate_ids_by_uvalue(obj, typo, ids, v, value_max, r);
+	}
     }
 
   return obj;

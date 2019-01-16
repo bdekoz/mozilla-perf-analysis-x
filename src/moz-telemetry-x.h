@@ -32,6 +32,8 @@ using std::string;
 using std::to_string;
 using strings = std::vector<std::string>;
 
+using point = std::tuple<double, double>;
+
 const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
 const string datapath(prefixpath + "data/");
 
@@ -100,7 +102,7 @@ enum class json_t
   w3c
 };
 
-constexpr json_t djson_t = json_t::mozilla;
+constexpr json_t djson_t = json_t::browsertime;
 
 /*
   Environmental Metadata

@@ -1,5 +1,14 @@
 2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h: find_* to get_* name changes.
+	(get_circumference_point): New.
+	(radiate_ids_by_uvalue): New.
+	(radiate_ids_per_uvalue_on_arc): New.
+	* src/moz-telemetry-x-analyze-ripple.cc: Use them.
+	* src/moz-telemetry-x.h (point): New 2D cartesian primitive.
+
+2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h (deserialize_id_value_map): Move..
 	* src/moz-json-basic.h (deserialize_id_value_map): ...here.
 	* src/moz-telemetry-x-analyze-ripple.cc: Adjust hilight size.
