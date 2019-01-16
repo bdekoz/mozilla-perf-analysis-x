@@ -99,15 +99,15 @@ int main(int argc, char* argv[])
       const strings hilights = deserialize_text_to_strings(idatatxt);
       std::clog << iv1.size() << " original map size" << std::endl;
       id_value_map iv1hi = remove_matches_id_value_map(iv1, hilights);
-      std::clog << iv1hi.size() << " found map size" << std::endl;
-      std::clog << iv1.size() << " reduced map size" << std::endl;
+      std::clog << iv1hi.size() << " found matches map size" << std::endl;
+      std::clog << iv1.size() << " edited original map size" << std::endl;
       radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
 	{
 	  typography typohi = typo;
-	  typohi._M_size = 22;
+	  typohi._M_size = 20;
 	  typohi._M_style._M_fill_color = colore::ruriiro;
 	  radiate_ids_per_value_on_arc(obj, typohi, iv1hi, value_max, 7);
 	}

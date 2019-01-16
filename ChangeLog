@@ -1,5 +1,16 @@
 2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h (deserialize_id_value_map): Move..
+	* src/moz-json-basic.h (deserialize_id_value_map): ...here.
+	* src/moz-telemetry-x-analyze-ripple.cc: Adjust hilight size.
+	* src/moz-telemetry-x.h (value_id_mmap): For splaying similar id's
+	with the same value.
+	(uvalue_set): All unique values.
+	(remove_matches_id_value_map): Move.
+	(to_value_id_mmap): Conversion from string keys to int keys.
+
+2019-01-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h (radiate_name_by_value): Set radial
 	max to 345 to make the beginning and end more distinct.
 

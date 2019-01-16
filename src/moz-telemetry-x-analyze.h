@@ -23,17 +23,14 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-#include <unordered_map>
 
 #include "moz-json-basic.h"
-#include "a60-svg-base.h"
 
 
 namespace moz {
 
 using namespace svg;
 using color = svg::colore;
-using id_value_map = std::unordered_map<string, int>;
 
 
 // Create an svg object with 1080p dimensions and return it.
@@ -203,15 +200,17 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 }
 
 
+// Given rdenom scaling factor and SVG canvas, compute effective radius value.
+inline double
+find_radius(const svg_form& obj, const uint rdenom)
+{ return std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom; }
+
+
 // Map a value to a point radiating out from a center.
 void
 radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
-		       int pvalue, int pmax, double r, bool rotatep)
+		      int pvalue, int pmax, double r, bool rotatep)
 {
-  // Find center of SVG canvas.
-  const double cx = obj._M_area._M_width / 2;
-  const double cy = obj._M_area._M_height / 2;
-
   // Max number of non-overlapping degrees in circle, such that the
   // beginning and the end have a discernable gap. Total degrees in a
   // circle are 360, but then the beginning and the end of the radial
@@ -229,9 +228,11 @@ radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
   angled += 90;
 
   /*
-    Draw text on the circumference of a circle of radius r centered (cx, cy)
+    Draw text on the circumference of a circle of radius r centered at (cx, cy)
     corresponding to the angle above.
   */
+  const double cx = obj._M_area._M_width / 2;
+  const double cy = obj._M_area._M_height / 2;
   constexpr double kpi(3.14159);
   double angler = (kpi / 180.0) * angled;
   double x(cx + (r * std::cos(angler)));
@@ -254,74 +255,6 @@ radiate_name_by_value(svg_form& obj, const typography& typo, string pname,
 }
 
 
-// Given rdenom scaling factor and SVG canvas, compute effective radius value.
-inline double
-find_radius(const svg_form& obj, const uint rdenom)
-{ return std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom; }
-
-
-// Read CSV file of [marker name || probe name] and value, and
-// store in hash_map, return this plus the max value as a tuple.
-id_value_map
-deserialize_id_value_map(const string ifile, int& value_max)
-{
-  id_value_map probe_map;
-  std::ifstream ifs(ifile);
-  if (ifs.good())
-    {
-      do
-	{
-	  string pname;
-	  getline(ifs, pname, ',');
-	  if (ifs.good())
-	    {
-	      int pvalue;
-	      ifs >> pvalue;
-
-	      // Extract remaining newline.
-	      ifs.ignore(79, k::newline);
-
-	      probe_map.insert(make_pair(pname, pvalue));
-	      value_max = std::max(pvalue, value_max);
-	    }
-	}
-      while (ifs.good());
-    }
-  else
-    {
-      std::cerr << errorprefix << "cannot open input file "
-		<< ifile << std::endl;
-    }
-  std::clog << probe_map.size() << " ids found with max value "
-	    << value_max << std::endl;
-  return probe_map;
-}
-
-
-// Remove all from map that match the input (matches) strings.
-// Return found match entries.
-id_value_map
-remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
-{
-  id_value_map foundmap;
-  for (const auto& key: matches)
-    {
-      id_value_map::iterator iter = ivm.find(key);
-      if (iter != ivm.end())
-	{
-	  // Insert found element into return map....
-	  foundmap.insert(*iter);
-
-	  // Remove found elment from originating map (ivm)
-	  ivm.erase(iter);
-	}
-      else
-	std::clog << errorprefix << key << std::endl;
-    }
-  return foundmap;
-}
-
-
 /*
   Create radial viz of names from input file arranged clockwise around
   the edge of a circle circumference. The text of the names can be
@@ -339,14 +272,14 @@ remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 */
 svg_form
 radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
-			     const id_value_map& probe_map,
+			     const id_value_map& ivm,
 			     const int value_max, const int rdenom,
 			     bool rotatep = true)
 {
   // Probe/Marker display.
   // Loop through map key/values and put on canvas.
   const double r = find_radius(obj, rdenom);
-  for (const auto& v : probe_map)
+  for (const auto& v : ivm)
     {
       string pname(v.first);
       int pvalue(v.second);

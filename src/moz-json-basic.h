@@ -28,6 +28,7 @@
 #include "rapidjson/reader.h"
 
 #include "moz-telemetry-x.h"
+#include "a60-svg-base.h"
 
 
 namespace moz {
@@ -76,6 +77,44 @@ deserialize_text_to_strings(string inames)
     }
 
   return probes;
+}
+
+
+// Read CSV file of [marker name || probe name] and value, and
+// store in hash_map, return this plus the max value as a tuple.
+id_value_map
+deserialize_id_value_map(const string ifile, int& value_max)
+{
+  id_value_map probe_map;
+  std::ifstream ifs(ifile);
+  if (ifs.good())
+    {
+      do
+	{
+	  string pname;
+	  getline(ifs, pname, ',');
+	  if (ifs.good())
+	    {
+	      int pvalue;
+	      ifs >> pvalue;
+
+	      // Extract remaining newline.
+	      ifs.ignore(79, k::newline);
+
+	      probe_map.insert(make_pair(pname, pvalue));
+	      value_max = std::max(pvalue, value_max);
+	    }
+	}
+      while (ifs.good());
+    }
+  else
+    {
+      std::cerr << errorprefix << "cannot open input file "
+		<< ifile << std::endl;
+    }
+  std::clog << probe_map.size() << " ids found with max value "
+	    << value_max << std::endl;
+  return probe_map;
 }
 
 

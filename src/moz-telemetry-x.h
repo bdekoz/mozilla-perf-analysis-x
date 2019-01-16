@@ -22,11 +22,10 @@
 #include <experimental/filesystem>
 #include <sstream>
 #include <vector>
-
+#include <unordered_map>
+#include <unordered_set>
 
 namespace moz {
-
-namespace filesystem = std::experimental::filesystem;
 
 /// Types.
 using std::string;
@@ -45,6 +44,21 @@ const char* analyze_ext = ".svg";
 
 // Margin in pixels.
 const int margin = 100;
+
+// I/O
+namespace filesystem = std::experimental::filesystem;
+
+
+// Sanity check input file and path exist, and then return stem.
+string
+file_path_to_stem(string ifile)
+{
+  filesystem::path ipath(ifile);
+  if (!exists(ipath))
+    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
+  return ipath.stem().string();
+}
+
 
 /*
   Histogram types, from nsITelemetry.idl
@@ -123,16 +137,54 @@ struct environment
   string	date_time_stamp;
 };
 
+// Hash map of unique id to (not necessarily) unique value.
+// Use this for sorting by id.
+using id_value_map = std::unordered_map<string, int>;
 
-// Sanity check input file and path exist, and then return stem.
-string
-file_path_to_stem(string ifile)
+// Hash multimap of unique value to (perhaps multiple) unique ids.
+// Use this form for sorting by value.
+using value_id_mmap = std::unordered_multimap<int, string>;
+using uvalue_set = std::unordered_set<int>;
+
+// Remove all from map that match the input (matches) strings.
+// Return found match entries.
+id_value_map
+remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 {
-  filesystem::path ipath(ifile);
-  if (!exists(ipath))
-    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
-  return ipath.stem().string();
+  id_value_map foundmap;
+  for (const auto& key: matches)
+    {
+      id_value_map::iterator iter = ivm.find(key);
+      if (iter != ivm.end())
+	{
+	  // Insert found element into return map....
+	  foundmap.insert(*iter);
+
+	  // Remove found elment from originating map (ivm)
+	  ivm.erase(iter);
+	}
+      else
+	std::clog << errorprefix << key << std::endl;
+    }
+  return foundmap;
 }
+
+
+// Convert id_value_map to value_id_mmap + set of unique values.
+value_id_mmap
+to_value_id_mmap(const id_value_map& ivm, uvalue_set& uniquev)
+{
+  value_id_mmap vimm;
+  for (auto& e: ivm)
+    {
+      string s = e.first;
+      int i = e.second;
+      vimm.insert(make_pair(i, s));
+      uniquev.insert(i);
+    }
+  return vimm;
+}
+
 
 } // namespace moz
 
