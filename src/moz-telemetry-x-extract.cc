@@ -54,7 +54,7 @@ std::ofstream
 make_extracted_data_file(string fstem)
 {
   // Prepare output file.
-  const string ofile(fstem + extract_csv_ext);
+  const string ofile(fstem + k::csv_ext);
   std::ofstream ofs(ofile);
   if (ofs.good())
     {
@@ -62,7 +62,7 @@ make_extracted_data_file(string fstem)
       ofs << "START" << "," << 0 << std::endl;
     }
   else
-    std::cerr << errorprefix << "cannot open output file "
+    std::cerr << k::errorprefix << "cannot open output file "
 	      << ofile << std::endl;
   return ofs;
 }
@@ -164,7 +164,7 @@ extract_mozilla_names(string inames, string ifile)
       serialize_environment(env, ofname);
     }
   else
-    std::cerr << errorprefix << kpayload << " not found " << std::endl;
+    std::cerr << k::errorprefix << kpayload << " not found " << std::endl;
 }
 
 

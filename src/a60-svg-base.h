@@ -11,18 +11,6 @@
 #include <cstdint>
 
 
-namespace constants
-{
-  // Formatting.
-  constexpr char space(' ');
-  constexpr char quote('"');
-  constexpr char hypen('-');
-  constexpr char tab('\t');
-  constexpr char newline('\n');
-  constexpr char comma(',');
-}
-
-namespace k = constants;
 
 /// Utility function, like regex_replace.
 inline void
@@ -45,6 +33,19 @@ namespace svg
   using size_type = int;
 
   using std::string;
+
+  namespace constants
+{
+  // Formatting.
+  constexpr char space(' ');
+  constexpr char quote('"');
+  constexpr char hypen('-');
+  constexpr char tab('\t');
+  constexpr char newline('\n');
+  constexpr char comma(',');
+}
+
+namespace k = constants;
 
   /// Measurement abstraction type, conversion function.
   enum class unit
@@ -979,13 +980,10 @@ namespace svg
       return strip1 + strip2;
     }
   };
-} // namespace svg
 
 
 namespace constants
 {
-  using namespace svg;
-
   /// Useful area constants.
   constexpr area<float> mm_letter = { unit::millimeter, 215.9, 279.4 };
   constexpr area<float> mm_a4 = { unit::millimeter, 210, 297 };
@@ -1032,11 +1030,9 @@ namespace constants
   // characters is used, ie some variant of Source Sans, Source Han
   // Sans XX, etc. Otherwise, blank spaces in rendered output are likely.
   const typography d_typo = shsans_typo;
-};
+}
 
 
-namespace svg
-{
 /// The base type for all svg elements.
 struct element_base
 {

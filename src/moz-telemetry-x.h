@@ -34,24 +34,37 @@ using strings = std::vector<std::string>;
 
 using point = std::tuple<double, double>;
 
-const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
-const string datapath(prefixpath + "data/");
-
-const string errorprefix("error -> ");
-
-// Output file extentions.
-const char* extract_csv_ext = ".csv";
-const char* extract_environment_ext = ".environment.json";
-const char* analyze_ext = ".svg";
-
-// Margin in pixels.
-const int margin = 100;
-
-// I/O
+/// Namespaces.
 namespace filesystem = std::experimental::filesystem;
 
+namespace constants {
 
-// Sanity check input file and path exist, and then return stem.
+ // Formatting.
+  constexpr char space(' ');
+  constexpr char quote('"');
+  constexpr char hypen('-');
+  constexpr char tab('\t');
+  constexpr char newline('\n');
+  constexpr char comma(',');
+
+  const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
+  const string datapath(prefixpath + "data/");
+  const string errorprefix = "error -> ";
+
+  // Output file extentions.
+  constexpr const char* csv_ext = ".csv";
+  constexpr const char* environment_ext = ".environment.json";
+  constexpr const char* analyze_ext = ".svg";
+
+  // Margin in pixels.
+  constexpr int margin = 100;
+
+} // namespace constants
+
+/// Alias to moz::k.
+  namespace k = moz::constants;
+
+/// Sanity check input file and path exist, and then return stem.
 string
 file_path_to_stem(string ifile)
 {
@@ -62,7 +75,7 @@ file_path_to_stem(string ifile)
 }
 
 
-/*
+  /**
   Histogram types, from nsITelemetry.idl
 
   HISTOGRAM_EXPONENTIAL - buckets increase exponentially
@@ -104,7 +117,7 @@ enum class json_t
 
 constexpr json_t djson_t = json_t::browsertime;
 
-/*
+  /**
   Environmental Metadata
 
   distributionId
@@ -139,17 +152,17 @@ struct environment
   string	date_time_stamp;
 };
 
-// Hash map of unique id to (not necessarily) unique value.
-// Use this for sorting by id.
+/// Hash map of unique id to (not necessarily) unique value.
+/// Use this for sorting by id.
 using id_value_map = std::unordered_map<string, int>;
 
-// Hash multimap of unique value to (perhaps multiple) unique ids.
-// Use this form for sorting by value.
+/// Hash multimap of unique value to (perhaps multiple) unique ids.
+/// Use this form for sorting by value.
 using value_id_mmap = std::unordered_multimap<int, string>;
 using uvalue_set = std::unordered_set<int>;
 
-// Remove all from map that match the input (matches) strings.
-// Return found match entries.
+/// Remove all from map that match the input (matches) strings.
+/// Return found match entries.
 id_value_map
 remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 {
@@ -166,13 +179,13 @@ remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 	  ivm.erase(iter);
 	}
       else
-	std::clog << errorprefix << key << std::endl;
+	std::clog << k::errorprefix << key << std::endl;
     }
   return foundmap;
 }
 
 
-// Convert id_value_map to value_id_mmap + set of unique values.
+/// Convert id_value_map to value_id_mmap + set of unique values.
 value_id_mmap
 to_value_id_mmap(const id_value_map& ivm, uvalue_set& uniquev)
 {
@@ -186,7 +199,6 @@ to_value_id_mmap(const id_value_map& ivm, uvalue_set& uniquev)
     }
   return vimm;
 }
-
 
 } // namespace moz
 

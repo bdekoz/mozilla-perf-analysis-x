@@ -28,7 +28,6 @@
 #include "rapidjson/reader.h"
 
 #include "moz-telemetry-x.h"
-#include "a60-svg-base.h"
 
 
 namespace moz {
@@ -72,7 +71,7 @@ deserialize_text_to_strings(string inames)
     }
   else
     {
-      std::cerr << errorprefix
+      std::cerr << k::errorprefix
 		<< "error: cannot open input file " << inames << std::endl;
     }
 
@@ -109,7 +108,7 @@ deserialize_id_value_map(const string ifile, int& value_max)
     }
   else
     {
-      std::cerr << errorprefix << "cannot open input file "
+      std::cerr << k::errorprefix << "cannot open input file "
 		<< ifile << std::endl;
     }
   std::clog << probe_map.size() << " ids found with max value "
@@ -249,7 +248,7 @@ extract_histogram_field_mean(const rj::Value& v, const string& probe)
 	  // Sanity check computed sum matches extracted sum.
 	  if (sumcomputed != sum || htypecp || htypekp)
 	    {
-	      std::clog << errorprefix << "computed sum of " << sumcomputed
+	      std::clog << k::errorprefix << "computed sum of " << sumcomputed
 			<< " != extracted sum of " << sum << std::endl;
 	    }
 
@@ -345,7 +344,7 @@ extract_pseudo_histogram_field(const rj::Value& v, const histogram_view_t hview)
 	  break;
 	}
       default:
-	throw std::runtime_error(errorprefix + "histogram extract quantile");
+	throw std::runtime_error(k::errorprefix + "histogram extract quantile");
 	break;
     }
   return nvalue;
@@ -369,7 +368,7 @@ extract_histogram_field(const rj::Value& v, const string& probe,
 	nvalue = extract_histogram_field_sum(v, probe);
 	break;
       case histogram_view_t::quantile:
-	throw std::runtime_error(errorprefix + "histogram extract quantile");
+	throw std::runtime_error(k::errorprefix + "histogram extract quantile");
       default:
 	break;
     }
@@ -578,7 +577,7 @@ serialize_environment(const environment& env, string ofile)
   writer.EndObject();
 
   // Serialize generated output to JSON data file.
-  std::ofstream of(ofile + extract_environment_ext);
+  std::ofstream of(ofile + k::environment_ext);
   if (of.good())
     of << sb.GetString();
 }
@@ -589,7 +588,7 @@ environment
 deserialize_environment(string ifile)
 {
   // Load input JSON data file into DOM.
-  rj::Document dom(deserialize_json_to_dom(ifile + extract_environment_ext));
+  rj::Document dom(deserialize_json_to_dom(ifile + k::environment_ext));
 
   environment env { };
   if (dom.IsObject() && dom.HasMember("sw_name"))
@@ -613,7 +612,8 @@ deserialize_environment(string ifile)
     }
   else
     {
-      string m(errorprefix + "deserialize_environment:: JSON error in " + ifile);
+      string m(k::errorprefix + "deserialize_environment:: JSON error in ");
+      m += ifile;
       throw std::runtime_error(m);
     }
 

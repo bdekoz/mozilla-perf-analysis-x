@@ -1,3 +1,17 @@
+2019-01-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Header cleanup and source modularization.
+	* src/moz-telemetry-x-svg.h: New. Consolidate mozilla svg routines here.
+
+	* src/a60-svg-base.h: Squash constants as per upstream.
+
+	* src/moz-json-basic.h: Scope constants for k::, adjust includes.
+	* src/moz-telemetry-x-analyze-radial.cc: Same.
+	* src/moz-telemetry-x-analyze-ripple.cc: Same.
+	* src/moz-telemetry-x-analyze.h: Same.
+	* src/moz-telemetry-x-extract.cc: Same.
+	* src/moz-telemetry-x.h: Same.
+
 2019-01-16  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Add all 5 URLs fromXS the 2019-01-10 sample set.

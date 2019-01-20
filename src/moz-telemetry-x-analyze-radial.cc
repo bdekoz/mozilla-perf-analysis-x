@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "moz-json-basic.h"
 #include "moz-telemetry-x-analyze.h"
 
 
@@ -39,8 +40,7 @@ usage()
 
 int main(int argc, char* argv[])
 {
-  using namespace rapidjson;
-  using namespace moz;
+   using namespace moz;
 
    // Sanity check.
   if (argc != 2)
