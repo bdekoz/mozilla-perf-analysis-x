@@ -115,7 +115,7 @@ enum class json_t
   w3c
 };
 
-constexpr json_t djson_t = json_t::browsertime;
+constexpr json_t djson_t = json_t::mozilla;
 
   /**
   Environmental Metadata

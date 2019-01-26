@@ -1,3 +1,8 @@
+2019-01-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/json-files/20190125-fire-hd-10-instagram.main.json: Initial kindle 10 data.
+	* src/moz-telemetry-x.h: Switch default.
+
 2019-01-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Header cleanup and source modularization.
