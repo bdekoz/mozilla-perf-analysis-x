@@ -1,6 +1,6 @@
 // telemetry sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018, Mozilla
+// Copyright (c) 2018-2019, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -158,10 +158,13 @@ extract_mozilla_names(string inames, string ifile)
       std::clog << probesr.size() << " remaining probes: " << std::endl;
       for (const string& s : probesr)
 	std::clog << '\t' << s << std::endl;
+      std::clog << std::endl;
 
       // Extract and serialize environmental metadata.
+      std::clog << "extracing environment metadata: ";
       environment env = extract_environment_mozilla(dom);
       serialize_environment(env, ofname);
+      std::clog << "done" << std::endl;
     }
   else
     std::cerr << k::errorprefix << kpayload << " not found " << std::endl;
@@ -315,9 +318,12 @@ extract_browsertime_names(string inames, string ifile,
 		  const rj::Value& vst = vs[ktime];
 		  extract_browsertime_object(vst, probes, ofs, dview);
 
+
 		  // Extract and serialize environmental metadata.
+		  std::clog << "extracing environment metadata: ";
 		  environment env = extract_environment_browsertime(v);
 		  serialize_environment(env, ofname);
+		  std::clog << "done" << std::endl;
 		  break;
 		}
 	      else

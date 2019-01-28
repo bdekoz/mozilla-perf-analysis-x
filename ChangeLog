@@ -1,3 +1,11 @@
+2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-extract.cc (extract_mozilla_names): Log
+	environment extraction.
+	(extract_browsertime_names): Same.
+	* src/moz-json-basic.h (extract_environment_mozilla): Be defensive
+	when extracting.
+
 2019-01-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/json-files/20190125-fire-hd-10-instagram.main.json: Initial kindle 10 data.

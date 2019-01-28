@@ -1,6 +1,6 @@
 // mozilla serialize/deserialize forward declarations -*- mode: C++ -*-
 
-// Copyright (c) 2018, Mozilla
+// Copyright (c) 2018-2019, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -474,8 +474,11 @@ extract_environment_mozilla(const rj::Document& dom)
 	  const rj::Value& dscalars = *pv;
 
 	  const char* suri = "browser.engagement.unfiltered_uri_count";
-	  const rj::Value& duri = dscalars[suri];
-	  env.uri_count = duri.GetInt();
+	  if (dscalars.HasMember(suri))
+	    {
+	      const rj::Value& duri = dscalars[suri];
+	      env.uri_count = duri.GetInt();
+	    }
 	}
     }
   return env;
