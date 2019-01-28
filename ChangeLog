@@ -5,7 +5,7 @@
 	(get_data_path): Location of data files.
 	(k::prefixpath): Remove hardcoded location.
 	(k::datapath): Same.
-	* src/moz-telemetry-x-svg.h: Use get_data_path.
+	* src/moz-telemetry-x-svg.h (initialize_svg): Use get_data_path.
 	* README.md: Add documentation about MOZTELEMETRYX.
 
 2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
