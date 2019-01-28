@@ -18,12 +18,14 @@
 #ifndef moz_TELEMETRY_X_H
 #define moz_TELEMETRY_X_H 1
 
+#include <cstdlib>
 #include <fstream>
-#include <experimental/filesystem>
 #include <sstream>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <experimental/filesystem>
+
 
 namespace moz {
 
@@ -39,16 +41,16 @@ namespace filesystem = std::experimental::filesystem;
 
 namespace constants {
 
- // Formatting.
+  // Formatting.
   constexpr char space(' ');
   constexpr char quote('"');
   constexpr char hypen('-');
   constexpr char tab('\t');
   constexpr char newline('\n');
   constexpr char comma(',');
+  constexpr char pathseparator('/');
 
-  const string prefixpath("/home/bkoz/src/mozilla-telemetry-x/");
-  const string datapath(prefixpath + "data/");
+  // Warning/Error prefixes.
   const string errorprefix = "error -> ";
 
   // Output file extentions.
@@ -62,7 +64,8 @@ namespace constants {
 } // namespace constants
 
 /// Alias to moz::k.
-  namespace k = moz::constants;
+namespace k = moz::constants;
+
 
 /// Sanity check input file and path exist, and then return stem.
 string
@@ -74,17 +77,46 @@ file_path_to_stem(string ifile)
   return ipath.stem().string();
 }
 
+/// Get filesystem path to the toplevel of the source directory.
+string
+get_prefix_path()
+{
+  const char* mtxenv = "MOZTELEMETRYX";
+  char* ppath;
+  ppath = getenv(mtxenv);
+  if (ppath == nullptr)
+    {
+      string m(k::errorprefix + "environment variable " + mtxenv + " not set");
+      m += k::newline;
+      throw std::runtime_error(m);
+    }
 
-  /**
-  Histogram types, from nsITelemetry.idl
+  string spath(ppath);
+  if (spath.back() != k::pathseparator)
+    spath += k::pathseparator;
+  std::clog << mtxenv << " is: " << spath << std::endl;
+  return spath;
+}
 
-  HISTOGRAM_EXPONENTIAL - buckets increase exponentially
-  HISTOGRAM_LINEAR - buckets increase linearly
-  HISTOGRAM_BOOLEAN - For storing 0/1 values
-  HISTOGRAM_FLAG - For storing a single value; its count is always == 1.
-  HISTOGRAM_COUNT - For storing counter values without bucketing.
-  HISTOGRAM_CATEGORICAL - For storing enumerated values by label.
-  */
+/// Get filesystem path to the toplevel of the data directory.
+string
+get_data_path()
+{
+  string prefixp(get_prefix_path());
+  return prefixp + "data/";
+}
+
+
+/**
+   Histogram types, from nsITelemetry.idl
+
+   HISTOGRAM_EXPONENTIAL - buckets increase exponentially
+   HISTOGRAM_LINEAR - buckets increase linearly
+   HISTOGRAM_BOOLEAN - For storing 0/1 values
+   HISTOGRAM_FLAG - For storing a single value; its count is always == 1.
+   HISTOGRAM_COUNT - For storing counter values without bucketing.
+   HISTOGRAM_CATEGORICAL - For storing enumerated values by label.
+*/
 enum class histogram_t
 {
   exponential = 0,

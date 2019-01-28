@@ -1,5 +1,15 @@
 2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x.h (get_prefix_path): New, location
+	of the source directory.
+	(get_data_path): Location of data files.
+	(k::prefixpath): Remove hardcoded location.
+	(k::datapath): Same.
+	* src/moz-telemetry-x-svg.h: Use get_data_path.
+	* README.md: Add documentation about MOZTELEMETRYX.
+
+2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-extract.cc (extract_mozilla_names): Log
 	environment extraction.
 	(extract_browsertime_names): Same.

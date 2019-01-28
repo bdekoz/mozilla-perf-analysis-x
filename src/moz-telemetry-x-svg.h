@@ -43,7 +43,7 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
   obj.add_element(g);
 
   // Read SVG to insert.
-  std::string ifile(k::datapath + "image/circle-arrow-red.svg");
+  std::string ifile(get_data_path() + "image/circle-arrow-red.svg");
   std::ifstream ifs(ifile);
   string isvg;
   if (ifs.good())
@@ -60,7 +60,12 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
       isvg = oss.str();
     }
   else
-    throw std::runtime_error("initialize_svg:: insertion of nested SVG failed");
+    {
+      string m(k::errorprefix + "initialize_svg:: insert nested SVG failed ");
+      m += ifile;
+      m += k::newline;
+      throw std::runtime_error(m);
+    }
 
   // Insert nested SVG element of red arc with arrow (scaled and with offset).
   const int isize(182);

@@ -5,6 +5,9 @@ These are C++ sources for experimental analysis of mozilla telemetry. Together w
 
 **BUILDING**
 
+Set the environmental variable MOZTELEMETRYX to the location of the source directory.
+
+
 Main excecutables are built from sources in the src directory, by running `scripts/compile.sh` like so
 ```
 ../scripts/compile-source.sh moz-telemetry-x-extract.cc
