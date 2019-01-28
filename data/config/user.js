@@ -18,6 +18,7 @@ user_pref("services.sync.prefs.sync.browser.tabs.warnOnOpen", false);
 
 // Data
 user_pref("datareporting.policy.dataSubmissionEnabled", true);
+user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);
 
 // Telemetry
 user_pref("toolkit.telemetry.enabled", true);
@@ -27,7 +28,16 @@ user_pref("toolkit.telemetry.reportingpolicy.firstRun", true);
 user_pref("toolkit.telemetry.shutdownPingSender.enabled", true);
 user_pref("toolkit.telemetry.shutdownPingSender.enabledFirstSession", true);
 user_pref("toolkit.telemetry.firstShutdownPing.enabled", true);
-user_pref("toolkit.telemetry.server", "https://localhost");
+//user_pref("toolkit.telemetry.server", "https://localhost");
+user_pref("toolkit.telemetry.minSubsessionLength", 3);
+user_pref("toolkit.telemetry.idleTimeout", 10);
+
+// Telemetry x GV
+user_pref("toolkit.telemetry.isGeckoViewMode", true);
+//user_pref("toolkit.telemetry.geckoPersistenceTimeout", 60000);
+user_pref("toolkit.telemetry.geckoPersistenceTimeout", 3000);
+//services.sync.telemetry.submissionInterval
+//app.update.lastUpdateTime.telemetry_modules_ping
 
 // Specific Probes
 user_pref("dom.performance.time_to_non_blank_paint.enabled", true);

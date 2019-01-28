@@ -1,5 +1,10 @@
 2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/config/user.js: Tweak telemetry timings.
+	* scripts/decompress-mozlz4a.sh: Use MOZTELEMETRYX.
+
+2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x.h (get_prefix_path): New, location
 	of the source directory.
 	(get_data_path): Location of data files.
