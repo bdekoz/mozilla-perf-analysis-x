@@ -1,5 +1,13 @@
 2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/config/user.js: Add autoplay configs.
+
+	* data/json-files/2019-01-29-mabini-instagram.main.json: Current native.
+	* data/json-files/2019-01-29-mabini-pinterist.main.json: Same.
+	* data/json-files/2019-01-29-mabini-youtube.main.json: Same.
+
+2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	Update data files.
 	* data/json-files/2019-01-28-fire-hd-10-instagram.main.json
 	* data/json-files/2019-01-28-fire-hd-10-instagram.saved-session.json

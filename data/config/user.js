@@ -29,14 +29,14 @@ user_pref("toolkit.telemetry.shutdownPingSender.enabled", true);
 user_pref("toolkit.telemetry.shutdownPingSender.enabledFirstSession", true);
 user_pref("toolkit.telemetry.firstShutdownPing.enabled", true);
 //user_pref("toolkit.telemetry.server", "https://localhost");
-user_pref("toolkit.telemetry.minSubsessionLength", 3);
+user_pref("toolkit.telemetry.minSubsessionLength", 5);
 user_pref("toolkit.telemetry.idleTimeout", 10);
+user_pref("services.sync.telemetry.submissionInterval", 30);
 
 // Telemetry x GV
 user_pref("toolkit.telemetry.isGeckoViewMode", true);
 //user_pref("toolkit.telemetry.geckoPersistenceTimeout", 60000);
 user_pref("toolkit.telemetry.geckoPersistenceTimeout", 3000);
-//services.sync.telemetry.submissionInterval
 //app.update.lastUpdateTime.telemetry_modules_ping
 
 // Specific Probes
@@ -44,3 +44,10 @@ user_pref("dom.performance.time_to_non_blank_paint.enabled", true);
 user_pref("dom.performance.time_to_dom_content_flushed.enabled", true);
 user_pref("dom.performance.time_to_first_interactive.enabled", true);
 user_pref("dom.performance.time_to_contentful_paint.enabled", true);
+
+
+// Media
+user_pref("media.autoplay.default", 1);
+user_pref("media.allowed-to-play.enabled", false);
+
+user_pref("dom.popup_maximum", 0);
