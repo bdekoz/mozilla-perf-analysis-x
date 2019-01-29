@@ -1,5 +1,12 @@
 2019-01-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/config/user.js: Switch performance timing on explicity.
+
+	* data/match-identifier-files/mozilla-telemetry-probes-time-ms-timestamps.txt:
+	Remove non-timing-related probe.
+
+2019-01-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/config/user.js: Add autoplay configs.
 
 	* data/json-files/2019-01-29-mabini-instagram.main.json: Current native.

@@ -44,7 +44,9 @@ user_pref("dom.performance.time_to_non_blank_paint.enabled", true);
 user_pref("dom.performance.time_to_dom_content_flushed.enabled", true);
 user_pref("dom.performance.time_to_first_interactive.enabled", true);
 user_pref("dom.performance.time_to_contentful_paint.enabled", true);
-
+user_pref("dom.enable_performance", true);
+user_pref("dom.enable_performance_navigation_timing", true);
+user_pref("dom.enable_resource_timing", true);
 
 // Media
 user_pref("media.autoplay.default", 1);
