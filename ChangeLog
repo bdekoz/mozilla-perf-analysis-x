@@ -1,5 +1,11 @@
 2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Update data files.
+	* data/json-files/2019-01-28-fire-hd-10-instagram.main.json
+	* data/json-files/2019-01-28-fire-hd-10-instagram.saved-session.json
+
+2019-01-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/config/user.js: Tweak telemetry timings.
 	* scripts/decompress-mozlz4a.sh: Use MOZTELEMETRYX.
 
@@ -23,7 +29,8 @@
 
 2019-01-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
-	* data/json-files/20190125-fire-hd-10-instagram.main.json: Initial kindle 10 data.
+	* data/json-files/20190125-fire-hd-10-instagram.main.json: Initial
+	kindle 10 data.
 	* src/moz-telemetry-x.h: Switch default.
 
 2019-01-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
