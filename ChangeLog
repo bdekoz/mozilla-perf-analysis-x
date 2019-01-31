@@ -1,6 +1,17 @@
+2019-01-31  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/json-files/2019-01-29-fire-hd-10-instagram.saved-session.json:
+	New, all datasets, all products.
+	* data/json-files/2019-01-30-fire-hd-10-instagram.saved-session.json:
+	New, all datasets, all products, all processes.
+
+	* scripts/svg-dir-to-pdfs.sh: Add helper scripts to this repo.
+	* scripts/svg-dir-to-pngs-and-pdfs.sh: Same.
+	* scripts/svg-dir-to-pngs.sh: Same.
+
 2019-01-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
-	* data/config/user.js: Switch performance timing on explicity.
+	* data/config/user.js: Switch performance timing prefs to explicitly on.
 
 	* data/match-identifier-files/mozilla-telemetry-probes-time-ms-timestamps.txt:
 	Remove non-timing-related probe.
