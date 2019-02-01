@@ -1,3 +1,7 @@
+2019-02-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* generated: Add generated outputs here.
+
 2019-01-31  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/json-files/2019-01-29-fire-hd-10-instagram.saved-session.json:
@@ -13,7 +17,8 @@
 
 	* data/config/user.js: Switch performance timing prefs to explicitly on.
 
-	* data/match-identifier-files/mozilla-telemetry-probes-time-ms-timestamps.txt:
+	* data/match-identifier-files/
+	mozilla-telemetry-probes-time-ms-timestamps.txt:
 	Remove non-timing-related probe.
 
 2019-01-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
