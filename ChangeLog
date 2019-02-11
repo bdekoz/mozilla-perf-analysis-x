@@ -1,3 +1,10 @@
+2019-02-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/config/user.js: Move ...
+	* data/config/minimum-user.js: ...here.
+	* data/config/perf-user.js: Copy of m-c
+	testing/profile/perf/user.js.
+
 2019-02-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* generated: Add generated outputs here.
