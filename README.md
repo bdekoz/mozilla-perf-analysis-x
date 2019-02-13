@@ -1,6 +1,6 @@
 # mozilla-telemetry-x
 
-These are C++ sources for experimental analysis of mozilla telemetry. Together with gathered data in the form of Mozilla telemetry main ping JSON files, optional browsertime JSON files, can render results in a variety of output views and formats.
+These are C++ sources for creating experimental analyses of mozilla telemetry data. Together with input data in the form of Mozilla telemetry main ping JSON files, optional browsertime JSON files, and various highlight and marker/probe lists, these sources can render results in a variety of output views and formats.
 
 
 **BUILDING**
@@ -8,7 +8,7 @@ These are C++ sources for experimental analysis of mozilla telemetry. Together w
 Set the environmental variable MOZTELEMETRYX to the location of the source directory.
 
 
-Main excecutables are built from sources in the src directory, by running `scripts/compile.sh` like so
+Main executables are built from sources in the src directory, by running `scripts/compile.sh` like so
 ```
 ../scripts/compile-source.sh moz-telemetry-x-extract.cc
 ```
