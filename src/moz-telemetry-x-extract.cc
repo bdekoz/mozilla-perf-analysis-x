@@ -32,7 +32,7 @@ usage()
 
 
 strings
-find_remaining(const strings& total, const strings& found)
+remove_matches(const strings& total, const strings& found)
 {
   // Update accounting of found, to-find.
   strings probes1r;
@@ -54,7 +54,7 @@ void
 extract(const strings& found, strings& tremaining, strings& tfound)
 {
   std::copy(found.begin(), found.end(), std::back_inserter(tfound));
-  tremaining = find_remaining(tremaining, found);
+  tremaining = remove_matches(tremaining, found);
 }
 
 
@@ -95,7 +95,7 @@ make_extracted_data_file(string fstem)
   environment
  */
 void
-extract_mozilla_names(string inames, string ifile)
+extract_mozilla_ids(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -184,7 +184,7 @@ extract_mozilla_names(string inames, string ifile)
   keyedHistograms
  */
 void
-extract_mozilla_android_names(string inames, string ifile)
+extract_mozilla_android_ids(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -207,6 +207,8 @@ extract_mozilla_android_names(string inames, string ifile)
   const string kdynamic("dynamic");
   const string ksocket("socket");
   const string kgpu("gpu");
+
+  std::clog << "start" << std::endl;
 
   strings found;
   strings left(probes);
@@ -232,10 +234,11 @@ extract_mozilla_android_names(string inames, string ifile)
 
       extract(extract_histogram_fields(dhi, left, ofs), left, found);
       extract(extract_histogram_fields(dgpu, left, ofs), left, found);
-      extract(extract_histogram_fields(dparent, left, ofs), left, found);
+      //extract(extract_histogram_fields(dparent, left, ofs), left, found);
       extract(extract_histogram_fields(ddynam, left, ofs), left, found);
       extract(extract_histogram_fields(dsocket, left, ofs), left, found);
     }
+  std::clog << "histo" << std::endl;
 
   if (dom.HasMember(kkeyedhistogram.c_str()))
     {
@@ -245,8 +248,10 @@ extract_mozilla_android_names(string inames, string ifile)
 
       extract(extract_histogram_fields(dkhi, left, ofs), left, found);
       extract(extract_histogram_fields(dgpu, left, ofs), left, found);
-      extract(extract_histogram_fields(dparent, left, ofs), left, found);
+      //extract(extract_histogram_fields(dparent, left, ofs), left, found);
     }
+
+  std::clog << "done" << std::endl;
 }
 
 
@@ -353,7 +358,7 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime_names(string inames, string ifile,
+extract_browsertime_ids(string inames, string ifile,
 			  const histogram_view_t dview)
 {
   // Read probe names from input file, and put into vector<string>
@@ -431,11 +436,11 @@ void
 extract_identifiers(string inames, string idata)
 {
   if constexpr (djson_t == json_t::browsertime)
-    extract_browsertime_names(inames, idata, histogram_view_t::median);
+    extract_browsertime_ids(inames, idata, histogram_view_t::median);
   if constexpr (djson_t == json_t::mozilla)
-    extract_mozilla_names(inames, idata);
+    extract_mozilla_ids(inames, idata);
   if constexpr (djson_t == json_t::mozilla_android)
-    extract_mozilla_android_names(inames, idata);
+    extract_mozilla_android_ids(inames, idata);
 }
 } // namespace moz
 
@@ -461,8 +466,9 @@ int main(int argc, char* argv[])
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
+
   // list_json_fields(idata, true);
-  //list_json_fields(idata, false);
+  // list_json_fields(idata, false);
 
   extract_identifiers(inames, idata);
 

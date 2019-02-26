@@ -1,5 +1,10 @@
 2019-02-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-extract.cc (extract_mozilla_android_ids):
+	Be less aggressive about extracting full schema.
+
+2019-02-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (list_dom_fields): Split into ..
 	(list_dom_object_fields, list_dom_array_fields): ...these.
 	* src/moz-telemetry-x-extract.cc: Update comments.
