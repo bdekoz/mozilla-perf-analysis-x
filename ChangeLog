@@ -1,3 +1,14 @@
+2019-02-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (list_dom_fields): Split into ..
+	(list_dom_object_fields, list_dom_array_fields): ...these.
+	* src/moz-telemetry-x-extract.cc: Update comments.
+	(update_extract_lists): To...
+	(find_remaining): ...this.
+	(extract): New.
+	(extract_mozilla_android_names): New.
+	* src/moz-telemetry-x.h (histogram_view_t): Add har, android.
+
 2019-02-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/config/user.js: Move ...

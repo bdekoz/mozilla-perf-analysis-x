@@ -143,11 +143,13 @@ enum class histogram_view_t
 enum class json_t
 {
   browsertime,
+  har,
   mozilla,
+  mozilla_android,
   w3c
 };
 
-constexpr json_t djson_t = json_t::mozilla;
+  constexpr json_t djson_t = json_t::mozilla;
 
   /**
   Environmental Metadata

@@ -673,10 +673,10 @@ list_object_fields(const string parentfield, const rj::Value& v,
 /// Search DOM for objects.
 /// Arguments: first is DOM object, second is display field type
 void
-list_dom_fields(const rj::Document& dom,
-		bool nestedp = true, bool ftypep = false)
+list_dom_object_fields(const rj::Document& dom,
+		       bool nestedp = true, bool ftypep = false)
 {
-  if (!dom.HasParseError())
+  if (dom.IsObject() && !dom.HasParseError())
     {
       for (vcmem_iterator i = dom.MemberBegin(); i != dom.MemberEnd(); ++i)
 	{
@@ -695,15 +695,41 @@ list_dom_fields(const rj::Document& dom,
 	    list_object_fields(nname, nv, true);
 	}
     }
+  else
+    std::clog << "list_dom_object_fields:: no DOM object or JSON parse error"
+	      << std::endl;
+}
+
+
+/// Search DOM for arrays.
+/// Arguments: first is DOM object, second is display field type
+void
+list_dom_array_fields(const rj::Document& dom,
+		      bool nestedp = true, bool ftypep = false)
+{
+  if (dom.IsArray() && !dom.HasParseError())
+    {
+      std::clog << "list_dom_array_fields size " << dom.Size() << std::endl;
+
+      for (const auto& v : dom.GetArray())
+	if (v.IsObject())
+	  list_object_fields("", v, nestedp, ftypep);
+    }
+  else
+    std::clog << "list_dom_array_fields:: no DOM array or JSON parse error"
+	      << std::endl;
 }
 
 
 // List fields in ifile.json.
 void
-list_json_fields(std::string ifile)
+list_json_fields(std::string ifile, bool nestedp)
 {
   rj::Document dom(deserialize_json_to_dom(ifile));
-  list_dom_fields(dom);
+  if (dom.IsObject())
+    list_dom_object_fields(dom, nestedp);
+  else
+    list_dom_array_fields(dom, nestedp);
 }
 
 

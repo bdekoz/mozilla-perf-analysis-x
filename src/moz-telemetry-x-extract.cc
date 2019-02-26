@@ -32,7 +32,7 @@ usage()
 
 
 strings
-update_extract_lists(const strings& total, strings& found)
+find_remaining(const strings& total, const strings& found)
 {
   // Update accounting of found, to-find.
   strings probes1r;
@@ -47,6 +47,14 @@ update_extract_lists(const strings& total, strings& found)
   std::clog << std::endl;
 
   return probes1r;
+}
+
+
+void
+extract(const strings& found, strings& tremaining, strings& tfound)
+{
+  std::copy(found.begin(), found.end(), std::back_inserter(tfound));
+  tremaining = find_remaining(tremaining, found);
 }
 
 
@@ -75,6 +83,16 @@ make_extracted_data_file(string fstem)
   2. input telemetry main ping JSON file
 
   Output is a CSV file of probe names with extracted values
+
+  Top-level fields:
+  type
+  id
+  creationDate
+  version
+  application
+  payload
+  clientId
+  environment
  */
 void
 extract_mozilla_names(string inames, string ifile)
@@ -94,8 +112,8 @@ extract_mozilla_names(string inames, string ifile)
   const string kpayload("payload");
   if (dom.HasMember(kpayload.c_str()))
     {
-      strings probesfound;
-      strings probesr;
+      strings found;
+      strings left(probes);
 
       // payload
       // payload/histograms
@@ -124,39 +142,19 @@ extract_mozilla_names(string inames, string ifile)
 
       // Extract histogram values.
       // list_object_fields(dhistogram);
-
-      strings foundhi = extract_histogram_fields(dhisto, probes, ofs);
-      std::copy(foundhi.begin(), foundhi.end(),
-		std::back_inserter(probesfound));
-      probesr = update_extract_lists(probes, foundhi);
-
-      strings foundco = extract_histogram_fields(dcont, probesr, ofs);
-      std::copy(foundco.begin(), foundco.end(),
-		std::back_inserter(probesfound));
-      probesr = update_extract_lists(probesr, foundco);
-
-      strings foundgp = extract_histogram_fields(dgpu, probesr, ofs);
-      std::copy(foundgp.begin(), foundgp.end(),
-		std::back_inserter(probesfound));
-      probesr = update_extract_lists(probesr, foundgp);
+      extract(extract_histogram_fields(dhisto, left, ofs), left, found);
+      extract(extract_histogram_fields(dcont, left, ofs), left, found);
+      extract(extract_histogram_fields(dgpu, left, ofs), left, found);
 
       // Extract scalar values.
       // list_object_fields(dsimple);
-
-      strings foundsc = extract_scalar_fields(dsimple, probesr, ofs);
-      std::copy(foundsc.begin(), foundsc.end(),
-		std::back_inserter(probesfound));
-      probesr = update_extract_lists(probesr, foundsc);
-
-      strings foundpa = extract_scalar_fields(dparent, probesr, ofs);
-      std::copy(foundpa.begin(), foundpa.end(),
-		std::back_inserter(probesfound));
-      probesr = update_extract_lists(probesr, foundpa);
+      extract(extract_scalar_fields(dsimple, left, ofs), left, found);
+      extract(extract_scalar_fields(dparent, left, ofs), left, found);
 
       // List remaining.
       std::clog << std::endl;
-      std::clog << probesr.size() << " remaining probes: " << std::endl;
-      for (const string& s : probesr)
+      std::clog << left.size() << " remaining probes: " << std::endl;
+      for (const string& s : left)
 	std::clog << '\t' << s << std::endl;
       std::clog << std::endl;
 
@@ -168,6 +166,87 @@ extract_mozilla_names(string inames, string ifile)
     }
   else
     std::cerr << k::errorprefix << kpayload << " not found " << std::endl;
+}
+
+
+/*
+  Takes two arguments
+
+  1. text file with probe names to extract from Mozilla telemetry.
+  2. input telemetry main ping JSON file
+
+  Output is a CSV file of probe names with extracted values
+
+  Top-level fields:
+  scalars
+  keyedScalars
+  histograms
+  keyedHistograms
+ */
+void
+extract_mozilla_android_names(string inames, string ifile)
+{
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_text_to_strings(inames);
+
+  string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
+  std::ofstream ofs(make_extracted_data_file(ofname));
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  // Given the known details of the Mozilla android telemetry data schema,
+  // save off the most used data nodes for speedier manipulation for
+  // specific probes.
+  const string kscalar("scalars");
+  const string kkeyedscalar("keyedScalars");
+  const string khistogram("histograms");
+  const string kkeyedhistogram("keyedHistograms");
+
+  const string kparent("parent");
+  const string kdynamic("dynamic");
+  const string ksocket("socket");
+  const string kgpu("gpu");
+
+  strings found;
+  strings left(probes);
+  if (dom.HasMember(kscalar.c_str()))
+    {
+      const rj::Value& ds = dom[kscalar.c_str()];
+      extract(extract_scalar_fields(ds, left, ofs), left, found);
+    }
+
+  if (dom.HasMember(kkeyedscalar.c_str()))
+    {
+      const rj::Value& dks = dom[kkeyedscalar.c_str()];
+      extract(extract_scalar_fields(dks, left, ofs), left, found);
+    }
+
+  if (dom.HasMember(khistogram.c_str()))
+    {
+      const rj::Value& dhi = dom[khistogram.c_str()];
+      const rj::Value& dgpu = dhi[kgpu.c_str()];
+      const rj::Value& dparent = dhi[kparent.c_str()];
+      const rj::Value& ddynam = dhi[kdynamic.c_str()];
+      const rj::Value& dsocket = dhi[ksocket.c_str()];
+
+      extract(extract_histogram_fields(dhi, left, ofs), left, found);
+      extract(extract_histogram_fields(dgpu, left, ofs), left, found);
+      extract(extract_histogram_fields(dparent, left, ofs), left, found);
+      extract(extract_histogram_fields(ddynam, left, ofs), left, found);
+      extract(extract_histogram_fields(dsocket, left, ofs), left, found);
+    }
+
+  if (dom.HasMember(kkeyedhistogram.c_str()))
+    {
+      const rj::Value& dkhi = dom[kkeyedhistogram.c_str()];
+      const rj::Value& dgpu = dkhi[kgpu.c_str()];
+      const rj::Value& dparent = dkhi[kparent.c_str()];
+
+      extract(extract_histogram_fields(dkhi, left, ofs), left, found);
+      extract(extract_histogram_fields(dgpu, left, ofs), left, found);
+      extract(extract_histogram_fields(dparent, left, ofs), left, found);
+    }
 }
 
 
@@ -245,6 +324,18 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
 /*
   Takes a text file with probe names to extract from a browsertime JSON file.
 
+  Top-level fields:
+
+  info
+  files
+  timestamps
+  browserScripts
+  visualMetrics
+  cpu
+  fullyLoaded
+  errors
+  statistics
+
   Output is a CSV file of probe names with extracted values
 
   Browsertime
@@ -282,7 +373,7 @@ extract_browsertime_names(string inames, string ifile,
   if (dom.IsObject())
     {
       std::clog << "dom object " << std::endl;
-      list_dom_fields(dom, false, true);
+      list_dom_object_fields(dom, false, true);
 
       //statistics/timing
       //statistics/timing/navigationTiming
@@ -335,6 +426,7 @@ extract_browsertime_names(string inames, string ifile,
   std::clog << std::endl << "end dom extract" << std::endl;
 }
 
+
 void
 extract_identifiers(string inames, string idata)
 {
@@ -342,6 +434,8 @@ extract_identifiers(string inames, string idata)
     extract_browsertime_names(inames, idata, histogram_view_t::median);
   if constexpr (djson_t == json_t::mozilla)
     extract_mozilla_names(inames, idata);
+  if constexpr (djson_t == json_t::mozilla_android)
+    extract_mozilla_android_names(inames, idata);
 }
 } // namespace moz
 
@@ -367,7 +461,8 @@ int main(int argc, char* argv[])
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
-  // list_json_fields(idata);
+  // list_json_fields(idata, true);
+  //list_json_fields(idata, false);
 
   extract_identifiers(inames, idata);
 
