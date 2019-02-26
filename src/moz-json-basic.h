@@ -380,7 +380,7 @@ extract_histogram_field(const rj::Value& v, const string& probe,
 strings
 extract_histogram_fields(const rj::Value& v, const strings& probes,
 			 std::ofstream& ofs,
-			 const histogram_view_t hview = histogram_view_t::median)
+			 const histogram_view_t hview = dhview_t)
 {
   strings found;
   if (v.IsObject())
@@ -516,7 +516,11 @@ extract_environment_browsertime(const rj::Value& v)
 
 	      const rj::Value& dbrowser = vbscript["browser"];
 	      const rj::Value& dua = dbrowser["userAgent"];
-	      env.sw_name = dua.GetString();
+
+	      // Remove other user agent compatibility strings.
+	      string s = dua.GetString();
+	      s = s.substr(0, s.find(')') + 1);
+	      env.sw_name = s;
 	    }
 	}
     }

@@ -67,46 +67,6 @@ namespace constants {
 namespace k = moz::constants;
 
 
-/// Sanity check input file and path exist, and then return stem.
-string
-file_path_to_stem(string ifile)
-{
-  filesystem::path ipath(ifile);
-  if (!exists(ipath))
-    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
-  return ipath.stem().string();
-}
-
-/// Get filesystem path to the toplevel of the source directory.
-string
-get_prefix_path()
-{
-  const char* mtxenv = "MOZTELEMETRYX";
-  char* ppath;
-  ppath = getenv(mtxenv);
-  if (ppath == nullptr)
-    {
-      string m(k::errorprefix + "environment variable " + mtxenv + " not set");
-      m += k::newline;
-      throw std::runtime_error(m);
-    }
-
-  string spath(ppath);
-  if (spath.back() != k::pathseparator)
-    spath += k::pathseparator;
-  std::clog << mtxenv << " is: " << spath << std::endl;
-  return spath;
-}
-
-/// Get filesystem path to the toplevel of the data directory.
-string
-get_data_path()
-{
-  string prefixp(get_prefix_path());
-  return prefixp + "data/";
-}
-
-
 /**
    Histogram types, from nsITelemetry.idl
 
@@ -138,6 +98,8 @@ enum class histogram_view_t
   quantile = 3
 };
 
+constexpr histogram_view_t dhview_t = histogram_view_t::median;
+
 
 /// Compile time switches for input data processing, JSON format.
 enum class json_t
@@ -149,22 +111,24 @@ enum class json_t
   w3c
 };
 
-  constexpr json_t djson_t = json_t::mozilla;
+//constexpr json_t djson_t = json_t::mozilla_android;
+constexpr json_t djson_t = json_t::browsertime;
 
-  /**
-  Environmental Metadata
 
-  distributionId
-  os.name
-  os.version
-  os.locale
-  cpu.count
-  memoryMB
-  applicationName
-  architecture
-  version
-    buildId
-    browser.engagement.total_uri_count
+/**
+   Environmental Metadata
+
+   distributionId
+   os.name
+   os.version
+   os.locale
+   cpu.count
+   memoryMB
+   applicationName
+   architecture
+   version
+   buildId
+   browser.engagement.total_uri_count
 */
 struct environment
 {
@@ -234,6 +198,45 @@ to_value_id_mmap(const id_value_map& ivm, uvalue_set& uniquev)
   return vimm;
 }
 
+
+/// Sanity check input file and path exist, and then return stem.
+string
+file_path_to_stem(string ifile)
+{
+  filesystem::path ipath(ifile);
+  if (!exists(ipath))
+    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
+  return ipath.stem().string();
+}
+
+/// Get filesystem path to the toplevel of the source directory.
+string
+get_prefix_path()
+{
+  const char* mtxenv = "MOZTELEMETRYX";
+  char* ppath;
+  ppath = getenv(mtxenv);
+  if (ppath == nullptr)
+    {
+      string m(k::errorprefix + "environment variable " + mtxenv + " not set");
+      m += k::newline;
+      throw std::runtime_error(m);
+    }
+
+  string spath(ppath);
+  if (spath.back() != k::pathseparator)
+    spath += k::pathseparator;
+  std::clog << mtxenv << " is: " << spath << std::endl;
+  return spath;
+}
+
+/// Get filesystem path to the toplevel of the data directory.
+string
+get_data_path()
+{
+  string prefixp(get_prefix_path());
+  return prefixp + "data/";
+}
 } // namespace moz
 
 #endif

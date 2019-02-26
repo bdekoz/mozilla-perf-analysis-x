@@ -1,5 +1,12 @@
 2019-02-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x.h (dhview_t): Add default histogram view.
+	* src/moz-json-basic.h (extract_environment_browsertime): Trim
+	other user agents from sw_name string.
+	* src/moz-telemetry-x-analyze-radial.cc: Use uvalue to radiate.
+
+2019-02-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-extract.cc (extract_mozilla_android_ids):
 	Be less aggressive about extracting full schema.
 
