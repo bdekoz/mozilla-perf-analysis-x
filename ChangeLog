@@ -1,5 +1,11 @@
 2019-02-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-svg.h (render_metadata_time): New.
+	(render_metadata_environment): Overload for duo.
+	* src/moz-telemetry-x-analyze-radial-duo.cc: Use them.
+
+2019-02-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-radial-duo.cc: New.
 
 	* src/moz-telemetry-x-analyze-radial.cc: To...

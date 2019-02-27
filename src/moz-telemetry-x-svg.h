@@ -191,12 +191,46 @@ place_metadata(svg_form& obj, const typography& typo, const environment& env)
 }
 
 
-// Metadata display.
+// Uno
 void
 render_metadata_environment(svg_form& obj, const environment& env)
 {
-  typography typom = make_typography_metadata();
-  place_metadata(obj, typom, env);
+  typography typo = make_typography_metadata();
+  place_metadata(obj, typo, env);
+}
+
+// Duo
+void
+render_metadata_environment(svg_form& obj,
+			    const environment& env1, const environment& env2)
+{
+  typography typo = make_typography_metadata();
+
+  place_text_metadata(obj, typo, env1.sw_name);
+  place_text_metadata(obj, typo, " ");
+  place_text_metadata(obj, typo, "Google Chrome 2.32");
+
+  place_text_metadata(obj, typo, " ");
+
+  place_text_metadata(obj, typo, to_string(env1.uri_count) + " uri count");
+  place_text_metadata(obj, typo, env1.url);
+  place_text_metadata(obj, typo, env1.date_time_stamp);
+}
+
+
+
+void
+render_metadata_time(svg_form& obj, const int timen, const colore& c, int y)
+{
+  // Total time.
+  typography typot = make_typography_metadata();
+  typot._M_size = 48;
+  typot._M_style._M_fill_color = c;
+
+  std::ostringstream oss;
+  oss.imbue(std::locale(""));
+  oss << timen << " ms";
+  place_text_at_point(obj, typot, oss.str(), k::margin, y);
 }
 
 
@@ -225,17 +259,18 @@ render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
       y -= ydelta;
     }
 
-  // Total time.
-  typography typot(typom);
-  typot._M_size = 48;
-  typot._M_style._M_fill_color = colore::red;
-  std::ostringstream oss;
-  oss.imbue(std::locale(""));
-  oss << time_max << " ms";
-  place_text_at_point(obj, typot, oss.str(), k::margin,
-		      obj._M_area._M_height / 2);
+  render_metadata_time(obj, time_max, colore::red, obj._M_area._M_height / 2);
 }
 
+
+void
+render_metadata_title(svg_form& obj, const int time_max, const string fstem,
+		      const colore& c, int y, int x = k::margin)
+{
+  const typography typom = make_typography_metadata();
+  render_metadata_time(obj, time_max, c, y);
+  place_text_at_point(obj, typom, fstem, k::margin, y + 20);
+}
 } // namespace moz
 
 #endif

@@ -86,23 +86,25 @@ int main(int argc, char* argv[])
   // Size is inverse of denomenator argument below.
 
   // 1. Moz Telemetry baseline ripple
-  typography typohi = typo;
-  typohi._M_size = 14;
-  typohi._M_style._M_fill_color = colore::ruriiro;
-  radiate_ids_per_value_on_arc(obj, typohi, iv1, value_max, 8);
+  typography typof = typo;
+  typof._M_style._M_fill_color = colore::red;
+  radiate_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 10);
 
 
   // 2. Browsertime performance timings orange ripple, next bigger size
-  typography typobt = typo;
-  typobt._M_style._M_fill_color = colore::asamaorange;
-  radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 5);
+  typography typoc = typo;
+  typoc._M_style._M_fill_color = colore::blue;
+  radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3);
 
   // Add metadata.
   environment env1 = deserialize_environment(fstem1);
-  //  environment env2 = deserialize_environment(fstem2);
-  // environment env = coalesce_environments(env1, env2);
-  render_metadata_environment(obj, env1);
-  render_metadata_title(obj, value_max, fstem1, fstem2, " ");
+  environment env2 = deserialize_environment(fstem2);
+  render_metadata_environment(obj, env1, env2);
+
+  auto y = obj._M_area._M_height / 2;
+
+  render_metadata_title(obj, maxv1, fstem1, colore::red, y - 50);
+  render_metadata_title(obj, maxv2, fstem2, colore::blue, y + 50);
 
   return 0;
 }
