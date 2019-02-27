@@ -1,3 +1,10 @@
+2019-02-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze-radial-duo.cc: New.
+
+	* src/moz-telemetry-x-analyze-radial.cc: To...
+	* src/moz-telemetry-x-analyze-radial-uno.cc: ...this.
+
 2019-02-25  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x.h (dhview_t): Add default histogram view.
