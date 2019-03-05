@@ -1,10 +1,11 @@
 2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
-	* src/moz-json-basic.h
-	* src/moz-telemetry-x-analyze-radial-duo.cc
-	* src/moz-telemetry-x-analyze-radial-uno.cc
-	* src/moz-telemetry-x-analyze-ripple.cc
-	* src/moz-telemetry-x.h
+	* src/moz-json-basic.h (deserialize_environment): Use full path of
+	input csv file to compute.
+	* src/moz-telemetry-x-analyze-radial-duo.cc: Adjust.
+	* src/moz-telemetry-x-analyze-radial-uno.cc: Same.
+	* src/moz-telemetry-x-analyze-ripple.cc: Same.
+	* src/moz-telemetry-x.h: Cleanups.
 
 2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
