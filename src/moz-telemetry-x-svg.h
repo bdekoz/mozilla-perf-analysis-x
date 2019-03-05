@@ -208,7 +208,7 @@ render_metadata_environment(svg_form& obj,
 
   place_text_metadata(obj, typo, env1.sw_name);
   place_text_metadata(obj, typo, " ");
-  place_text_metadata(obj, typo, "Google Chrome 2.32");
+  place_text_metadata(obj, typo, "Firefox x WebView (System)");
 
   place_text_metadata(obj, typo, " ");
 

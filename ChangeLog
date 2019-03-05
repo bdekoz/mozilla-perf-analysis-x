@@ -1,3 +1,7 @@
+2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-svg.h: Update tag text.
+
 2019-02-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-svg.h (render_metadata_time): New.
