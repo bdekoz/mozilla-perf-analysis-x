@@ -111,7 +111,6 @@ enum class json_t
   w3c
 };
 
-//constexpr json_t djson_t = json_t::mozilla_android;
 constexpr json_t djson_t = json_t::browsertime;
 
 
@@ -209,6 +208,7 @@ file_path_to_stem(string ifile)
   return ipath.stem().string();
 }
 
+
 /// Get filesystem path to the toplevel of the source directory.
 string
 get_prefix_path()
@@ -229,6 +229,7 @@ get_prefix_path()
   std::clog << mtxenv << " is: " << spath << std::endl;
   return spath;
 }
+
 
 /// Get filesystem path to the toplevel of the data directory.
 string

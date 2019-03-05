@@ -1,5 +1,13 @@
 2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h
+	* src/moz-telemetry-x-analyze-radial-duo.cc
+	* src/moz-telemetry-x-analyze-radial-uno.cc
+	* src/moz-telemetry-x-analyze-ripple.cc
+	* src/moz-telemetry-x.h
+
+2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-svg.h: Update tag text.
 
 2019-02-26  Benjamin De Kosnik  <bdekoz@mozilla.com>

@@ -119,8 +119,8 @@ int main(int argc, char* argv[])
   radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 7);
 
   // Add metadata.
-  environment env1 = deserialize_environment(fstem1);
-  environment env2 = deserialize_environment(fstem2);
+  environment env1 = deserialize_environment(idata1csv);
+  environment env2 = deserialize_environment(idata2csv);
   environment env = coalesce_environments(env1, env2);
   render_metadata_environment(obj, env);
   render_metadata_title(obj, value_max, fstem1, fstem2,

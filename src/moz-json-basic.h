@@ -590,12 +590,25 @@ serialize_environment(const environment& env, string ofile)
 }
 
 
-// Take stem of environment JSON file and return in-memory enviornment object.
+// Take environment JSON file and return in-memory environment object.
 environment
 deserialize_environment(string ifile)
 {
+  // Find environment JSON file from input ifile.
+  auto extpos = ifile.rfind(k::csv_ext);
+  if (extpos != string::npos)
+    ifile.replace(extpos, 4, k::environment_ext);
+  else
+    {
+      string m("deserialize_environment:: error environment file from ");
+      m += k::csv_ext;
+      m += " not found in ";
+      m += ifile;
+      throw std::runtime_error(m);
+    }
+
   // Load input JSON data file into DOM.
-  rj::Document dom(deserialize_json_to_dom(ifile + k::environment_ext));
+  rj::Document dom(deserialize_json_to_dom(ifile));
 
   environment env { };
   if (dom.IsObject() && dom.HasMember("sw_name"))

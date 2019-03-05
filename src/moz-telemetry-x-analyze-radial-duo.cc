@@ -88,17 +88,17 @@ int main(int argc, char* argv[])
   // 1. Moz Telemetry baseline ripple
   typography typof = typo;
   typof._M_style._M_fill_color = colore::red;
-  radiate_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 10);
+  radiate_ids_per_value_on_arc(obj, typof, iv1, value_max, 10);
 
 
   // 2. Browsertime performance timings orange ripple, next bigger size
   typography typoc = typo;
   typoc._M_style._M_fill_color = colore::blue;
-  radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3);
+  radiate_ids_per_value_on_arc(obj, typoc, iv2, value_max, 3);
 
   // Add metadata.
-  environment env1 = deserialize_environment(fstem1);
-  environment env2 = deserialize_environment(fstem2);
+  environment env1 = deserialize_environment(idata1csv);
+  environment env2 = deserialize_environment(idata2csv);
   render_metadata_environment(obj, env1, env2);
 
   auto y = obj._M_area._M_height / 2;
