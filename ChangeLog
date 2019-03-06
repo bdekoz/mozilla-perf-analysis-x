@@ -1,5 +1,17 @@
 2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h: Consistently use u as an unordered* prefix
+	on types.
+	(id_value_map): To id_value_umap.
+	* src/moz-telemetry-x-analyze-radial-duo.cc: Same, adjust use.
+	* src/moz-telemetry-x-analyze-radial-uno.cc: Same.
+	* src/moz-telemetry-x-analyze-ripple.cc: Same.
+	* src/moz-telemetry-x-analyze.h (splay_ids): Consolidate logic.
+	(radiate_ids_by_uvalue): Use it, add rspace parameter.
+	* src/moz-telemetry-x.h (k::pi): Move here. Adjust.
+
+2019-03-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (deserialize_environment): Use full path of
 	input csv file to compute.
 	* src/moz-telemetry-x-analyze-radial-duo.cc: Adjust.

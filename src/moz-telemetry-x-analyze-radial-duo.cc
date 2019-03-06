@@ -73,10 +73,10 @@ int main(int argc, char* argv[])
 
   // Deserialize CSV files.
   int maxv1(0);
-  id_value_map iv1 = deserialize_id_value_map(idata1csv, maxv1);
+  id_value_umap iv1 = deserialize_id_value_map(idata1csv, maxv1);
 
   int maxv2(0);
-  id_value_map iv2 = deserialize_id_value_map(idata2csv, maxv2);
+  id_value_umap iv2 = deserialize_id_value_map(idata2csv, maxv2);
 
   // Find max value of all inputs.
   const int value_max(std::max(maxv1, maxv2));
@@ -85,16 +85,16 @@ int main(int argc, char* argv[])
   // Draw radial rings on canvas  from inner to outter ripple.
   // Size is inverse of denomenator argument below.
 
-  // 1. Moz Telemetry baseline ripple
+  // 1. Firefox inner, blue (2 spacer)
   typography typof = typo;
   typof._M_style._M_fill_color = colore::red;
-  radiate_ids_per_value_on_arc(obj, typof, iv1, value_max, 10);
+  radiate_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 10, 2);
 
 
-  // 2. Browsertime performance timings orange ripple, next bigger size
+  // 2. Chrome outer, red (1 spacer)
   typography typoc = typo;
   typoc._M_style._M_fill_color = colore::blue;
-  radiate_ids_per_value_on_arc(obj, typoc, iv2, value_max, 3);
+  radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3, 1);
 
   // Add metadata.
   environment env1 = deserialize_environment(idata1csv);

@@ -73,10 +73,10 @@ int main(int argc, char* argv[])
 
   // Deserialize CSV files.
   int maxv1(0);
-  id_value_map iv1 = deserialize_id_value_map(idata1csv, maxv1);
+  id_value_umap iv1 = deserialize_id_value_map(idata1csv, maxv1);
 
   int maxv2(0);
-  id_value_map iv2 = deserialize_id_value_map(idata2csv, maxv2);
+  id_value_umap iv2 = deserialize_id_value_map(idata2csv, maxv2);
 
   // Find max value of all inputs.
   const int value_max(std::max(maxv1, maxv2));
@@ -86,8 +86,8 @@ int main(int argc, char* argv[])
   // Size is inverse of denomenator argument below.
 
   // If a highlight input file exists, split the first
-  // id_value_map object into a found matches object and a remaining object.
-  // Otherwise, just use the first id_value_map as-is.
+  // id_value_umap object into a found matches object and a remaining object.
+  // Otherwise, just use the first id_value_umap as-is.
   if (argc == 3)
     {
       // 1. Moz Telemetry baseline ripple
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
       // 1. Moz Telemetry baseline ripple.
       const strings hilights = deserialize_text_to_strings(idatatxt);
       std::clog << iv1.size() << " original map size" << std::endl;
-      id_value_map iv1hi = remove_matches_id_value_map(iv1, hilights);
+      id_value_umap iv1hi = remove_matches_id_value_map(iv1, hilights);
       std::clog << iv1hi.size() << " found matches map size" << std::endl;
       std::clog << iv1.size() << " edited original map size" << std::endl;
       radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);

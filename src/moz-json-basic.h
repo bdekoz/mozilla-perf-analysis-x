@@ -81,10 +81,10 @@ deserialize_text_to_strings(string inames)
 
 // Read CSV file of [marker name || probe name] and value, and
 // store in hash_map, return this plus the max value as a tuple.
-id_value_map
+id_value_umap
 deserialize_id_value_map(const string ifile, int& value_max)
 {
-  id_value_map probe_map;
+  id_value_umap probe_map;
   std::ifstream ifs(ifile);
   if (ifs.good())
     {

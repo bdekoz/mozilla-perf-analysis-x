@@ -22,6 +22,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <experimental/filesystem>
@@ -60,6 +61,8 @@ namespace constants {
 
   // Margin in pixels.
   constexpr int margin = 100;
+
+  constexpr double pi(3.14159);
 
 } // namespace constants
 
@@ -151,22 +154,22 @@ struct environment
 
 /// Hash map of unique id to (not necessarily) unique value.
 /// Use this for sorting by id.
-using id_value_map = std::unordered_map<string, int>;
+using id_value_umap = std::unordered_map<string, int>;
 
 /// Hash multimap of unique value to (perhaps multiple) unique ids.
 /// Use this form for sorting by value.
-using value_id_mmap = std::unordered_multimap<int, string>;
-using uvalue_set = std::unordered_set<int>;
+using value_id_ummap = std::unordered_multimap<int, string>;
+using uvalue_set = std::set<int>;
 
 /// Remove all from map that match the input (matches) strings.
 /// Return found match entries.
-id_value_map
-remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
+id_value_umap
+remove_matches_id_value_map(id_value_umap& ivm, const strings& matches)
 {
-  id_value_map foundmap;
+  id_value_umap foundmap;
   for (const auto& key: matches)
     {
-      id_value_map::iterator iter = ivm.find(key);
+      id_value_umap::iterator iter = ivm.find(key);
       if (iter != ivm.end())
 	{
 	  // Insert found element into return map....
@@ -182,11 +185,11 @@ remove_matches_id_value_map(id_value_map& ivm, const strings& matches)
 }
 
 
-/// Convert id_value_map to value_id_mmap + set of unique values.
-value_id_mmap
-to_value_id_mmap(const id_value_map& ivm, uvalue_set& uniquev)
+/// Convert id_value_umap to value_id_mmap + set of unique values.
+value_id_ummap
+to_value_id_mmap(const id_value_umap& ivm, uvalue_set& uniquev)
 {
-  value_id_mmap vimm;
+  value_id_ummap vimm;
   for (auto& e: ivm)
     {
       string s = e.first;
