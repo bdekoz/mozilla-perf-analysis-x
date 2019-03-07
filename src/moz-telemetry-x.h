@@ -159,7 +159,7 @@ using id_value_umap = std::unordered_map<string, int>;
 /// Hash multimap of unique value to (perhaps multiple) unique ids.
 /// Use this form for sorting by value.
 using value_id_ummap = std::unordered_multimap<int, string>;
-using uvalue_set = std::set<int>;
+using value_set = std::set<int>;
 
 /// Remove all from map that match the input (matches) strings.
 /// Return found match entries.
@@ -187,7 +187,7 @@ remove_matches_id_value_map(id_value_umap& ivm, const strings& matches)
 
 /// Convert id_value_umap to value_id_mmap + set of unique values.
 value_id_ummap
-to_value_id_mmap(const id_value_umap& ivm, uvalue_set& uniquev)
+to_value_id_mmap(const id_value_umap& ivm, value_set& uniquev)
 {
   value_id_ummap vimm;
   for (auto& e: ivm)

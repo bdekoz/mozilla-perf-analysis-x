@@ -1,5 +1,13 @@
 2019-03-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h (splay_ids_stagger): Cleanup.
+	(append_ids_at): Use this as default.
+	(radiate_ids_per_uvalue_on_arc): Always radiate_use ids_by_uvalue.
+	* src/moz-telemetry-x.h: Adjust type names.
+	* src/moz-telemetry-x-analyze-radial-uno.cc: Adjust radiate call.
+
+2019-03-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h: Remove warnings.
 	* src/moz-telemetry-x-svg.h: Same.
 

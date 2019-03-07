@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
   int value_max(0);
   typography typo = make_typography_id();
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max);
-  radiate_ids_per_uvalue_on_arc(obj, typo, iv, value_max, 6);
+  radiate_ids_per_uvalue_on_arc(obj, typo, iv, value_max, 6, 2);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);

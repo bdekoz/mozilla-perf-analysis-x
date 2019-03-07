@@ -193,16 +193,34 @@ splay_ids_stagger(svg_form& obj, const typography& typo, const strings& ids,
 		  const double angled, const point origin, double r,
 		  double rspace)
 {
-  auto imiddle = ids.begin() + (ids.size() / 2);
-  strings ids1(ids.begin(), imiddle);
-  strings ids2(imiddle, ids.end());
-#if 0
-  splay_ids_after(obj, typo, ids1, angled, origin, r + 65, rspace * 2);
-  splay_ids_after(obj, typo, ids2, angled, origin, r + 80, rspace * 2);
-#endif
+  if (ids.size() > 1)
+    {
+      auto imiddle = ids.begin() + (ids.size() / 2);
+      strings ids1(ids.begin(), imiddle);
+      strings ids2(imiddle, ids.end());
+      splay_ids_after(obj, typo, ids1, angled, origin, r, rspace);
+      splay_ids_after(obj, typo, ids2, angled, origin, r + 125, rspace);
+    }
+  else
+    splay_ids_after(obj, typo, ids, angled, origin, r, rspace);
+}
 
-  splay_ids_after(obj, typo, ids1, angled, origin, r, rspace);
-  splay_ids_after(obj, typo, ids2, angled, origin, r + 125, rspace);
+
+void
+append_ids_at(svg_form& obj, const typography& typo, const strings& ids,
+	      const double angled, const point origin, double r)
+{
+  double angler = (k::pi / 180.0) * angled;
+  auto [ x, y ] = get_circumference_point(angler, r, origin);
+  string scat;
+  for (const string& s: ids)
+    {
+      if (!scat.empty())
+	scat += ", ";
+      scat += s;
+    }
+  std::clog << scat << std::endl;
+  place_text_id(obj, typo, scat, x, y, angled);
 }
 
 
@@ -254,7 +272,9 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
   //splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
   //stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
 
-  splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
+  //splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
+
+  append_ids_at(obj, typo, ids, angled, origin, r + 65);
 }
 
 
@@ -268,7 +288,7 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 {
   // Convert from string id-keys to int value-keys, plus an ordered set of all
   // the unique values.
-  uvalue_set uvalues;
+  value_set uvalues;
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
 
   int last = 0;
@@ -276,25 +296,20 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   for (const auto& v : uvalues)
     {
       auto count = uvaluemm.count(v);
-      if (count == 1)
-	{
-	  auto i = uvaluemm.find(v);
-	  radiate_id_by_value(obj, typo, i->second, v, value_max, r, true);
-	}
-      else
-	{
-	  // Extract all the ids for a given value.
-	  auto irange = uvaluemm.equal_range(v);
-	  auto ibegin = irange.first;
-	  auto iend = irange.second;
-	  strings ids;
-	  for (auto i = ibegin; i != iend; ++i)
-	    ids.push_back(i->second);
-	  sort_ids_by_size(ids);
+      std::clog << "value, count, difference: " << v << ','
+		<< count << ',' << v - last << std::endl;
 
-	  if (v)
-	    radiate_ids_by_uvalue(obj, typo, ids, v, value_max, r, rspace);
-	}
+      // Extract all the ids for a given value.
+      auto irange = uvaluemm.equal_range(v);
+      auto ibegin = irange.first;
+      auto iend = irange.second;
+      strings ids;
+      for (auto i = ibegin; i != iend; ++i)
+	ids.push_back(i->second);
+      sort_ids_by_size(ids);
+
+      if (v)
+	radiate_ids_by_uvalue(obj, typo, ids, v, value_max, r, rspace);
 
       // Set last value to the current value.
       last = v;
