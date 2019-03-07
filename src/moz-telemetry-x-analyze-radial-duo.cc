@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
   // Create svg canvas.
   const string fstem1 = file_path_to_stem(idata1csv);
   const string fstem2 = file_path_to_stem(idata2csv);
-  const string fstem(fstem1 + "-X-" + fstem2);
+  const string fstem(fstem1 + "-x-" + "chromium");
   svg_form obj = initialize_svg(fstem);
 
   // Deserialize CSV files.
