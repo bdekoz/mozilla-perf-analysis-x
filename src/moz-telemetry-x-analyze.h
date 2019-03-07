@@ -77,6 +77,72 @@ get_circumference_point(double angler, double r, const point origin)
   return std::make_tuple(x, y);
 }
 
+// RADIAL 1
+
+/*
+  Draw text on the circumference of a circle of radius r centered at (cx, cy)
+  corresponding to the angle above.
+*/
+void
+radiate_id_by_value(svg_form& obj, const typography& typo, string pname,
+		    int pvalue, int pmax, double r, bool rotatep)
+{
+  const double angled = get_angle(pvalue, pmax);
+  double angler = (k::pi / 180.0) * angled;
+  auto& area = obj._M_area;
+  const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
+  auto [ x, y ] = get_circumference_point(angler, r, origin);
+
+  // Consolidate label text to be "VALUE -> NAME"
+  constexpr uint valuewidth(9);
+  std::ostringstream oss;
+  oss.imbue(std::locale(""));
+  oss << std::setfill(' ') << std::setw(valuewidth) << std::left << pvalue;
+  string label = oss.str() + " -> " + pname;
+
+  if (rotatep)
+    place_text_id(obj, typo, label, x, y, angled);
+  else
+    place_text_id(obj, typo, label, x, y, 0);
+}
+
+
+/*
+  Create radial viz of names from input file arranged clockwise around
+  the edge of a circle circumference. The text of the names can be
+  rotated, or not.
+
+ Arguments are:
+
+ ifile == CSV file of extracted marker/probe names to display.
+
+ rdenom == scaling factor for radius of circle used for display, where
+  larger values (used as a denominator) make smaller (tighter) circles.
+
+ rotatep == rotate name text to be on an arc from the origin of the circle.
+
+*/
+svg_form
+radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
+			     const id_value_umap& ivm, const int value_max,
+			     const int rdenom, bool rotatep = true)
+{
+  // Probe/Marker display.
+  // Loop through map key/values and put on canvas.
+  const double r = get_radius(obj, rdenom);
+  for (const auto& v : ivm)
+    {
+      string pname(v.first);
+      int pvalue(v.second);
+      if (pvalue)
+	radiate_id_by_value(obj, typo, pname, pvalue, value_max, r, rotatep);
+    }
+
+  return obj;
+}
+
+
+// RADIAL 2
 
 void
 sort_ids_by_size(strings& ids)
@@ -130,8 +196,13 @@ splay_ids_stagger(svg_form& obj, const typography& typo, const strings& ids,
   auto imiddle = ids.begin() + (ids.size() / 2);
   strings ids1(ids.begin(), imiddle);
   strings ids2(imiddle, ids.end());
+#if 0
   splay_ids_after(obj, typo, ids1, angled, origin, r + 65, rspace * 2);
   splay_ids_after(obj, typo, ids2, angled, origin, r + 80, rspace * 2);
+#endif
+
+  splay_ids_after(obj, typo, ids1, angled, origin, r, rspace);
+  splay_ids_after(obj, typo, ids2, angled, origin, r + 125, rspace);
 }
 
 
@@ -181,72 +252,9 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
   // Next, print out the various id's on an arc with a bigger radius.
   //splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
   //splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
-  //splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
-  stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
-}
+  //stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
 
-
-/*
-  Draw text on the circumference of a circle of radius r centered at (cx, cy)
-  corresponding to the angle above.
-*/
-void
-radiate_id_by_value(svg_form& obj, const typography& typo, string pname,
-		    int pvalue, int pmax, double r, bool rotatep)
-{
-  const double angled = get_angle(pvalue, pmax);
-  double angler = (k::pi / 180.0) * angled;
-  auto& area = obj._M_area;
-  const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
-  auto [ x, y ] = get_circumference_point(angler, r, origin);
-
-  // Consolidate label text to be "VALUE -> NAME"
-  constexpr uint valuewidth(9);
-  std::ostringstream oss;
-  oss.imbue(std::locale(""));
-  oss << std::setfill(' ') << std::setw(valuewidth) << std::left << pvalue;
-  string label = oss.str() + " -> " + pname;
-
-  if (rotatep)
-    place_text_id(obj, typo, label, x, y, angled);
-  else
-    place_text_id(obj, typo, label, x, y, 0);
-}
-
-
-/*
-  Create radial viz of names from input file arranged clockwise around
-  the edge of a circle circumference. The text of the names can be
-  rotated, or not.
-
- Arguments are:
-
- ifile == CSV file of extracted marker/probe names to display.
-
- rdenom == scaling factor for radius of circle used for display, where
-  larger values (used as a denominator) make smaller (tighter) circles.
-
- rotatep == rotate name text to be on an arc from the origin of the circle.
-
-*/
-svg_form
-radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
-			     const id_value_umap& ivm,
-			     const int value_max, const int rdenom,
-			     bool rotatep = true)
-{
-  // Probe/Marker display.
-  // Loop through map key/values and put on canvas.
-  const double r = get_radius(obj, rdenom);
-  for (const auto& v : ivm)
-    {
-      string pname(v.first);
-      int pvalue(v.second);
-      if (pvalue)
-	radiate_id_by_value(obj, typo, pname, pvalue, value_max, r, rotatep);
-    }
-
-  return obj;
+  splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
 }
 
 
@@ -255,18 +263,16 @@ radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
 // arc/angle.
 svg_form
 radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
-			      const id_value_umap& ivm,
-			      const int value_max,
+			      const id_value_umap& ivm, const int value_max,
 			      const int rdenom, const int rspace)
 {
-  const double r = get_radius(obj, rdenom);
-
   // Convert from string id-keys to int value-keys, plus an ordered set of all
   // the unique values.
   uvalue_set uvalues;
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
 
   int last = 0;
+  const double r = get_radius(obj, rdenom);
   for (const auto& v : uvalues)
     {
       auto count = uvaluemm.count(v);

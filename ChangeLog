@@ -1,5 +1,10 @@
 2019-03-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze.h: Remove warnings.
+	* src/moz-telemetry-x-svg.h: Same.
+
+2019-03-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze.h (sort_ids_by_size): New.
 	(splay_ids_around): New.
 	(splay_ids_after): New.

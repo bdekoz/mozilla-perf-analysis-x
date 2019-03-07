@@ -202,7 +202,7 @@ render_metadata_environment(svg_form& obj, const environment& env)
 // Duo
 void
 render_metadata_environment(svg_form& obj,
-			    const environment& env1, const environment& env2)
+			    const environment& env1, const environment&)
 {
   typography typo = make_typography_metadata();
 
@@ -269,7 +269,7 @@ render_metadata_title(svg_form& obj, const int time_max, const string fstem,
 {
   const typography typom = make_typography_metadata();
   render_metadata_time(obj, time_max, c, y);
-  place_text_at_point(obj, typom, fstem, k::margin, y + 20);
+  place_text_at_point(obj, typom, fstem, x, y + 20);
 }
 } // namespace moz
 
