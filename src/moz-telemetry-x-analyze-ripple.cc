@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
       id_value_umap iv1hi = remove_matches_id_value_map(iv1, hilights);
       std::clog << iv1hi.size() << " found matches map size" << std::endl;
       std::clog << iv1.size() << " edited original map size" << std::endl;
-      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
+      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7, 2);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
@@ -109,14 +109,14 @@ int main(int argc, char* argv[])
 	  typography typohi = typo;
 	  typohi._M_size = 20;
 	  typohi._M_style._M_fill_color = colore::ruriiro;
-	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 7);
+	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 7, 2);
 	}
     }
 
   // 3. Browsertime performance timings orange ripple, next bigger size
   typography typobt = typo;
   typobt._M_style._M_fill_color = colore::asamaorange;
-  radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 7);
+  radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 5, 2);
 
   // Add metadata.
   environment env1 = deserialize_environment(idata1csv);

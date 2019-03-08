@@ -1,3 +1,8 @@
+2019-03-07  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze-ripple.cc: Adjust radial call to
+	current conventions.
+
 2019-03-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze.h (splay_ids_stagger): Cleanup.
