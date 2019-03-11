@@ -1,5 +1,12 @@
 2019-03-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze-ripple.cc (main): Don't assume
+	environment file always.
+	* src/moz-telemetry-x.h (file_path_to_string): Guard against empty
+	strings.
+
+2019-03-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-extract.cc (extract_mozilla_android_ids):
 	Fix extraction for gv_measurements.
 	* src/moz-telemetry-x.h: Default to sum histogram exraction for

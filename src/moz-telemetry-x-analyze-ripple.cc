@@ -33,10 +33,13 @@ usage()
 {
   string binname("moz-telemetry-x-analyze-ripple.exe");
   string s("usage:  " + binname + " data1.csv data2.csv (edit.txt)");
-  s += '\n';
+  s += k::newline;
   s += "data1.csv is a JSON file containing a mozilla telemetry main ping";
+  s += k::newline;
   s += "data2.csv is a JSON file containing a browsertime results file";
+  s += k::newline;
   s += "edit.xt is an optional TEXT file containing higlight id matches";
+  s += k::newline;
   return s;
 }
 
@@ -119,9 +122,21 @@ int main(int argc, char* argv[])
   radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 5, 2);
 
   // Add metadata.
-  environment env1 = deserialize_environment(idata1csv);
-  environment env2 = deserialize_environment(idata2csv);
-  environment env = coalesce_environments(env1, env2);
+  // Depending on the JSON schema, an environment file may not be generated
+  // AKA, mozilla_android.
+  environment env;
+  try
+    {
+      environment env1 = deserialize_environment(idata1csv);
+      environment env2 = deserialize_environment(idata2csv);
+      env = coalesce_environments(env1, env2);
+    }
+  catch (const std::runtime_error& e)
+    {
+      env = deserialize_environment(idata2csv);
+    }
+
+
   render_metadata_environment(obj, env);
   render_metadata_title(obj, value_max, fstem1, fstem2,
 			file_path_to_stem(idatatxt));

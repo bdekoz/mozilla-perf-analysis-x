@@ -205,10 +205,15 @@ to_value_id_mmap(const id_value_umap& ivm, value_set& uniquev)
 string
 file_path_to_stem(string ifile)
 {
-  filesystem::path ipath(ifile);
-  if (!exists(ipath))
-    throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
-  return ipath.stem().string();
+  string ret(ifile);
+  if (!ifile.empty())
+    {
+      filesystem::path ipath(ifile);
+      if (!exists(ipath))
+	throw std::runtime_error("moz::path_to_stem:: could not find " + ifile);
+      ret = ipath.stem().string();
+    }
+  return ret;
 }
 
 
