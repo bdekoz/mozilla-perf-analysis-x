@@ -1,3 +1,8 @@
+2019-03-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/config/url-list.txt: Update.
+	* src/moz-telemetry-x-analyze.h: Every other pokes out.
+
 2019-03-07  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze-ripple.cc: Adjust radial call to

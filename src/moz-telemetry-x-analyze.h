@@ -181,8 +181,8 @@ splay_ids_after(svg_form& obj, const typography& typo, const strings& ids,
   for (const string& s: ids)
     {
       double angler = (k::pi / 180.0) * angledt;
-      auto [ x2, y2 ] = get_circumference_point(angler, r, origin);
-      place_text_id(obj, typo, s, x2, y2, angledt);
+      auto [ x, y ] = get_circumference_point(angler, r, origin);
+      place_text_id(obj, typo, s, x, y, angledt);
       angledt -= rspace;
     }
 }
@@ -269,7 +269,7 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
 
   // Next, print out the various id's on an arc with a bigger radius.
   //splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
-  //splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
+  // splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
   //stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
 
   //splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
@@ -291,6 +291,7 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   value_set uvalues;
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
 
+  int n(1);
   int last = 0;
   const double r = get_radius(obj, rdenom);
   for (const auto& v : uvalues)
@@ -308,11 +309,17 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 	ids.push_back(i->second);
       sort_ids_by_size(ids);
 
+      // Every other id bumped out.
+      auto rr(r);
+      if ( n % 2 == 0)
+	rr += 120;
+
       if (v)
-	radiate_ids_by_uvalue(obj, typo, ids, v, value_max, r, rspace);
+	radiate_ids_by_uvalue(obj, typo, ids, v, value_max, rr, rspace);
 
       // Set last value to the current value.
       last = v;
+      ++n;
     }
 
   return obj;
