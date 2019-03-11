@@ -1,3 +1,10 @@
+2019-03-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-extract.cc (extract_mozilla_android_ids):
+	Fix extraction for gv_measurements.
+	* src/moz-telemetry-x.h: Default to sum histogram exraction for
+	mozilla_android.
+
 2019-03-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/config/url-list.txt: Update.

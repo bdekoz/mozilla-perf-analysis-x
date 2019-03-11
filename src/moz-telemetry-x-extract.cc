@@ -204,54 +204,70 @@ extract_mozilla_android_ids(string inames, string ifile)
   const string kkeyedhistogram("keyedHistograms");
 
   const string kparent("parent");
+  const string kcontent("content");
   const string kdynamic("dynamic");
   const string ksocket("socket");
   const string kgpu("gpu");
-
-  std::clog << "start" << std::endl;
 
   strings found;
   strings left(probes);
   if (dom.HasMember(kscalar.c_str()))
     {
       const rj::Value& ds = dom[kscalar.c_str()];
+      const rj::Value& dsp = ds[kparent.c_str()];
+      const rj::Value& dsc = ds[kcontent.c_str()];
       extract(extract_scalar_fields(ds, left, ofs), left, found);
+      extract(extract_scalar_fields(dsp, left, ofs), left, found);
+      extract(extract_scalar_fields(dsc, left, ofs), left, found);
     }
+  std::clog << "done scalar" << std::endl;
 
   if (dom.HasMember(kkeyedscalar.c_str()))
     {
       const rj::Value& dks = dom[kkeyedscalar.c_str()];
+      const rj::Value& dksp = dks[kparent.c_str()];
       extract(extract_scalar_fields(dks, left, ofs), left, found);
+      extract(extract_scalar_fields(dksp, left, ofs), left, found);
     }
+  std::clog << "done keyed scalar" << std::endl;
 
   if (dom.HasMember(khistogram.c_str()))
     {
       const rj::Value& dhi = dom[khistogram.c_str()];
       const rj::Value& dgpu = dhi[kgpu.c_str()];
       const rj::Value& dparent = dhi[kparent.c_str()];
+      const rj::Value& dcontent = dhi[kcontent.c_str()];
       const rj::Value& ddynam = dhi[kdynamic.c_str()];
       const rj::Value& dsocket = dhi[ksocket.c_str()];
 
       extract(extract_histogram_fields(dhi, left, ofs), left, found);
+      extract(extract_histogram_fields(dcontent, left, ofs), left, found);
       extract(extract_histogram_fields(dgpu, left, ofs), left, found);
-      //extract(extract_histogram_fields(dparent, left, ofs), left, found);
+      extract(extract_histogram_fields(dparent, left, ofs), left, found);
       extract(extract_histogram_fields(ddynam, left, ofs), left, found);
       extract(extract_histogram_fields(dsocket, left, ofs), left, found);
     }
-  std::clog << "histo" << std::endl;
+  std::clog << "done histogram" << std::endl;
 
   if (dom.HasMember(kkeyedhistogram.c_str()))
     {
       const rj::Value& dkhi = dom[kkeyedhistogram.c_str()];
       const rj::Value& dgpu = dkhi[kgpu.c_str()];
       const rj::Value& dparent = dkhi[kparent.c_str()];
+      const rj::Value& dcontent = dkhi[kcontent.c_str()];
+      const rj::Value& ddynam = dkhi[kdynamic.c_str()];
+      const rj::Value& dsocket = dkhi[ksocket.c_str()];
 
       extract(extract_histogram_fields(dkhi, left, ofs), left, found);
-      extract(extract_histogram_fields(dgpu, left, ofs), left, found);
+      std::clog << "done keyed histogram  1" << std::endl;
+      //extract(extract_histogram_fields(dcontent, left, ofs), left, found);
       //extract(extract_histogram_fields(dparent, left, ofs), left, found);
+      std::clog << "done keyed histogram  2" << std::endl;
+      // extract(extract_histogram_fields(dgpu, left, ofs), left, found);
+      // extract(extract_histogram_fields(ddynam, left, ofs), left, found);
+      // extract(extract_histogram_fields(dsocket, left, ofs), left, found);
     }
-
-  std::clog << "done" << std::endl;
+  std::clog << "done keyed histogram" << std::endl;
 }
 
 
