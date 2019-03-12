@@ -1,5 +1,9 @@
 2019-03-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x.h: Order constants first in the file.
+
+2019-03-11  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-ripple.cc (main): Don't assume
 	environment file always.
 	* src/moz-telemetry-x.h (file_path_to_string): Guard against empty

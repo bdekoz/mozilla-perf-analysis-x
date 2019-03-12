@@ -28,19 +28,7 @@
 #include <experimental/filesystem>
 
 
-namespace moz {
-
-/// Types.
-using std::string;
-using std::to_string;
-using strings = std::vector<std::string>;
-
-using point = std::tuple<double, double>;
-
-/// Namespaces.
-namespace filesystem = std::experimental::filesystem;
-
-namespace constants {
+namespace moz::constants {
 
   // Formatting.
   constexpr char space(' ');
@@ -52,7 +40,7 @@ namespace constants {
   constexpr char pathseparator('/');
 
   // Warning/Error prefixes.
-  const string errorprefix = "error -> ";
+  const std::string errorprefix = "error -> ";
 
   // Output file extentions.
   constexpr const char* csv_ext = ".csv";
@@ -64,9 +52,28 @@ namespace constants {
 
   constexpr double pi(3.14159);
 
-} // namespace constants
+} // namespace moz::constants
 
-/// Alias to moz::k.
+
+
+namespace moz {
+
+/// Types.
+using std::string;
+using std::to_string;
+using strings = std::vector<std::string>;
+
+using point = std::tuple<double, double>;
+
+// Previous unique value and size of ids with its value.
+using uvalue_tuple = std::tuple<int, int>;
+
+
+/// Alias namespace moz::filesystem to std::experimental::filesystem.
+namespace filesystem = std::experimental::filesystem;
+
+/// Alias namespace moz::k to mozilla::constants.
+namespace constants { }
 namespace k = moz::constants;
 
 
@@ -178,8 +185,6 @@ remove_matches_id_value_map(id_value_umap& ivm, const strings& matches)
 	  // Remove found elment from originating map (ivm)
 	  ivm.erase(iter);
 	}
-      else
-	std::clog << k::errorprefix << key << std::endl;
     }
   return foundmap;
 }
@@ -226,8 +231,9 @@ get_prefix_path()
   ppath = getenv(mtxenv);
   if (ppath == nullptr)
     {
-      string m(k::errorprefix + "environment variable " + mtxenv + " not set");
-      m += k::newline;
+      string m("moz::get_prefix_path environment variable ");
+      m += mtxenv;
+      m += " not set";
       throw std::runtime_error(m);
     }
 
