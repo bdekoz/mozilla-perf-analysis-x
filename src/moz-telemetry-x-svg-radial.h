@@ -77,7 +77,10 @@ get_circumference_point(double angler, double r, const point origin)
   return std::make_tuple(x, y);
 }
 
+
 // RADIAL 1
+// Radiate clockwise from 0 to 35x degrees about origin, placing each
+// id at a point on the circumference. Duplicate points overlap.
 
 /*
   Draw text on the circumference of a circle of radius r centered at (cx, cy)
@@ -143,6 +146,9 @@ radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
 
 
 // RADIAL 2
+// Radiate clockwise from 0 to 35x degrees about origin, placing each
+// id at a point on the circumference. Duplicate ids splay, stack,
+// or append/concatencate at, after, or around that point.
 
 void
 sort_ids_by_size(strings& ids)
@@ -206,24 +212,6 @@ splay_ids_stagger(svg_form& obj, const typography& typo, const strings& ids,
 }
 
 
-void
-append_ids_at(svg_form& obj, const typography& typo, const strings& ids,
-	      const double angled, const point origin, double r)
-{
-  double angler = (k::pi / 180.0) * angled;
-  auto [ x, y ] = get_circumference_point(angler, r, origin);
-  string scat;
-  for (const string& s: ids)
-    {
-      if (!scat.empty())
-	scat += ", ";
-      scat += s;
-    }
-  std::clog << scat << std::endl;
-  place_text_id(obj, typo, scat, x, y, angled);
-}
-
-
 // Rotate and stack ids at origin point, extending radius for each
 // from point of origin.
 void
@@ -246,10 +234,28 @@ stack_ids_at(svg_form& obj, const typography& typoo, const strings& ids,
 }
 
 
+void
+append_ids_at(svg_form& obj, const typography& typo, const strings& ids,
+	      const double angled, const point origin, double r)
+{
+  double angler = (k::pi / 180.0) * angled;
+  auto [ x, y ] = get_circumference_point(angler, r, origin);
+  string scat;
+  for (const string& s: ids)
+    {
+      if (!scat.empty())
+	scat += ", ";
+      scat += s;
+    }
+  place_text_id(obj, typo, scat, x, y, angled);
+}
+
+
 // Map ids with one value to a point cluster radiating out from a center.
 void
 radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
-		      int pvalue, int pmax, double r, double rspace)
+		      int pvalue, int pmax, double r,
+		      double rspace [[maybe_unused]])
 {
   auto& area = obj._M_area;
   const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
@@ -268,11 +274,11 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
   place_text_id(obj, typo, label, x, y, angled);
 
   // Next, print out the various id's on an arc with a bigger radius.
-  //splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
+  // splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
   // splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
-  //stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
+  // splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
 
-  //splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
+  // stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
 
   append_ids_at(obj, typo, ids, angled, origin, r + 65);
 }
@@ -291,14 +297,11 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   value_set uvalues;
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
 
-  int n(1);
-  int last = 0;
   const double r = get_radius(obj, rdenom);
   for (const auto& v : uvalues)
     {
       auto count = uvaluemm.count(v);
-      std::clog << "value, count, difference: " << v << ','
-		<< count << ',' << v - last << std::endl;
+      std::clog << "value, count: " << v << ',' << count << std::endl;
 
       // Extract all the ids for a given value.
       auto irange = uvaluemm.equal_range(v);
@@ -309,17 +312,204 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 	ids.push_back(i->second);
       sort_ids_by_size(ids);
 
-      // Every other id bumped out.
-      auto rr(r);
-      if ( n % 2 == 0)
-	rr += 120;
-
       if (v)
-	radiate_ids_by_uvalue(obj, typo, ids, v, value_max, rr, rspace);
+	radiate_ids_by_uvalue(obj, typo, ids, v, value_max, r, rspace);
+    }
 
-      // Set last value to the current value.
-      last = v;
-      ++n;
+  return obj;
+}
+
+
+// RADIAL 3
+// Radiate clockwise from 0 to 35x degrees about origin, placing each
+// id at a point cluster on the circumference. A point cluster is a
+// circle whos radius is proportionate to the number of duplicate ids
+// at that point.  Duplicate ids splay, stack, or
+// append/concatencate at, after, or around that point cluster.
+
+double
+distance_cartesian(const point& p1, const point& p2)
+{
+  auto [ x1, y1 ] = p1;
+  auto [ x2, y2 ] = p2;
+  auto distancex = (x2 - x1) * (x2 - x1);
+  auto distancey = (y2 - y1) * (y2 - y1);
+  double distance = sqrt(distancex + distancey);
+  return distance;
+}
+
+
+// https://developer.mozilla.org x 2D_collision_detection
+bool
+is_collision_detected(const point& p1, const int r1,
+		      const point& p2, const int r2)
+{
+  bool ret(false);
+  if (distance_cartesian(p1, p2) < r1 + r2)
+    ret = true;
+  return ret;
+}
+
+
+// Rotate and stack ids at origin point, extending radius for each
+// from point of origin.
+void
+kusama_ids_at_point(svg_form& obj, const typography& typo, const strings& ids,
+		    const point p, double r)
+{
+  string scat;
+  for (const string& s: ids)
+    {
+      if (!scat.empty())
+	scat += ", ";
+      scat += s;
+    }
+  auto [ x, y] = p;
+  point_2d_to_circle(obj, x, y, typo._M_style, r);
+}
+
+
+/**
+   Radiate as above *_per_uvalue_on_arc function, but group similar
+   values such that they are globbed into a sattelite circle, ids
+   splayed around the satellite, and not written on top of each other
+   on the same arc/angle.
+
+   Framing circle radius is the result of dividing page dimensions by (rdenom).
+
+   Satellite circle radius is the product of the number of ids with
+   the same value times a base multipler (rbase).
+*/
+svg_form
+kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
+			      const id_value_umap& ivm, const int value_max,
+			      const int rdenom, const double rbase = 5)
+{
+  auto& area = obj._M_area;
+  const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
+  const double r = get_radius(obj, rdenom);
+
+
+
+  // Convert from string id-keys to int value-keys, plus an ordered set of all
+  // the unique values.
+  value_set uvalues;
+  value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
+
+  // Map out preliminary data points.
+  std::vector<int> vuvalues(uvalues.begin(), uvalues.end());
+  std::vector<strings> vids;
+  std::vector<pointn> vpointns;
+  for (const auto& v : vuvalues)
+    {
+      auto count = uvaluemm.count(v);
+      std::clog << "value, count: " << v << ',' << count << std::endl;
+
+      // Extract all the ids for a given value.
+      auto irange = uvaluemm.equal_range(v);
+      auto ibegin = irange.first;
+      auto iend = irange.second;
+      strings ids;
+      for (auto i = ibegin; i != iend; ++i)
+	ids.push_back(i->second);
+      sort_ids_by_size(ids);
+      vids.push_back(ids);
+
+      // Compute satellite circle radius, so that the satellite
+      // circles all have an outermost point (not center) that touches
+      // the inset svg glyph.
+      double rext = r + (rbase * ids.size());
+
+      // Find initial point on the circumference of the circle closest to
+      // current value, aka initial circumference point (ICP).
+      const double angled = get_angle(v, value_max);
+      double angler = (k::pi / 180.0) * angled;
+      point p = get_circumference_point(angler, rext, origin);
+      vpointns.push_back(std::make_tuple(p, ids.size()));
+    }
+
+  // Remove zero value ids.
+  if (vuvalues.front() == 0)
+    {
+      auto& ids = vids[0];
+      std::clog << "eliding ids with value zero: " << std::endl;
+      for (const auto& s: ids)
+	std::clog << s << std::endl;
+
+      vuvalues.erase(vuvalues.begin());
+      vids.erase(vids.begin());
+      vpointns.erase(vpointns.begin());
+    }
+
+  // Threshold is the range such that a value is considered adjacent
+  // for collisions. If v > previous value + threshold, then the
+  // points are not considered neighbors.
+  const int threshold(200);
+
+  // Massage data to fit without overlaps, given:
+  // 1 unique set of values
+  // 2 for each unique value, the ids that match
+  // 3 for each unique value, the proposed point and size of the circle
+  for (uint i = 0; i < vpointns.size(); ++i)
+    {
+      auto& pn = vpointns[i];
+      auto& [ p, n ] = pn;
+      double rcur = rbase * n;
+
+      // Fixed angle, just push point along ray from origin until no conflicts.
+      const double angled = get_angle(vuvalues[i], value_max);
+      double angler = (k::pi / 180.0) * angled;
+
+      // Points near p that are under threshold (and lower-indexed in vpointns).
+      uint neighbors(0);
+
+      // Find neighbors.
+      uint j(i);
+      while (i > 0 && j > 0)
+	{
+	  j -= 1;
+
+	  // Only if within threshold, know values are ordered.
+	  if (vuvalues[i] - vuvalues[j] < threshold)
+	    ++neighbors;
+	  else
+	    break;
+	}
+      std::clog << i << k::tab << "neighbors: " << neighbors << std::endl;
+
+      // Search backward and fixup.... in practice results in overlap with
+      // lowest-index or highest-index neighbor.
+      //
+      // So... search forward and fixup. Not ideal; either this or
+      // move to collision detection with multiple neighbor points.
+      //
+      // If collisions, extend radius outward from origin and try
+      // again until the collision is removed and the previous
+      // neighbor circles don't overlap.
+      double rext = r + rcur;
+      for (uint k = neighbors; k > 0; --k)
+	{
+	  // Get neighbor point, starting with lowest-index neighbor.
+	  auto& prevpn = vpointns[i - k];
+	  auto& [ prevp, prevn ] = prevpn;
+	  double rprev = rbase * prevn;
+
+	  while (is_collision_detected(p, rcur, prevp, rprev))
+	    {
+	      // Find new point further out from origin.
+	      rext += (2.5 * rcur);
+	      p = get_circumference_point(angler, rext, origin);
+	    }
+	}
+    }
+
+  // Draw resulting points.
+  for (uint i = 0; i < vpointns.size(); ++i)
+    {
+      auto& pn = vpointns[i];
+      auto& [ p, n ] = pn;
+      auto r = rbase * n;
+      kusama_ids_at_point(obj, typo, vids[i], p, r);
     }
 
   return obj;

@@ -64,9 +64,7 @@ using std::to_string;
 using strings = std::vector<std::string>;
 
 using point = std::tuple<double, double>;
-
-// Previous unique value and size of ids with its value.
-using uvalue_tuple = std::tuple<int, int>;
+using pointn = std::tuple<point, int>;
 
 
 /// Alias namespace moz::filesystem to std::experimental::filesystem.

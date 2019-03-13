@@ -23,7 +23,7 @@
 #include <unordered_map>
 
 #include "moz-json-basic.h"
-#include "moz-telemetry-x-analyze.h"
+#include "moz-telemetry-x-svg-radial.h"
 
 
 namespace moz {
