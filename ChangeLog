@@ -1,5 +1,10 @@
 2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze-radial-uno.cc: Use default argument
+	when trying kusama.
+
+2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	Fixups for include renaming.
 	* src/moz-telemetry-x-analyze-radial-duo.cc
 	* src/moz-telemetry-x-analyze-radial-uno.cc
