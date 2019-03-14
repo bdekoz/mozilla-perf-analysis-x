@@ -390,7 +390,7 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   const double r = get_radius(obj, rdenom);
 
   // Make circle perimiter with an arrow to orientate display of data.
-  insert_svg_at_center(obj);
+  insert_svg_at_center(obj, r * 2);
 
   // Convert from string id-keys to int value-keys, plus an ordered set of all
   // the unique values.

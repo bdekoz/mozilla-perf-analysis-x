@@ -53,9 +53,9 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
 
 // Origin of glyph placement is center of SVG.
 // iflile is a plain SVG file with a 1:1 aspect ratio.
-// isize is image size, base svg image is 182 pixels. (185 no)
+// isize is image size, base svg image is 185 pixels.
 svg_form
-insert_svg_at_center(svg_form& obj, const int isize = 182,
+insert_svg_at_center(svg_form& obj, const double isize = 185,
 		     const string ifile = direction_glyph)
 {
   // Read SVG to insert.
@@ -83,11 +83,24 @@ insert_svg_at_center(svg_form& obj, const int isize = 182,
     }
 
   // Insert nested SVG element of red arc with arrow (scaled and with offset).
+
+  // offset
   auto [ objx, objy ] = obj.center_point();
   const int x = objx - (isize / 2);
   const int y = objy - (isize / 2);
+  string xformtranslate(transform::translate(x, y));
 
-  string ts(transform::translate(x, y));
+  // scaled
+  const double origsize(185); // 185
+  const double scalex(isize / origsize);
+  std::clog << "scale factor: " << scalex << k::tab << isize << std::endl;
+
+  string xformscale;
+  if (scalex > 1)
+    xformscale = transform::scale(scalex);
+
+  string ts(xformtranslate + k::space + xformscale);
+
   group_form gsvg;
   gsvg.start_element("mozilla inset radial svg", transform(), ts);
   gsvg.add_raw(isvg);

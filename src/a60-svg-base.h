@@ -822,7 +822,7 @@ namespace k = constants;
     }
 
     static string
-    scale(int factor)
+    scale(double factor)
     {
       std::ostringstream stream;
       stream << "scale(" << factor << ")";
