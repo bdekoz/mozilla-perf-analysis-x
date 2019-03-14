@@ -1,5 +1,14 @@
 2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/a60-svg-base.h (svg_form::center_point): New.
+	* src/moz-telemetry-x-svg-radial.h (kusama_ids_per_uvalue_on_arc):
+	Insert svg here.
+	* src/moz-telemetry-x-svg.h (direction_glyph): New.
+	(initialize_svg): Move glyph insert code to...
+	(insert_svg_at_center): ...here.
+
+2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-radial-uno.cc: Use default argument
 	when trying kusama.
 

@@ -25,6 +25,11 @@
 
 namespace moz {
 
+namespace {
+  // Directional glyph.
+  std::string direction_glyph = get_data_path() + "image/circle-arrow-red.svg";
+} // namespace anonymous
+
 using namespace svg;
 using color = svg::colore;
 
@@ -42,8 +47,18 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
   g.finish_element();
   obj.add_element(g);
 
+  return obj;
+}
+
+
+// Origin of glyph placement is center of SVG.
+// iflile is a plain SVG file with a 1:1 aspect ratio.
+// isize is image size, base svg image is 182 pixels. (185 no)
+svg_form
+insert_svg_at_center(svg_form& obj, const int isize = 182,
+		     const string ifile = direction_glyph)
+{
   // Read SVG to insert.
-  std::string ifile(get_data_path() + "image/circle-arrow-red.svg");
   std::ifstream ifs(ifile);
   string isvg;
   if (ifs.good())
@@ -68,9 +83,9 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
     }
 
   // Insert nested SVG element of red arc with arrow (scaled and with offset).
-  const int isize(182);
-  const int x = width / 2 - isize / 2;
-  const int y = height / 2 - isize / 2;
+  auto [ objx, objy ] = obj.center_point();
+  const int x = objx - (isize / 2);
+  const int y = objy - (isize / 2);
 
   string ts(transform::translate(x, y));
   group_form gsvg;
@@ -79,7 +94,7 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
   gsvg.finish_element();
   obj.add_element(gsvg);
 
-   return obj;
+  return obj;
 }
 
 

@@ -1509,6 +1509,10 @@ struct svg_form : public element_base
 
   ~svg_form() { finish(); }
 
+  const auto
+  center_point()
+  { return std::make_tuple(_M_area._M_width / 2, _M_area._M_height / 2); }
+
   void
   start_element();
 
