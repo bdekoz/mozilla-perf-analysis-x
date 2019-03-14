@@ -504,13 +504,20 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 	}
     }
 
-  // Draw resulting points.
+  // Draw resulting points, ids, values.
   for (uint i = 0; i < vpointns.size(); ++i)
     {
+      // points
       auto& pn = vpointns[i];
       auto& [ p, n ] = pn;
-      auto r = rbase * n;
-      kusama_ids_at_point(obj, typo, vids[i], p, r);
+      auto rr = rbase * n;
+      kusama_ids_at_point(obj, typo, vids[i], p, rr);
+
+      // ids
+      const double angled = get_angle(vuvalues[i], value_max);
+      append_ids_at(obj, typo, vids[i], angled, p, rr);
+
+      // values (inside glyph circle).
     }
 
   return obj;
