@@ -27,7 +27,7 @@ namespace moz {
 
 namespace {
   // Directional glyph.
-  std::string direction_glyph = get_data_path() + "image/circle-arrow-red.svg";
+  std::string direction_glyph = get_data_path() + "image/circle-arrow-gray.svg";
 } // namespace anonymous
 
 using namespace svg;

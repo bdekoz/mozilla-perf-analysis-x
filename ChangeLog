@@ -1,5 +1,10 @@
 2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/image/circle-arrow-gray.svg: New.
+	* src/moz-telemetry-x-svg.h: Use as default arrow.
+
+2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/a60-svg-base.h (transform::scale): Use floating point args.
 	* src/moz-telemetry-x-svg-radial.h: Insert glyph with diameter size.
 	* src/moz-telemetry-x-svg.h (insert_svg_at_center): Scale.
