@@ -385,8 +385,7 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 			      const id_value_umap& ivm, const int value_max,
 			      const int rdenom, const double rbase = 5)
 {
-  auto& area = obj._M_area;
-  const point origin = std::make_tuple(area._M_width / 2, area._M_height / 2);
+  const point origin = obj.center_point();
   const double r = get_radius(obj, rdenom);
 
   // Make circle perimiter with an arrow to orientate display of data.
@@ -504,7 +503,11 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 	}
     }
 
+  // Typography for values.
+  typography typon = make_typography_values();
+
   // Draw resulting points, ids, values.
+  const int spacing = 10;
   for (uint i = 0; i < vpointns.size(); ++i)
     {
       // points
@@ -513,11 +516,22 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
       auto rr = rbase * n;
       kusama_ids_at_point(obj, typo, vids[i], p, rr);
 
-      // ids
       const double angled = get_angle(vuvalues[i], value_max);
-      append_ids_at(obj, typo, vids[i], angled, p, rr);
+      const double angler = (k::pi / 180.0) * angled;
+
+      // ids
+      // Placed 20 pixels after kusama satellite ends.
+      const auto& textp = get_circumference_point(angler, rr, p);
+      append_ids_at(obj, typo, vids[i], angled, textp, spacing);
 
       // values (inside glyph circle).
+      const auto& cp = get_circumference_point(angler, r - spacing, origin);
+      auto [ cx, cy ] = cp;
+
+      std::ostringstream oss;
+      oss.imbue(std::locale(""));
+      oss << vuvalues[i];
+      place_text_id(obj, typon, oss.str(), cx, cy, angled);
     }
 
   return obj;

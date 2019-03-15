@@ -1,3 +1,8 @@
+2019-03-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-svg-radial.h (kusama_ids_per_uvalue_on_arc):
+	Add values inside glyph.
+
 2019-03-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-svg-radial.h: Append ids.
