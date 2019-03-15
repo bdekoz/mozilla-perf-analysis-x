@@ -114,7 +114,7 @@ insert_svg_at_center(svg_form& obj, const double isize = 185,
 typography
 make_typography_id()
 {
-  // Probe/Marker name/value typographics.
+  // Probe/Marker name typographics.
   typography typo = svg::k::ccode_typo;
   typo._M_size = 9;
   typo._M_style = svg::k::b_style;
@@ -124,6 +124,20 @@ make_typography_id()
   return typo;
 }
 
+
+typography
+make_typography_values()
+{
+  // Probe/Marker value typographics.
+  typography typo = svg::k::ccode_typo;
+  typo._M_size = 12;
+  typo._M_style = svg::k::b_style;
+  typo._M_w = svg::typography::weight::medium;
+  typo._M_align = svg::typography::align::right;
+  typo._M_a = svg::typography::anchor::end;
+  return typo;
+}
+  
 
 typography
 make_typography_metadata()
