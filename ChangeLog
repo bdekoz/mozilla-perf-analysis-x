@@ -11,6 +11,7 @@
 	mozilla-telemetry-probes-2019-page-load.txt: ..this.
 
 	* data/json-files: Move to separate repo.
+	* generated: Same.
 
 2019-03-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
