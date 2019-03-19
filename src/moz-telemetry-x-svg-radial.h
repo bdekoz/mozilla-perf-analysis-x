@@ -384,11 +384,15 @@ kusama_ids_at_point(svg_form& obj, const typography& typo, const strings& ids,
 
    Satellite circle radius is the product of the number of ids with
    the same value times a base multipler (rbase).
+
+   When overlap is detected, move outward on radius if true, otherwise
+   move in.
 */
 svg_form
 kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
-			      const id_value_umap& ivm, const int value_max,
-			      const int rdenom, const double rbase = 5)
+			     const id_value_umap& ivm, const int value_max,
+			     const int rdenom, const double rbase = 5,
+			     const bool outwardp = true)
 {
   const point origin = obj.center_point();
   const double r = get_radius(obj, rdenom);
@@ -423,7 +427,11 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
       // Compute satellite circle radius, so that the satellite
       // circles all have an outermost point (not center) that touches
       // the inset svg glyph.
-      double rext = r + (rbase * ids.size());
+      double rext;
+      if (outwardp)
+	rext = r + (rbase * ids.size());
+      else
+	rext = r - (rbase * ids.size());
 
       // Find initial point on the circumference of the circle closest to
       // current value, aka initial circumference point (ICP).
@@ -502,7 +510,10 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 	  while (is_collision_detected(p, rcur, prevp, rprev))
 	    {
 	      // Find new point further out from origin.
-	      rext += (2.5 * rcur);
+	      if (outwardp)
+		rext += (2.5 * rcur);
+	      else
+		rext -= (2.5 * rcur);
 	      p = get_circumference_point(angler, rext, origin);
 	    }
 	}
@@ -521,6 +532,7 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
       auto rr = rbase * n;
       kusama_ids_at_point(obj, typo, vids[i], p, rr);
 
+#if 0
       const double angled = get_angle(vuvalues[i], value_max);
       const double angler = (k::pi / 180.0) * angled;
 
@@ -537,6 +549,7 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
       oss.imbue(std::locale(""));
       oss << vuvalues[i];
       place_text_id(obj, typon, oss.str(), cx, cy, angled);
+#endif
     }
 
   return obj;

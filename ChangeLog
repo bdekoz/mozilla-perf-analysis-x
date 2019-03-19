@@ -1,9 +1,16 @@
 2019-03-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze-radial-duo.cc: Add in Kusama spheres.
+	* src/moz-telemetry-x-svg-radial.h (kusama_ids_at_point): Add
+	parameter for inner or outer movement along radial axes to avoid
+	conflict.
+
+2019-03-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-radial-duo.cc: Reverse ripple
 	layers, browsers.
 	* src/moz-telemetry-x-svg-radial.h (radiate_ids_per_uvalue_on_arc):
-	Add arcs glyphs.
+	Add arc glyphs.
 	* src/moz-telemetry-x.h: Back to browsertime settings.
 
 2019-03-15  Benjamin De Kosnik  <bdekoz@mozilla.com>

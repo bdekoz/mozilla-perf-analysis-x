@@ -89,11 +89,13 @@ int main(int argc, char* argv[])
   typography typof = typo;
   typof._M_style._M_fill_color = colore::red;
   radiate_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 3, 1);
+  kusama_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 3, 5, false);
 
   // 2. Chrome outer, red (1 spacer)
   typography typoc = typo;
   typoc._M_style._M_fill_color = colore::blue;
   radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 10, 2);
+  kusama_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 10, 5, false);
 
   // Add metadata.
   environment env1 = deserialize_environment(idata1csv);
