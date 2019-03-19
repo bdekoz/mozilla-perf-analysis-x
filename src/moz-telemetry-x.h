@@ -224,7 +224,7 @@ file_path_to_stem(string ifile)
 string
 get_prefix_path()
 {
-  const char* mtxenv = "MOZTELEMETRYX";
+  const char* mtxenv = "MOZPERFAX";
   char* ppath;
   ppath = getenv(mtxenv);
   if (ppath == nullptr)

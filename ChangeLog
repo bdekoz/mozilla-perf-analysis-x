@@ -1,5 +1,19 @@
 2019-03-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Split out private data and generated files.
+	* README.md: Change MOZTELEMETRYX to MOXPERFAX.
+	* scripts/decompress-mozlz4a.sh: Same.
+	* src/moz-telemetry-x.h: Same.
+
+	* data/match-identifier-files/mozilla-telemetry-probes-2019-graphics.txt
+	* data/match-identifier-files/
+	mozilla-telemetry-probes-2019-performance.txt: Rename to...
+	mozilla-telemetry-probes-2019-page-load.txt: ..this.
+
+	* data/json-files: Move to separate repo.
+
+2019-03-18  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-analyze-radial-duo.cc: Add in Kusama spheres.
 	* src/moz-telemetry-x-svg-radial.h (kusama_ids_at_point): Add
 	parameter for inner or outer movement along radial axes to avoid
