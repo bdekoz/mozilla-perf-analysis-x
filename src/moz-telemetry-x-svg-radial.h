@@ -238,8 +238,11 @@ void
 append_ids_at(svg_form& obj, const typography& typo, const strings& ids,
 	      const double angled, const point origin, double r)
 {
-  double angler = (k::pi / 180.0) * angled;
+  // Get point, angle up for text.
+  double angler = (k::pi / 180.0) * (angled + 10);
   auto [ x, y ] = get_circumference_point(angler, r, origin);
+
+  // Concatenate ids to one line.
   string scat;
   for (const string& s: ids)
     {
@@ -274,13 +277,13 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
   place_text_id(obj, typo, label, x, y, angled);
 
   // Next, print out the various id's on an arc with a bigger radius.
-  // splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
+  splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
   // splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
   // splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
 
   // stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
 
-  append_ids_at(obj, typo, ids, angled, origin, r + 65);
+  //append_ids_at(obj, typo, ids, angled, origin, r + 65);
 }
 
 
@@ -292,12 +295,14 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 			      const id_value_umap& ivm, const int value_max,
 			      const int rdenom, const int rspace)
 {
+  // Make circle perimiter with an arrow to orientate display of data.
+  const double r = get_radius(obj, rdenom);
+  insert_svg_at_center(obj, r * 2);
+
   // Convert from string id-keys to int value-keys, plus an ordered set of all
   // the unique values.
   value_set uvalues;
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
-
-  const double r = get_radius(obj, rdenom);
   for (const auto& v : uvalues)
     {
       auto count = uvaluemm.count(v);

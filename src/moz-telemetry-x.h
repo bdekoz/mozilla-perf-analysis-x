@@ -106,7 +106,7 @@ enum class histogram_view_t
   quantile = 3
 };
 
-constexpr histogram_view_t dhview_t = histogram_view_t::sum;
+constexpr histogram_view_t dhview_t = histogram_view_t::median;
 
 
 /// Compile time switches for input data processing, JSON format.
@@ -119,7 +119,7 @@ enum class json_t
   w3c
 };
 
-constexpr json_t djson_t = json_t::mozilla_android;
+constexpr json_t djson_t = json_t::browsertime;
 
 
 /**
