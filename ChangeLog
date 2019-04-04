@@ -1,3 +1,8 @@
+2019-04-04  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze-radial-duo.cc
+	* src/moz-telemetry-x-analyze-radial-uno.cc
+
 2019-04-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/match-identifier-files/browsertime
