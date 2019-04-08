@@ -66,13 +66,23 @@ using strings = std::vector<std::string>;
 using point = std::tuple<double, double>;
 using pointn = std::tuple<point, int>;
 
-
 /// Alias namespace moz::filesystem to std::experimental::filesystem.
 namespace filesystem = std::experimental::filesystem;
 
 /// Alias namespace moz::k to mozilla::constants.
 namespace constants { }
 namespace k = moz::constants;
+
+
+/// Point to string.
+string
+to_string(point p)
+{
+  auto [ x, y ] = p;
+  std::ostringstream oss;
+  oss << x << k::comma << y;
+  return oss.str();
+}
 
 
 /**
@@ -119,7 +129,7 @@ enum class json_t
   w3c
 };
 
-constexpr json_t djson_t = json_t::browsertime;
+constexpr json_t djson_t = json_t::mozilla;
 
 
 /**

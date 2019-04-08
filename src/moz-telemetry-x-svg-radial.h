@@ -30,7 +30,8 @@
 namespace moz {
 
 double
-normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
+normalize_value_on_range(const uint value, const uint min, const uint max,
+			 const uint nfloor, const uint nceil)
 {
   auto weightn_numer = ((nceil - nfloor) * (value - min));
   auto weightn_denom = (max - min) + nfloor;
@@ -39,25 +40,10 @@ normalize_on_range(uint value, uint min, uint max, uint nfloor, uint nceil)
 }
 
 
-// Given rdenom scaling factor and SVG canvas, compute effective radius value.
-inline double
-get_radius(const svg_form& obj, const uint rdenom)
-{ return std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom; }
-
-
-inline double
-get_angle(int pvalue, int pmax)
+double
+align_angle_to_glyph(double angled)
 {
-  // Max number of non-overlapping degrees in circle, such that the
-  // beginning and the end have a discernable gap. Total degrees in a
-  // circle are 360, but then the beginning and the end of the radial
-  // display are in the same place.
-  const double maxdeg = 345;
-
-  // Normalize [0, pmax] to range [0, maxdeg] and put pvalue in it.
-  double angled = normalize_on_range(pvalue, 0, pmax, 0, maxdeg);
-
-  // Change rotation to CW instead of CCW (or anti-clockwise).
+ // Change rotation to CW instead of CCW (or anti-clockwise).
   angled = 360 - angled;
 
   // Rotate 90 CCW, so that the first element will be at the top
@@ -68,13 +54,81 @@ get_angle(int pvalue, int pmax)
 }
 
 
+// Given rdenom scaling factor and SVG canvas, compute effective radius value.
+inline double
+get_radius(const svg_form& obj, const uint rdenom)
+{ return std::min(obj._M_area._M_height, obj._M_area._M_width) / rdenom; }
+
+
+// Max number of non-overlapping degrees in circle, such that the
+// beginning and the end have a discernable gap. Total degrees in a
+// circle are 360, but then the beginning and the end of the radial
+// display are in the same place.
+constexpr double maxdeg = 345;
+
+
+inline double
+get_angle(int pvalue, int pmax)
+{
+  // Normalize [0, pmax] to range [0, maxdeg] and put pvalue in it.
+  double angled = normalize_value_on_range(pvalue, 0, pmax, 0, maxdeg);
+  return align_angle_to_glyph(angled);
+}
+
+
+/// Angle in radians.
 point
-get_circumference_point(double angler, double r, const point origin)
+get_circumference_point(const double angler, const double r, const point origin)
 {
   auto [ cx, cy ] = origin;
   double x(cx + (r * std::cos(angler)));
   double y(cy - (r * std::sin(angler)));
   return std::make_tuple(x, y);
+}
+
+
+/// Angle in degrees.
+point
+get_circumference_point_d(const double ad, const double r, const point origin)
+{
+  double angler = (k::pi / 180.0) * ad;
+  auto [ cx, cy ] = origin;
+  double x(cx + (r * std::cos(angler)));
+  double y(cy - (r * std::sin(angler)));
+  return std::make_tuple(x, y);
+}
+
+
+/// Insert glyph that traces path of start to finish trajectory.
+svg_form
+insert_direction_glyph_at_center(svg_form& obj, const double r, svg::style s)
+{
+  const point origin = obj.center_point();
+
+  point p0 = get_circumference_point_d(align_angle_to_glyph(0), r, origin);
+  point p1 = get_circumference_point_d(align_angle_to_glyph(90), r, origin);
+  point p2 = get_circumference_point_d(align_angle_to_glyph(180), r, origin);
+  point p3 = get_circumference_point_d(align_angle_to_glyph(270), r, origin);
+  point p4 = get_circumference_point_d(align_angle_to_glyph(maxdeg), r, origin);
+
+  string d;
+  d += "M " + to_string(p0) + k::space;
+  d += "Q ";
+  d += to_string(p1) + k::space;
+  d += to_string(p2) + k::space;
+  d += to_string(p3) + k::space;
+  d += to_string(p4) + k::space;
+
+  path_element pth;
+  path_element::data dt = { d, 0 };
+
+  pth.start_element();
+  pth.add_data(dt);
+  pth.add_style(s);
+  pth.finish_element();
+  obj.add_element(pth);
+
+  return obj;
 }
 
 
@@ -297,7 +351,12 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
 {
   // Make circle perimiter with an arrow to orientate display of data.
   const double r = get_radius(obj, rdenom);
-  insert_svg_at_center(obj, r * 2);
+  svg::style styl(typo._M_style);
+  styl._M_fill_opacity = 0;
+  styl._M_stroke_color = svg::colore::gray50;
+  styl._M_stroke_opacity = 1;
+  styl._M_stroke_size = 3;
+  insert_direction_glyph_at_center(obj, r, styl);
 
   // Convert from string id-keys to int value-keys, plus an ordered set of all
   // the unique values.

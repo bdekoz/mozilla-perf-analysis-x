@@ -32,6 +32,7 @@ std::string
 usage()
 {
   std::string s("usage: moz-telemetry-x-analyze-radial.exe data.csv");
+  s += '\n';
   return s;
 }
 

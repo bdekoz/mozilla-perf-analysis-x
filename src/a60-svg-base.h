@@ -1432,6 +1432,51 @@ line_form::finish_element()
 { _M_sstream  << " />" << std::endl; }
 
 
+/**
+   Path SVG element.
+
+   Specification reference:
+   https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path
+
+   Attributes:
+   d, pathLength
+*/
+struct path_element : virtual public element_base
+{
+  struct data
+  {
+    string		_M_d;
+    size_type		_M_length;
+  };
+
+  // Either serialize immediately (as below), or create data structure
+  // that adds data to data_vec and then finish_element serializes.
+  void
+  add_data(const data& d)
+  {
+    const string pathd("__d");
+    const string len("__l");
+
+    string strip = R"_delimiter_(d="__d")_delimiter_";
+
+    string_replace(strip, pathd, d._M_d);
+    string_replace(strip, len, std::to_string(d._M_length));
+    _M_sstream << strip;
+  }
+
+  void
+  start_element()
+  { _M_sstream << "<path "; }
+
+  void
+  finish_element();
+};
+
+void
+path_element::finish_element()
+{ _M_sstream  << " />" << std::endl; }
+
+
 /*
   Group SVG element.
 

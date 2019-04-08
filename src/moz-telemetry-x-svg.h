@@ -84,7 +84,7 @@ insert_svg_at_center(svg_form& obj, const double isize = 185,
 
   // Insert nested SVG element of red arc with arrow (scaled and with offset).
 
-  // offset
+  // Offset and origin.
   auto [ objx, objy ] = obj.center_point();
   const int x = objx - (isize / 2);
   const int y = objy - (isize / 2);
@@ -137,7 +137,7 @@ make_typography_values()
   typo._M_a = svg::typography::anchor::end;
   return typo;
 }
-  
+
 
 typography
 make_typography_metadata()
