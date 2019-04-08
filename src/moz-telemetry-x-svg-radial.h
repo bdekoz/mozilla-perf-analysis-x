@@ -101,29 +101,60 @@ get_circumference_point_d(const double ad, const double r, const point origin)
 
 /// Insert glyph that traces path of start to finish trajectory.
 svg_form
-insert_direction_arc_at_center(svg_form& obj, const double r, svg::style s)
+insert_direction_arc_at_center(svg_form& obj, const double rr, svg::style s)
 {
+  const double r = rr - k::spacer;
   const point origin = obj.center_point();
   point p0 = get_circumference_point_d(align_angle_to_glyph(0), r, origin);
   point p4 = get_circumference_point_d(align_angle_to_glyph(maxdeg), r, origin);
 
   // Define arc.
-  std::ostringstream oss;
-  oss << "M" << k::space << to_string(p0) << k::space;
-  oss << "A" << k::space;
-  oss << to_string(r) << k::comma << to_string(r) << k::space;
-  oss << align_angle_to_glyph(1) << k::space;
-  oss << "1, 1" << k::space;
-  oss << to_string(p4);
+  std::ostringstream ossa;
+  ossa << "M" << k::space << to_string(p0) << k::space;
+  ossa << "A" << k::space;
+  ossa << to_string(r) << k::comma << to_string(r) << k::space;
+  ossa << align_angle_to_glyph(1) << k::space;
+  ossa << "1, 1" << k::space;
+  ossa << to_string(p4) << k::space;
 
-  path_element pth;
-  path_element::data dt = { oss.str(), 0 };
+  // Arc path.
+  path_element parc;
+  path_element::data da = { ossa.str(), 0 };
+  parc.start_element();
+  parc.add_data(da);
+  parc.add_style(s);
+  parc.finish_element();
+  obj.add_element(parc);
 
-  pth.start_element();
-  pth.add_data(dt);
-  pth.add_style(s);
-  pth.finish_element();
-  obj.add_element(pth);
+  auto rspacer = k::spacer - 2;
+  auto anglemax = align_angle_to_glyph(maxdeg);
+  point p5 = get_circumference_point_d(anglemax, r + rspacer, origin);
+  point p6 = get_circumference_point_d(align_angle_to_glyph(maxdeg + 7),
+				       r, origin);
+  point p7 = get_circumference_point_d(anglemax, r - rspacer, origin);
+
+  // Define marker.
+  std::ostringstream ossm;
+  ossm << "M" << k::space << to_string(p4) << k::space;
+  ossm << "L" << k::space;
+  ossm << to_string(p5) << k::space;
+  ossm << to_string(p6) << k::space;
+  ossm << to_string(p7) << k::space;
+  ossm << to_string(p4) << k::space;
+
+  // Adjust style so that fill will be on.
+  svg::style smarker(s);
+  smarker._M_fill_opacity = 1;
+  smarker._M_stroke_opacity = 0;
+
+  // End marker path.
+  path_element pmarker;
+  path_element::data dm = { ossm.str(), 0 };
+  pmarker.start_element();
+  pmarker.add_data(dm);
+  pmarker.add_style(smarker);
+  pmarker.finish_element();
+  obj.add_element(pmarker);
 
   return obj;
 }

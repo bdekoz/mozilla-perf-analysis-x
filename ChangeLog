@@ -1,9 +1,15 @@
 2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-svg-radial.h (insert_direction_arc_at_center):
+	Add end marker.
+	* src/moz-telemetry-x.h (k::spacer): New.
+
+2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-svg-radial.h (insert_direction_glyph_at_center):
 	To...
-	(insert_direction_arc_at_center): ...this.
-	
+	(insert_direction_arc_at_center): ...this. Use arc.
+
 2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/a60-svg-base.h (path_element): New.

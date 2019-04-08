@@ -47,8 +47,9 @@ namespace moz::constants {
   constexpr const char* environment_ext = ".environment.json";
   constexpr const char* analyze_ext = ".svg";
 
-  // Margin in pixels.
+  // Whitespace constants in pixels.
   constexpr int margin = 100;
+  constexpr int spacer = 10;
 
   constexpr double pi(3.14159);
 
