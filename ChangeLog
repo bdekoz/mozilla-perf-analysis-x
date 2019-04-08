@@ -1,3 +1,22 @@
+2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-svg-radial.h (insert_direction_glyph_at_center):
+	To...
+	(insert_direction_arc_at_center): ...this.
+	
+2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/a60-svg-base.h (path_element): New.
+	* src/moz-telemetry-x-analyze-radial-uno.cc: Terminate usage string.
+	* src/moz-telemetry-x-svg-radial.h (normalize_on_range): To...
+	(normalize_value_on_range): ...this.
+	(align_angle_to_glyph): Break out helper function.
+	maxdeg: File-scope global.
+	(get_circumerence_point_d): New.
+	(insert_direction_glyph_at_center): New.
+	* src/moz-telemetry-x-svg.h: Fix comment.
+	* src/moz-telemetry-x.h (to_string(point): Add.
+
 2019-04-04  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze-radial-duo.cc

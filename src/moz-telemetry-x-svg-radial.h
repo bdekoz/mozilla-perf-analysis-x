@@ -101,26 +101,23 @@ get_circumference_point_d(const double ad, const double r, const point origin)
 
 /// Insert glyph that traces path of start to finish trajectory.
 svg_form
-insert_direction_glyph_at_center(svg_form& obj, const double r, svg::style s)
+insert_direction_arc_at_center(svg_form& obj, const double r, svg::style s)
 {
   const point origin = obj.center_point();
-
   point p0 = get_circumference_point_d(align_angle_to_glyph(0), r, origin);
-  point p1 = get_circumference_point_d(align_angle_to_glyph(90), r, origin);
-  point p2 = get_circumference_point_d(align_angle_to_glyph(180), r, origin);
-  point p3 = get_circumference_point_d(align_angle_to_glyph(270), r, origin);
   point p4 = get_circumference_point_d(align_angle_to_glyph(maxdeg), r, origin);
 
-  string d;
-  d += "M " + to_string(p0) + k::space;
-  d += "Q ";
-  d += to_string(p1) + k::space;
-  d += to_string(p2) + k::space;
-  d += to_string(p3) + k::space;
-  d += to_string(p4) + k::space;
+  // Define arc.
+  std::ostringstream oss;
+  oss << "M" << k::space << to_string(p0) << k::space;
+  oss << "A" << k::space;
+  oss << to_string(r) << k::comma << to_string(r) << k::space;
+  oss << align_angle_to_glyph(1) << k::space;
+  oss << "1, 1" << k::space;
+  oss << to_string(p4);
 
   path_element pth;
-  path_element::data dt = { d, 0 };
+  path_element::data dt = { oss.str(), 0 };
 
   pth.start_element();
   pth.add_data(dt);
@@ -356,7 +353,7 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   styl._M_stroke_color = svg::colore::gray50;
   styl._M_stroke_opacity = 1;
   styl._M_stroke_size = 3;
-  insert_direction_glyph_at_center(obj, r, styl);
+  insert_direction_arc_at_center(obj, r, styl);
 
   // Convert from string id-keys to int value-keys, plus an ordered set of all
   // the unique values.
@@ -582,7 +579,6 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   typography typon = make_typography_values();
 
   // Draw resulting points, ids, values.
-  const int spacing = 10;
   for (uint i = 0; i < vpointns.size(); ++i)
     {
       // points
@@ -592,6 +588,7 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
       kusama_ids_at_point(obj, typo, vids[i], p, rr);
 
 #if 0
+      const int spacing = 10;
       const double angled = get_angle(vuvalues[i], value_max);
       const double angler = (k::pi / 180.0) * angled;
 
