@@ -34,9 +34,9 @@ usage()
   string binname("moz-telemetry-x-analyze-ripple.exe");
   string s("usage:  " + binname + " data1.csv data2.csv (edit.txt)");
   s += k::newline;
-  s += "data1.csv is a JSON file containing a mozilla telemetry main ping";
+  s += "data1.csv is a CSV file containing a mozilla telemetry main ping";
   s += k::newline;
-  s += "data2.csv is a JSON file containing a browsertime results file";
+  s += "data2.csv is a CSV file containing a browsertime results file";
   s += k::newline;
   s += "edit.xt is an optional TEXT file containing higlight id matches";
   s += k::newline;
@@ -93,8 +93,8 @@ int main(int argc, char* argv[])
   // Otherwise, just use the first id_value_umap as-is.
   if (argc == 3)
     {
-      // 1. Moz Telemetry baseline ripple
-      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7);
+      // 1. Telemetry baseline ripple
+      radiate_ids_per_uvalue_on_arc(obj, typo, iv1, value_max, 10, 1);
     }
   else
     {
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
       id_value_umap iv1hi = remove_matches_id_value_map(iv1, hilights);
       std::clog << iv1hi.size() << " found matches map size" << std::endl;
       std::clog << iv1.size() << " edited original map size" << std::endl;
-      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 7, 2);
+      radiate_ids_per_uvalue_on_arc(obj, typo, iv1, value_max, 10, 2);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
@@ -112,14 +112,14 @@ int main(int argc, char* argv[])
 	  typography typohi = typo;
 	  typohi._M_size = 20;
 	  typohi._M_style._M_fill_color = colore::ruriiro;
-	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 7, 2);
+	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 10, 2);
 	}
     }
 
   // 3. Browsertime performance timings orange ripple, next bigger size
   typography typobt = typo;
   typobt._M_style._M_fill_color = colore::asamaorange;
-  radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 5, 2);
+  radiate_ids_per_uvalue_on_arc(obj, typobt, iv2, value_max, 3, 2);
 
   // Add metadata.
   // Depending on the JSON schema, an environment file may not be generated
@@ -135,7 +135,6 @@ int main(int argc, char* argv[])
     {
       env = deserialize_environment(idata2csv);
     }
-
 
   render_metadata_environment(obj, env);
   render_metadata_title(obj, value_max, fstem1, fstem2,

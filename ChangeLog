@@ -1,8 +1,15 @@
 2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Normalize colors and radii.
 	* src/moz-telemetry-x-analyze-radial-duo.cc
-	* src/moz-telemetry-x-svg-radial.h
-	* src/moz-telemetry-x.h
+	* src/moz-telemetry-x-analyze-ripple.cc
+
+2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze-radial-duo.cc (usage): Fix comments.
+	Adjust colors, radii.
+	* src/moz-telemetry-x-svg-radial.h (insert_direction_arc_at_center):
+	Adjust marker point to be consistent with different radii.
 
 2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 

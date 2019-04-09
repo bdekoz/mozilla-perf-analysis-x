@@ -124,12 +124,23 @@ int main(int argc, char* argv[])
   //kusama_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3, 5, false);
 
   // Add metadata.
-  environment env1 = deserialize_environment(idata1csv);
-  environment env2 = deserialize_environment(idata2csv);
+  // Depending on the JSON schema, an environment file may not be generated
+  // AKA, mozilla_android.
+  environment env;
+  try
+    {
+      environment env1 = deserialize_environment(idata1csv);
+      environment env2 = deserialize_environment(idata2csv);
+      env = coalesce_environments(env1, env2);
+    }
+  catch (const std::runtime_error& e)
+    {
+      env = deserialize_environment(idata2csv);
+    }
+
   render_metadata_environment(obj, env1, env2);
 
   auto y = obj._M_area._M_height / 2;
-
   render_metadata_title(obj, maxv1, fstem1, colore::ruriiro, y - 50);
   render_metadata_title(obj, maxv2, fstem2, colore::asamaorange, y + 50);
 
