@@ -99,7 +99,7 @@ get_circumference_point_d(const double ad, const double r, const point origin)
 }
 
 
-/// Insert glyph that traces path of start to finish trajectory.
+/// Insert arc + arrow glyph that traces path of start to finish trajectory.
 svg_form
 insert_direction_arc_at_center(svg_form& obj, const double rr, svg::style s)
 {
@@ -117,6 +117,9 @@ insert_direction_arc_at_center(svg_form& obj, const double rr, svg::style s)
   ossa << "1, 1" << k::space;
   ossa << to_string(p4) << k::space;
 
+  // Adjust style so the stroke color matches the fill color.
+  s._M_stroke_color = s._M_fill_color;
+
   // Arc path.
   path_element parc;
   path_element::data da = { ossa.str(), 0 };
@@ -129,9 +132,13 @@ insert_direction_arc_at_center(svg_form& obj, const double rr, svg::style s)
   auto rspacer = k::spacer - 2;
   auto anglemax = align_angle_to_glyph(maxdeg);
   point p5 = get_circumference_point_d(anglemax, r + rspacer, origin);
-  point p6 = get_circumference_point_d(align_angle_to_glyph(maxdeg + 7),
-				       r, origin);
   point p7 = get_circumference_point_d(anglemax, r - rspacer, origin);
+
+  // Circumference arc length desired is radius times the angle of the arc.
+  auto theta = 2 * rspacer / r;
+  auto thetad = theta * 180 / k::pi;
+  point p6 = get_circumference_point_d(align_angle_to_glyph(maxdeg + thetad),
+				       r, origin);
 
   // Define marker.
   std::ostringstream ossm;
@@ -142,17 +149,16 @@ insert_direction_arc_at_center(svg_form& obj, const double rr, svg::style s)
   ossm << to_string(p7) << k::space;
   ossm << to_string(p4) << k::space;
 
-  // Adjust style so that fill will be on.
-  svg::style smarker(s);
-  smarker._M_fill_opacity = 1;
-  smarker._M_stroke_opacity = 0;
+  // Adjust style so that fill will be shown, and stroke hidden.
+  s._M_fill_opacity = 1;
+  s._M_stroke_opacity = 0;
 
   // End marker path.
   path_element pmarker;
   path_element::data dm = { ossm.str(), 0 };
   pmarker.start_element();
   pmarker.add_data(dm);
-  pmarker.add_style(smarker);
+  pmarker.add_style(s);
   pmarker.finish_element();
   obj.add_element(pmarker);
 
@@ -350,12 +356,15 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
   double angler = (k::pi / 180.0) * angled;
   auto [ x, y ] = get_circumference_point(angler, r, origin);
 
-  // Consolidate label text to be "VALUE -> "
+  // Consolidate label text to be "VALUE -> " or just "VALUE " if type is big.
   constexpr uint valuewidth(9);
   std::ostringstream oss;
   oss.imbue(std::locale(""));
   oss << std::setfill(' ') << std::setw(valuewidth) << std::left << pvalue;
-  string label = oss.str() + " -> ";
+  string label = oss.str();
+
+  if (typo._M_size < 20)
+    label += " -> ";
   place_text_id(obj, typo, label, x, y, angled);
 
   // Next, print out the various id's on an arc with a bigger radius.

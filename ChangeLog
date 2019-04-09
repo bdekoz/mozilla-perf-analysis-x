@@ -1,5 +1,11 @@
 2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-telemetry-x-analyze-radial-duo.cc
+	* src/moz-telemetry-x-svg-radial.h
+	* src/moz-telemetry-x.h
+
+2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x-svg-radial.h (insert_direction_arc_at_center):
 	Add end marker.
 	* src/moz-telemetry-x.h (k::spacer): New.

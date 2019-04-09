@@ -34,9 +34,9 @@ usage()
   string binname("moz-telemetry-x-analyze-ripple.exe");
   string s("usage:  " + binname + " data1.csv data2.csv (edit.txt)");
   s += '\n';
-  s += "data1.csv is a JSON file containing a mozilla telemetry main ping";
+  s += "data1.csv is a CSV file containing a firefox telemetry main ping";
   s += '\n';
-  s += "data2.csv is a JSON file containing a browsertime results file";
+  s += "data2.csv is a CSV file containing firefox browsertime results";
   s += '\n';
   s += "edit.xt is an optional TEXT file containing higlight id matches";
   s += '\n';
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
   // Create svg canvas.
   const string fstem1 = file_path_to_stem(idata1csv);
   const string fstem2 = file_path_to_stem(idata2csv);
-  const string fstem(fstem1 + "-x-" + "chromium");
+  const string fstem(fstem1 + "-x-" + fstem2);
   svg_form obj = initialize_svg(fstem);
 
   // Deserialize CSV files.
@@ -93,19 +93,19 @@ int main(int argc, char* argv[])
   // Otherwise, just use the first id_value_umap as-is.
   if (argc == 3)
     {
-      // 1. Moz Telemetry baseline ripple
-      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 3, 1);
-      //kusama_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 3, 5, false);
+      // 1. Telemetry baseline ripple
+      radiate_ids_per_uvalue_on_arc(obj, typo, iv1, value_max, 10, 1);
+      //kusama_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 10, 5, false);
     }
   else
     {
-      // 1. Moz Telemetry baseline ripple.
+      // 1. Telemetry baseline ripple.
       const strings hilights = deserialize_text_to_strings(idatatxt);
       std::clog << iv1.size() << " original map size" << std::endl;
       id_value_umap iv1hi = remove_matches_id_value_map(iv1, hilights);
       std::clog << iv1hi.size() << " found matches map size" << std::endl;
       std::clog << iv1.size() << " edited original map size" << std::endl;
-      radiate_ids_per_value_on_arc(obj, typo, iv1, value_max, 3, 2);
+      radiate_ids_per_uvalue_on_arc(obj, typo, iv1, value_max, 10, 2);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
@@ -113,15 +113,15 @@ int main(int argc, char* argv[])
 	  typography typohi = typo;
 	  typohi._M_size = 20;
 	  typohi._M_style._M_fill_color = colore::ruriiro;
-	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 3, 2);
+	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 10, 2);
 	}
     }
 
   // 3. Browsertime performance timings orange ripple, next bigger size
   typography typoc = typo;
   typoc._M_style._M_fill_color = colore::asamaorange;
-  radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 10, 2);
-  //kusama_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 10, 5, false);
+  radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3, 2);
+  //kusama_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3, 5, false);
 
   // Add metadata.
   environment env1 = deserialize_environment(idata1csv);
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 
   auto y = obj._M_area._M_height / 2;
 
-  render_metadata_title(obj, maxv1, fstem1, colore::black, y - 50);
+  render_metadata_title(obj, maxv1, fstem1, colore::ruriiro, y - 50);
   render_metadata_title(obj, maxv2, fstem2, colore::asamaorange, y + 50);
 
   return 0;
