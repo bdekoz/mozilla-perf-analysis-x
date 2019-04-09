@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
       env = deserialize_environment(idata2csv);
     }
 
-  render_metadata_environment(obj, env1, env2);
+  render_metadata_environment(obj, env);
 
   auto y = obj._M_area._M_height / 2;
   render_metadata_title(obj, maxv1, fstem1, colore::ruriiro, y - 50);

@@ -1,3 +1,7 @@
+2019-04-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-analyze-radial-duo.cc: Fix merge error.
+
 2019-04-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Normalize colors and radii.
