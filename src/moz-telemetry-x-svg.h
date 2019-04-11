@@ -277,8 +277,8 @@ render_metadata_time(svg_form& obj, const int timen, const colore& c, int y)
 
 
 void
-render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
-		      const string fstem2 = "", const string hilights = "")
+render_input_files_title(svg_form& obj, const string fstem1,
+			 const string fstem2, const string hilights)
 {
   // Vertical offset.
   const typography typom = make_typography_metadata();
@@ -300,8 +300,15 @@ render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
       place_text_at_point(obj, typom, hilights, k::margin, y);
       y -= ydelta;
     }
+}
 
+
+void
+render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
+		      const string fstem2 = "", const string hilights = "")
+{
   render_metadata_time(obj, time_max, colore::red, obj._M_area._M_height / 2);
+  render_input_files_title(obj, fstem1, fstem2, hilights);
 }
 
 
