@@ -1,5 +1,12 @@
 2019-04-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/match-identifier-files/mozilla-telemetry-probes-2019.txt: New.
+
+2019-04-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-svg.h (render_input_files_title): New.
+	* src/moz-telemetry-x-analyze-radial-duo.cc: Use it.
+
 	* src/moz-telemetry-x-svg.h (render_input_files_title): New.
 	* src/moz-telemetry-x-analyze-radial-duo.cc: Use it.
 
