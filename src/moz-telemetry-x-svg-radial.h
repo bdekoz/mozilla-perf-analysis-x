@@ -327,7 +327,7 @@ append_ids_at(svg_form& obj, const typography& typo, const strings& ids,
 	      const double angled, const point origin, double r)
 {
   // Get point, angle up for text.
-  double angler = (k::pi / 180.0) * (angled + 10);
+  double angler = (k::pi / 180.0) * angled;
   auto [ x, y ] = get_circumference_point(angler, r, origin);
 
   // Concatenate ids to one line.
@@ -368,13 +368,13 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
   place_text_id(obj, typo, label, x, y, angled);
 
   // Next, print out the various id's on an arc with a bigger radius.
-  splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
+  //splay_ids_around(obj, typo, ids, angled, origin, r + 65, rspace);
   // splay_ids_after(obj, typo, ids, angled, origin, r + 65, rspace);
   // splay_ids_stagger(obj, typo, ids, angled, origin, r + 65, rspace);
 
   // stack_ids_at(obj, typo, ids, angled, origin, r + 65, 10);
 
-  //append_ids_at(obj, typo, ids, angled, origin, r + 65);
+  append_ids_at(obj, typo, ids, angled, origin, r + 65);
 }
 
 

@@ -1,3 +1,7 @@
+2019-04-10  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x-svg-radial.h: Use append method.
+
 2019-04-09  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-telemetry-x-analyze-radial-duo.cc: Fix merge error.
