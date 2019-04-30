@@ -125,12 +125,16 @@ enum class json_t
 {
   browsertime,
   har,
-  mozilla,
+  hybrid,
   mozilla_android,
+  mozilla_main,
+  mozilla_snapshot_e,
+  mozilla_snapshot_h,
+  mozilla_snapshot_s,
   w3c
 };
 
-constexpr json_t djson_t = json_t::mozilla;
+constexpr json_t djson_t = json_t::browsertime;
 
 
 /**

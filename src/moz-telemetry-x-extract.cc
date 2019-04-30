@@ -21,7 +21,16 @@
 
 #include "moz-json-basic.h"
 
+
 namespace moz {
+
+namespace constants {
+  constexpr const char* content = "content";
+  constexpr const char* parent = "parent";
+  constexpr const char* process = "processes";
+  constexpr const char* dynamic = "dynamic";
+  constexpr const char* extension = "extension";
+}
 
 std::string
 usage()
@@ -76,6 +85,27 @@ make_extracted_data_file(string fstem)
 }
 
 
+
+void
+extract_histograms_mozilla(const rj::Document& dom,
+			   strings& found, string& remaining)
+{
+  const string khistograms("histograms");
+}
+
+
+void
+extract_histograms_mozilla(const rj::Value& dhisto,
+			   strings& found, string& remaining)
+{
+  // Extract histogram values.
+  // list_object_fields(dhistogram);
+  extract(extract_histogram_fields(dhisto, left, ofs), left, found);
+  extract(extract_histogram_fields(dcont, left, ofs), left, found);
+  extract(extract_histogram_fields(dproc, left, ofs), left, found);
+}
+
+
 /*
   Takes two arguments
 
@@ -84,7 +114,8 @@ make_extracted_data_file(string fstem)
 
   Output is a CSV file of probe names with extracted values
 
-  Top-level fields:
+  Top-level fields for main ping:
+
   type
   id
   creationDate
@@ -95,7 +126,7 @@ make_extracted_data_file(string fstem)
   environment
  */
 void
-extract_mozilla_ids(string inames, string ifile)
+extract_mozilla_main_ids(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -453,10 +484,10 @@ extract_identifiers(string inames, string idata)
 {
   if constexpr (djson_t == json_t::browsertime)
     extract_browsertime_ids(inames, idata, histogram_view_t::median);
-  if constexpr (djson_t == json_t::mozilla)
-    extract_mozilla_ids(inames, idata);
   if constexpr (djson_t == json_t::mozilla_android)
     extract_mozilla_android_ids(inames, idata);
+  if constexpr (djson_t == json_t::mozilla_main)
+    extract_mozilla_main_ids(inames, idata);
 }
 } // namespace moz
 
@@ -483,8 +514,8 @@ int main(int argc, char* argv[])
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
 
-  // list_json_fields(idata, true);
-  // list_json_fields(idata, false);
+  //list_json_fields(idata, false);
+  //list_json_fields(idata, true);
 
   extract_identifiers(inames, idata);
 

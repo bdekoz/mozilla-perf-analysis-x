@@ -434,6 +434,39 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
 }
 
 
+// Environment node only.
+environment
+extract_environment_mozilla(const rj::Value& denv)
+{
+  const string kbuild("build");
+  const string kpartner("partner");
+  const string ksystem("system");
+  const string kcpu("cpu");
+  const string kos("os");
+  const rj::Value& dbuild = denv[kbuild.c_str()];
+  const rj::Value& dpartner = denv[kpartner.c_str()];
+  const rj::Value& dsystem = denv[ksystem.c_str()];
+  const rj::Value& dcpu = dsystem[kcpu.c_str()];
+  const rj::Value& dkos = dsystem[kos.c_str()];
+
+  environment env = { };
+  env.os_vendor = field_value_to_string(dpartner["distributor"]);
+  env.os_name = field_value_to_string(dkos["name"]);
+  env.os_version = field_value_to_string(dkos["version"]);
+  env.os_locale = field_value_to_string(dkos["locale"]);
+
+  env.hw_cpu = field_value_to_int(dcpu["count"]);
+  env.hw_mem = field_value_to_int(dsystem["memoryMB"]);
+
+  env.sw_name = field_value_to_string(dbuild["applicationName"]);
+  env.sw_arch = field_value_to_string(dbuild["architecture"]);
+  env.sw_version = field_value_to_string(dbuild["version"]);
+  env.sw_build_id = field_value_to_string(dbuild["buildId"]);
+
+  return env;
+}
+
+
 environment
 extract_environment_mozilla(const rj::Document& dom)
 {
@@ -441,30 +474,8 @@ extract_environment_mozilla(const rj::Document& dom)
   const string kenv("environment");
   if (dom.HasMember(kenv.c_str()))
     {
-      const string kbuild("build");
-      const string kpartner("partner");
-      const string ksystem("system");
-      const string kcpu("cpu");
-      const string kos("os");
       const rj::Value& denv = dom[kenv.c_str()];
-      const rj::Value& dbuild = denv[kbuild.c_str()];
-      const rj::Value& dpartner = denv[kpartner.c_str()];
-      const rj::Value& dsystem = denv[ksystem.c_str()];
-      const rj::Value& dcpu = dsystem[kcpu.c_str()];
-      const rj::Value& dkos = dsystem[kos.c_str()];
-
-      env.os_vendor = field_value_to_string(dpartner["distributor"]);
-      env.os_name = field_value_to_string(dkos["name"]);
-      env.os_version = field_value_to_string(dkos["version"]);
-      env.os_locale = field_value_to_string(dkos["locale"]);
-
-      env.hw_cpu = field_value_to_int(dcpu["count"]);
-      env.hw_mem = field_value_to_int(dsystem["memoryMB"]);
-
-      env.sw_name = field_value_to_string(dbuild["applicationName"]);
-      env.sw_arch = field_value_to_string(dbuild["architecture"]);
-      env.sw_version = field_value_to_string(dbuild["version"]);
-      env.sw_build_id = field_value_to_string(dbuild["buildId"]);
+      env = extract_environment_mozilla(denv);
 
       //payload/processes/parent/scalars
       const char* kparentscalars = "/payload/processes/parent/scalars";

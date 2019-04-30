@@ -1,5 +1,11 @@
 2019-04-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h: Break out mozilla extraction to nodes.
+	* src/moz-telemetry-x-extract.cc: Same.
+	* src/moz-telemetry-x.h: Subtype mozilla json.
+
+2019-04-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/match-identifier-files/w3c-performance-timings.txt: Remove blank.
 	* data/match-identifier-files/w3c-navigation-timings.txt: Add.
 
