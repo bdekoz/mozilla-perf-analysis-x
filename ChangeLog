@@ -1,3 +1,8 @@
+2019-04-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/match-identifier-files/w3c-performance-timings.txt: Remove blank.
+	* data/match-identifier-files/w3c-navigation-timings.txt: Add.
+
 2019-04-12  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/match-identifier-files/mozilla-telemetry-probes-2019.txt: Add
