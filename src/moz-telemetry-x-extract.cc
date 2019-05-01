@@ -323,31 +323,19 @@ extract_mozilla_android_ids(string inames, string ifile)
   const string khistogram("histograms");
   const string kkeyedhistogram("keyedHistograms");
 
-  const string kparent("parent");
-  const string kcontent("content");
-  const string kdynamic("dynamic");
-  const string ksocket("socket");
-  const string kgpu("gpu");
-
   strings found;
   strings remain(probes);
   if (dom.HasMember(kscalar.c_str()))
     {
       const rj::Value& ds = dom[kscalar.c_str()];
-      const rj::Value& dsp = ds[kparent.c_str()];
-      const rj::Value& dsc = ds[kcontent.c_str()];
-      extract(extract_scalar_fields(ds, remain, ofs), remain, found);
-      extract(extract_scalar_fields(dsp, remain, ofs), remain, found);
-      extract(extract_scalar_fields(dsc, remain, ofs), remain, found);
+      extract_scalars_mozilla(ds, found, remain, ofs);
     }
   std::clog << "done scalar" << std::endl;
 
   if (dom.HasMember(kkeyedscalar.c_str()))
     {
       const rj::Value& dks = dom[kkeyedscalar.c_str()];
-      const rj::Value& dksp = dks[kparent.c_str()];
-      extract(extract_scalar_fields(dks, remain, ofs), remain, found);
-      extract(extract_scalar_fields(dksp, remain, ofs), remain, found);
+      extract_scalars_mozilla(dks, found, remain, ofs);
     }
   std::clog << "done keyed scalar" << std::endl;
 
@@ -360,21 +348,8 @@ extract_mozilla_android_ids(string inames, string ifile)
 
   if (dom.HasMember(kkeyedhistogram.c_str()))
     {
-      const rj::Value& dkhi = dom[kkeyedhistogram.c_str()];
-      const rj::Value& dgpu = dkhi[kgpu.c_str()];
-      const rj::Value& dparent = dkhi[kparent.c_str()];
-      const rj::Value& dcontent = dkhi[kcontent.c_str()];
-      const rj::Value& ddynam = dkhi[kdynamic.c_str()];
-      const rj::Value& dsocket = dkhi[ksocket.c_str()];
-
-      extract(extract_histogram_fields(dkhi, remain, ofs), remain, found);
-      std::clog << "done keyed histogram  1" << std::endl;
-      //extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
-      //extract(extract_histogram_fields(dparent, remain, ofs), remain, found);
-      std::clog << "done keyed histogram  2" << std::endl;
-      // extract(extract_histogram_fields(dgpu, remain, ofs), remain, found);
-      // extract(extract_histogram_fields(ddynam, remain, ofs), remain, found);
-      // extract(extract_histogram_fields(dsocket, remain, ofs), remain, found);
+      const rj::Value& dkhisto = dom[kkeyedhistogram.c_str()];
+      extract_histograms_mozilla(dkhisto, found, remain, ofs);
     }
   std::clog << "done keyed histogram" << std::endl;
 }

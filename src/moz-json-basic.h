@@ -453,6 +453,13 @@ extract_environment_mozilla(const rj::Value& denv)
   env.os_version = field_value_to_string(dkos["version"]);
   env.os_locale = field_value_to_string(dkos["locale"]);
 
+  if (dsystem.HasMember("device"))
+    {
+      const rj::Value& device = dsystem["device"];
+      string manu = field_value_to_string(device["manufacturer"]);
+      string model = field_value_to_string(device["model"]);
+      env.hw_name = manu + " " + model;
+    }
   env.hw_cpu = field_value_to_int(dcpu["count"]);
   env.hw_mem = field_value_to_int(dsystem["memoryMB"]);
 
@@ -569,6 +576,8 @@ serialize_environment(const environment& env, string ofile)
   writer.String("os_locale");
   writer.String(env.os_locale);
 
+  writer.String("hw_name");
+  writer.String(env.hw_name);
   writer.String("hw_cpu");
   writer.Int(env.hw_cpu);
   writer.String("hw_mem");

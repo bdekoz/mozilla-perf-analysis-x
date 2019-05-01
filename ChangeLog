@@ -1,3 +1,15 @@
+2019-05-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x--radial.h: Move back to
+	* src/moz-telemetry-x-radial.h: This.
+
+	* src/moz-json-basic.h (extract_environment_mozilla): Probe for
+	device name.
+	(serialize_environment): Add it.
+	* src/moz-telemetry-x-extract.cc (extract_mozilla_android_id): Use
+	helper functions.
+	* src/moz-telemetry-x.h (environment::hw_name): Add.
+
 2019-04-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_environment_mozilla): Remove partner
