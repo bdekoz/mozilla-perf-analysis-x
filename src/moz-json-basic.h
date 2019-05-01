@@ -439,18 +439,16 @@ environment
 extract_environment_mozilla(const rj::Value& denv)
 {
   const string kbuild("build");
-  const string kpartner("partner");
   const string ksystem("system");
   const string kcpu("cpu");
   const string kos("os");
   const rj::Value& dbuild = denv[kbuild.c_str()];
-  const rj::Value& dpartner = denv[kpartner.c_str()];
   const rj::Value& dsystem = denv[ksystem.c_str()];
   const rj::Value& dcpu = dsystem[kcpu.c_str()];
   const rj::Value& dkos = dsystem[kos.c_str()];
 
   environment env = { };
-  env.os_vendor = field_value_to_string(dpartner["distributor"]);
+
   env.os_name = field_value_to_string(dkos["name"]);
   env.os_version = field_value_to_string(dkos["version"]);
   env.os_locale = field_value_to_string(dkos["locale"]);

@@ -1,3 +1,16 @@
+2019-04-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (extract_environment_mozilla): Remove partner
+	field.
+	* src/moz-telemetry-x-extract.cc (moz::constants): Add constants.
+	(extract_histograms_mozilla): New.
+	(extract_scalars_mozilla): New.
+	(extract_mozilla_snapshot_ids): New.
+	( extract_browsertime_ids): Add in support for parsing hybrid JSON
+	files containing both browsertime and mozilla telemetry sections.
+
+	* data/match-identifier-files/telemetry: New tag file.
+
 2019-04-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h: Break out mozilla extraction to nodes.

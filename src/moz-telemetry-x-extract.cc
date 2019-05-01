@@ -24,19 +24,42 @@
 
 namespace moz {
 
-namespace constants {
-  constexpr const char* content = "content";
-  constexpr const char* parent = "parent";
-  constexpr const char* process = "processes";
-  constexpr const char* dynamic = "dynamic";
-  constexpr const char* extension = "extension";
-}
-
 std::string
 usage()
 {
   std::string s("usage: moz-telemetry-x-extract.exe names.txt data.json");
   return s;
+}
+
+
+namespace constants {
+
+  constexpr const char* content = "content";
+  constexpr const char* parent = "parent";
+
+  constexpr const char* process = "processes";
+  constexpr const char* dynamic = "dynamic";
+  constexpr const char* extension = "extension";
+  constexpr const char* gpu = "gpu";
+  constexpr const char* socket = "socket";
+
+  constexpr const char* vendor = "vendor";
+  constexpr const char* pscalars = "privileged_telemetry_scalars";
+  constexpr const char* phistograms = "privileged_telemetry_histograms";
+  constexpr const char* penvironment = "privileged_telemetry_environment";
+}
+
+
+std::ofstream
+make_extracted_data_file(string fstem)
+{
+  // Prepare output file.
+  const string ofile(fstem + k::csv_ext);
+  std::ofstream ofs(ofile);
+  if (!ofs.good())
+    std::cerr << k::errorprefix << "cannot open output file "
+	      << ofile << std::endl;
+  return ofs;
 }
 
 
@@ -60,49 +83,115 @@ remove_matches(const strings& total, const strings& found)
 
 
 void
-extract(const strings& found, strings& tremaining, strings& tfound)
+extract(const strings& found, strings& tremain, strings& tfound)
 {
   std::copy(found.begin(), found.end(), std::back_inserter(tfound));
-  tremaining = remove_matches(tremaining, found);
+  tremain = remove_matches(tremain, found);
 }
 
 
-std::ofstream
-make_extracted_data_file(string fstem)
-{
-  // Prepare output file.
-  const string ofile(fstem + k::csv_ext);
-  std::ofstream ofs(ofile);
-  if (ofs.good())
-    {
-      // Add zero as starting point.
-      ofs << "START" << "," << 0 << std::endl;
-    }
-  else
-    std::cerr << k::errorprefix << "cannot open output file "
-	      << ofile << std::endl;
-  return ofs;
-}
-
-
-
-void
-extract_histograms_mozilla(const rj::Document& dom,
-			   strings& found, string& remaining)
-{
-  const string khistograms("histograms");
-}
-
-
+// Histogram node and sub-nodes.
 void
 extract_histograms_mozilla(const rj::Value& dhisto,
-			   strings& found, string& remaining)
+			   strings& found, strings& remain, std::ofstream& ofs)
 {
   // Extract histogram values.
-  // list_object_fields(dhistogram);
-  extract(extract_histogram_fields(dhisto, left, ofs), left, found);
-  extract(extract_histogram_fields(dcont, left, ofs), left, found);
-  extract(extract_histogram_fields(dproc, left, ofs), left, found);
+  extract(extract_histogram_fields(dhisto, remain, ofs), remain, found);
+
+  if (dhisto.HasMember(k::content))
+    {
+      const rj::Value& dcontent = dhisto[k::content];
+      extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
+    }
+
+  if (dhisto.HasMember(k::parent))
+    {
+      const rj::Value& dparent = dhisto[k::parent];
+      extract(extract_histogram_fields(dparent, remain, ofs), remain, found);
+    }
+
+  if (dhisto.HasMember(k::extension))
+    {
+      const rj::Value& dext = dhisto[k::extension];
+      extract(extract_histogram_fields(dext, remain, ofs), remain, found);
+    }
+
+  if (dhisto.HasMember(k::dynamic))
+    {
+      const rj::Value& ddyn = dhisto[k::dynamic];
+      extract(extract_histogram_fields(ddyn, remain, ofs), remain, found);
+    }
+
+  if (dhisto.HasMember(k::gpu))
+    {
+      const rj::Value& dgpu = dhisto[k::gpu];
+      extract(extract_histogram_fields(dgpu, remain, ofs), remain, found);
+    }
+
+  if (dhisto.HasMember(k::socket))
+    {
+      const rj::Value& dsocket = dhisto[k::socket];
+      extract(extract_histogram_fields(dsocket, remain, ofs), remain, found);
+    }
+}
+
+
+// Scalar node and sub-nodes.
+void
+extract_scalars_mozilla(const rj::Value& dscal,
+			strings& found, strings& remain, std::ofstream& ofs)
+{
+  // Extract scalar values.
+  extract(extract_histogram_fields(dscal, remain, ofs), remain, found);
+
+  if (dscal.HasMember(k::content))
+    {
+      const rj::Value& dcontent = dscal[k::content];
+      extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
+    }
+
+  if (dscal.HasMember(k::parent))
+    {
+      const rj::Value& dparent = dscal[k::parent];
+      extract(extract_histogram_fields(dparent, remain, ofs), remain, found);
+    }
+}
+
+
+/// Extract histograms, scalars, and environment info from snapshot node.
+void
+extract_mozilla_snapshot_ids(const rj::Value& dvendor,
+			     string inames, string ifile)
+{
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_text_to_strings(inames);
+
+  string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
+  std::ofstream ofs(make_extracted_data_file(ofname));
+
+  strings found;
+  strings remain(probes);
+  if (dvendor.HasMember(k::phistograms))
+    {
+      std::clog << "histogram snapshot" << std::endl;
+      const rj::Value& dhisto = dvendor[k::phistograms];
+      extract_histograms_mozilla(dhisto, found, remain, ofs);
+    }
+
+  if (dvendor.HasMember(k::pscalars))
+    {
+      std::clog << "scalar snapshot" << std::endl;
+      const rj::Value& dscal = dvendor[k::pscalars];
+      extract_scalars_mozilla(dscal, found, remain, ofs);
+    }
+
+  if (dvendor.HasMember(k::penvironment))
+    {
+      std::clog << "environment snapshot" << std::endl;
+      const rj::Value& denv = dvendor[k::penvironment];
+      environment env = extract_environment_mozilla(denv);
+      serialize_environment(env, ofname);
+    }
 }
 
 
@@ -144,7 +233,7 @@ extract_mozilla_main_ids(string inames, string ifile)
   if (dom.HasMember(kpayload.c_str()))
     {
       strings found;
-      strings left(probes);
+      strings remain(probes);
 
       // payload
       // payload/histograms
@@ -173,19 +262,19 @@ extract_mozilla_main_ids(string inames, string ifile)
 
       // Extract histogram values.
       // list_object_fields(dhistogram);
-      extract(extract_histogram_fields(dhisto, left, ofs), left, found);
-      extract(extract_histogram_fields(dcont, left, ofs), left, found);
-      extract(extract_histogram_fields(dgpu, left, ofs), left, found);
+      extract(extract_histogram_fields(dhisto, remain, ofs), remain, found);
+      extract(extract_histogram_fields(dcont, remain, ofs), remain, found);
+      extract(extract_histogram_fields(dgpu, remain, ofs), remain, found);
 
       // Extract scalar values.
       // list_object_fields(dsimple);
-      extract(extract_scalar_fields(dsimple, left, ofs), left, found);
-      extract(extract_scalar_fields(dparent, left, ofs), left, found);
+      extract(extract_scalar_fields(dsimple, remain, ofs), remain, found);
+      extract(extract_scalar_fields(dparent, remain, ofs), remain, found);
 
-      // List remaining.
+      // List remain.
       std::clog << std::endl;
-      std::clog << left.size() << " remaining probes: " << std::endl;
-      for (const string& s : left)
+      std::clog << remain.size() << " remain probes: " << std::endl;
+      for (const string& s : remain)
 	std::clog << '\t' << s << std::endl;
       std::clog << std::endl;
 
@@ -241,15 +330,15 @@ extract_mozilla_android_ids(string inames, string ifile)
   const string kgpu("gpu");
 
   strings found;
-  strings left(probes);
+  strings remain(probes);
   if (dom.HasMember(kscalar.c_str()))
     {
       const rj::Value& ds = dom[kscalar.c_str()];
       const rj::Value& dsp = ds[kparent.c_str()];
       const rj::Value& dsc = ds[kcontent.c_str()];
-      extract(extract_scalar_fields(ds, left, ofs), left, found);
-      extract(extract_scalar_fields(dsp, left, ofs), left, found);
-      extract(extract_scalar_fields(dsc, left, ofs), left, found);
+      extract(extract_scalar_fields(ds, remain, ofs), remain, found);
+      extract(extract_scalar_fields(dsp, remain, ofs), remain, found);
+      extract(extract_scalar_fields(dsc, remain, ofs), remain, found);
     }
   std::clog << "done scalar" << std::endl;
 
@@ -257,26 +346,15 @@ extract_mozilla_android_ids(string inames, string ifile)
     {
       const rj::Value& dks = dom[kkeyedscalar.c_str()];
       const rj::Value& dksp = dks[kparent.c_str()];
-      extract(extract_scalar_fields(dks, left, ofs), left, found);
-      extract(extract_scalar_fields(dksp, left, ofs), left, found);
+      extract(extract_scalar_fields(dks, remain, ofs), remain, found);
+      extract(extract_scalar_fields(dksp, remain, ofs), remain, found);
     }
   std::clog << "done keyed scalar" << std::endl;
 
   if (dom.HasMember(khistogram.c_str()))
     {
-      const rj::Value& dhi = dom[khistogram.c_str()];
-      const rj::Value& dgpu = dhi[kgpu.c_str()];
-      const rj::Value& dparent = dhi[kparent.c_str()];
-      const rj::Value& dcontent = dhi[kcontent.c_str()];
-      const rj::Value& ddynam = dhi[kdynamic.c_str()];
-      const rj::Value& dsocket = dhi[ksocket.c_str()];
-
-      extract(extract_histogram_fields(dhi, left, ofs), left, found);
-      extract(extract_histogram_fields(dcontent, left, ofs), left, found);
-      extract(extract_histogram_fields(dgpu, left, ofs), left, found);
-      extract(extract_histogram_fields(dparent, left, ofs), left, found);
-      extract(extract_histogram_fields(ddynam, left, ofs), left, found);
-      extract(extract_histogram_fields(dsocket, left, ofs), left, found);
+      const rj::Value& dhisto = dom[khistogram.c_str()];
+      extract_histograms_mozilla(dhisto, found, remain, ofs);
     }
   std::clog << "done histogram" << std::endl;
 
@@ -289,14 +367,14 @@ extract_mozilla_android_ids(string inames, string ifile)
       const rj::Value& ddynam = dkhi[kdynamic.c_str()];
       const rj::Value& dsocket = dkhi[ksocket.c_str()];
 
-      extract(extract_histogram_fields(dkhi, left, ofs), left, found);
+      extract(extract_histogram_fields(dkhi, remain, ofs), remain, found);
       std::clog << "done keyed histogram  1" << std::endl;
-      //extract(extract_histogram_fields(dcontent, left, ofs), left, found);
-      //extract(extract_histogram_fields(dparent, left, ofs), left, found);
+      //extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
+      //extract(extract_histogram_fields(dparent, remain, ofs), remain, found);
       std::clog << "done keyed histogram  2" << std::endl;
-      // extract(extract_histogram_fields(dgpu, left, ofs), left, found);
-      // extract(extract_histogram_fields(ddynam, left, ofs), left, found);
-      // extract(extract_histogram_fields(dsocket, left, ofs), left, found);
+      // extract(extract_histogram_fields(dgpu, remain, ofs), remain, found);
+      // extract(extract_histogram_fields(ddynam, remain, ofs), remain, found);
+      // extract(extract_histogram_fields(dsocket, remain, ofs), remain, found);
     }
   std::clog << "done keyed histogram" << std::endl;
 }
@@ -326,12 +404,14 @@ extract_browsertime_nested_object(const rj::Value& v, strings& probes,
 
 // Extract nested objects from Browsertime format.
 void
-extract_browsertime_object(const rj::Value& v, strings& probes,
+extract_browsertime_object(const rj::Value& v,
 			   std::ofstream& ofs, const histogram_view_t dview)
 {
   std::clog << "object probes search starting..." << std::endl;
 
   // Walk top level timings.
+  strings found;
+
   // firstPaint
   // fullyLoaded
   const char* kfp = "firstPaint";
@@ -340,7 +420,7 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
       const rj::Value& dfp = v[kfp];
       int ifp = extract_pseudo_histogram_field(dfp, dview);
       ofs << kfp << "," << ifp << std::endl;
-      probes.push_back(kfp);
+      found.push_back(kfp);
     }
 
   const char* kfl = "fullyLoaded";
@@ -349,7 +429,7 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
       const rj::Value& dfl = v[kfl];
       int ifl = extract_pseudo_histogram_field(dfl, dview);
       ofs << kfl << "," << ifl << std::endl;
-      probes.push_back(kfl);
+      found.push_back(kfl);
     }
 
   // Walk navigation timing.
@@ -357,7 +437,7 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
   if (v.HasMember(knavt))
     {
       const rj::Value& dnavt = v[knavt];
-      extract_browsertime_nested_object(dnavt, probes, ofs, dview);
+      extract_browsertime_nested_object(dnavt, found, ofs, dview);
     }
 
   // Walk page timings.
@@ -365,10 +445,10 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
   if (v.HasMember(kpaget))
     {
       const rj::Value& dpaget = v[kpaget];
-      extract_browsertime_nested_object(dpaget, probes, ofs, dview);
+      extract_browsertime_nested_object(dpaget, found, ofs, dview);
     }
 
-  std::clog << "object probes found: " << probes.size() << std::endl;
+  std::clog << "object probes found: " << found.size() << std::endl;
 }
 
 
@@ -406,12 +486,9 @@ extract_browsertime_object(const rj::Value& v, strings& probes,
  */
 void
 extract_browsertime_ids(string inames, string ifile,
-			  const histogram_view_t dview)
+			const histogram_view_t dview)
 {
-  // Read probe names from input file, and put into vector<string>
-  strings probes;
-
-  string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
+  string ofname(file_path_to_stem(ifile) + "-x-" + "browsertime");
   std::ofstream ofs(make_extracted_data_file(ofname));
 
   // Load input JSON data file into DOM.
@@ -422,6 +499,7 @@ extract_browsertime_ids(string inames, string ifile,
 
   std::clog << "start dom extract" << std::endl << std::endl;
 
+  // Older browsertime versions...
   if (dom.IsObject())
     {
       std::clog << "dom object " << std::endl;
@@ -434,7 +512,7 @@ extract_browsertime_ids(string inames, string ifile,
       if (pv)
 	{
 	  const rj::Value& v = *pv;
-	  extract_browsertime_object(v, probes, ofs, dview);
+	  extract_browsertime_object(v, ofs, dview);
 
 	  // Extract and serialize environmental metadata.
 	  environment env = extract_environment_browsertime(dom);
@@ -444,6 +522,7 @@ extract_browsertime_ids(string inames, string ifile,
 	std::cerr << "dom object statistics/timings not found" << std::endl;
     }
 
+  // Newer browsertime versions...
   if (dom.IsArray())
     {
       std::clog << "dom array size " << dom.Size() << std::endl;
@@ -456,17 +535,22 @@ extract_browsertime_ids(string inames, string ifile,
 	      const char* kstat("statistics");
 	      if (v.HasMember(kstat))
 		{
+		  // Browsertime metrics.
 		  const char* ktime("timings");
 		  const rj::Value& vs = v[kstat];
 		  const rj::Value& vst = vs[ktime];
-		  extract_browsertime_object(vst, probes, ofs, dview);
+		  extract_browsertime_object(vst, ofs, dview);
 
+		  // Telemetry metrics, if a hybrid JSON file.
+		  if (vs.HasMember(k::vendor))
+		    {
+		      const rj::Value& vendor = vs[k::vendor];
+		      extract_mozilla_snapshot_ids(vendor, inames, ifile);
+		    }
 
-		  // Extract and serialize environmental metadata.
-		  std::clog << "extracing environment metadata: ";
+		  // Extract and serialize environmental metadata, then stop.
 		  environment env = extract_environment_browsertime(v);
 		  serialize_environment(env, ofname);
-		  std::clog << "done" << std::endl;
 		  break;
 		}
 	      else
