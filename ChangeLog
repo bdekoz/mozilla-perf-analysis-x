@@ -1,5 +1,15 @@
 2019-05-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h (parse_stringified_json_to_dom): Like it says.
+	(deserialize_json_to_dom): Use it.
+	* src/moz-telemetry-x-extract.cc (extract_environment_mozilla): Disambiguate.
+	(extract_maybe_stringified): New.
+	(extract_histograms_mozilla): Use it.
+	(extract_scalarss_mozilla): Use it.
+	(extract_browsertime_ids): Parse hybrid files.
+
+2019-05-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x--radial.h: Move back to
 	* src/moz-telemetry-x-radial.h: This.
 

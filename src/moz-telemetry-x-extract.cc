@@ -100,10 +100,12 @@ extract_histograms_mozilla(const rj::Value& dhisto,
 
   if (dhisto.HasMember(k::content))
     {
+      std::clog << k::content << " start" << std::endl;
       const rj::Value& dcontent = dhisto[k::content];
       extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
     }
 
+  std::clog << "histogram " << k::parent << std::endl;
   if (dhisto.HasMember(k::parent))
     {
       const rj::Value& dparent = dhisto[k::parent];
@@ -158,6 +160,39 @@ extract_scalars_mozilla(const rj::Value& dscal,
 }
 
 
+void
+extract_maybe_stringified(const rj::Value& vnode, strings& found,
+			  strings& remain, std::ofstream& ofs, auto fn)
+{
+  const bool is_array(vnode.IsArray());
+  const bool is_object(vnode.IsObject());
+  const bool is_string(vnode.IsString());
+
+  if (is_object)
+    {
+      std::clog << "object:" << std::endl;
+      fn(vnode, found, remain, ofs);
+    }
+
+  if (is_string)
+    {
+      std::clog << "string-ified: " << std::endl;
+      std::string stringified = vnode.GetString();
+      rj::Document d = parse_stringified_json_to_dom(stringified);
+
+      if (d.IsObject())
+	fn(d, found, remain, ofs);
+    }
+
+  if (!is_object && !is_string)
+    {
+      std::clog << "snapshot format failure: input isn't object, string."
+                << "Is it an array? " << is_array << std::endl;
+      exit (123);
+    }
+}
+
+
 /// Extract histograms, scalars, and environment info from snapshot node.
 void
 extract_mozilla_snapshot_ids(const rj::Value& dvendor,
@@ -171,26 +206,43 @@ extract_mozilla_snapshot_ids(const rj::Value& dvendor,
 
   strings found;
   strings remain(probes);
+
   if (dvendor.HasMember(k::phistograms))
     {
-      std::clog << "histogram snapshot" << std::endl;
+      std::clog << "histogram snapshot start" << std::endl;
       const rj::Value& dhisto = dvendor[k::phistograms];
-      extract_histograms_mozilla(dhisto, found, remain, ofs);
+      auto fn = extract_histograms_mozilla;
+      extract_maybe_stringified(dhisto, found, remain, ofs, fn);
+      std::clog << "histogram snapshot end" << std::endl;
     }
 
   if (dvendor.HasMember(k::pscalars))
     {
-      std::clog << "scalar snapshot" << std::endl;
+      std::clog << "scalar snapshot start" << std::endl;
       const rj::Value& dscal = dvendor[k::pscalars];
-      extract_scalars_mozilla(dscal, found, remain, ofs);
+      auto fn = extract_scalars_mozilla;
+      extract_maybe_stringified(dscal, found, remain, ofs, fn);
+      std::clog << "scalar snapshot end" << std::endl;
     }
 
   if (dvendor.HasMember(k::penvironment))
     {
-      std::clog << "environment snapshot" << std::endl;
+      std::clog << "environment snapshot start" << std::endl;
       const rj::Value& denv = dvendor[k::penvironment];
-      environment env = extract_environment_mozilla(denv);
+
+      environment env = { };
+      if (denv.IsString())
+	{
+	  std::clog << "string-ified: " << std::endl;
+	  std::string stringified = denv.GetString();
+	  rj::Document d = parse_stringified_json_to_dom(stringified);
+	  env = extract_environment_mozilla(d, true);
+	}
+      if (denv.IsObject())
+	env = extract_environment_mozilla(denv, true);
+
       serialize_environment(env, ofname);
+      std::clog << "environment snapshot end" << std::endl;
     }
 }
 
@@ -423,7 +475,7 @@ extract_browsertime_object(const rj::Value& v,
       extract_browsertime_nested_object(dpaget, found, ofs, dview);
     }
 
-  std::clog << "object probes found: " << found.size() << std::endl;
+  std::clog << "object probes search found: " << found.size() << std::endl;
 }
 
 
@@ -477,7 +529,7 @@ extract_browsertime_ids(string inames, string ifile,
   // Older browsertime versions...
   if (dom.IsObject())
     {
-      std::clog << "dom object " << std::endl;
+      std::clog << "dom object " << std::endl << std::endl;
       list_dom_object_fields(dom, false, true);
 
       //statistics/timing
@@ -500,36 +552,55 @@ extract_browsertime_ids(string inames, string ifile,
   // Newer browsertime versions...
   if (dom.IsArray())
     {
-      std::clog << "dom array size " << dom.Size() << std::endl;
+      std::clog << "dom array size " << dom.Size() << std::endl << std::endl;
 
       for (uint i = 0; i < dom.Size(); ++i)
 	{
 	  const rj::Value& v = dom[i];
 	  if (v.IsObject() && list_object_fields("", v, false, true) > 0)
 	    {
-	      const char* kstat("statistics");
-	      if (v.HasMember(kstat))
+	      constexpr const char* statistics = "statistics";
+	      if (v.HasMember(statistics))
 		{
-		  // Browsertime metrics.
-		  const char* ktime("timings");
-		  const rj::Value& vs = v[kstat];
-		  const rj::Value& vst = vs[ktime];
-		  extract_browsertime_object(vst, ofs, dview);
+		std::cerr << "dom node " << statistics << std::endl;
 
-		  // Telemetry metrics, if a hybrid JSON file.
-		  if (vs.HasMember(k::vendor))
-		    {
-		      const rj::Value& vendor = vs[k::vendor];
-		      extract_mozilla_snapshot_ids(vendor, inames, ifile);
-		    }
+		  // Browsertime metrics.
+		  constexpr const char* timings = "timings";
+		  const rj::Value& vs = v[statistics];
+		  const rj::Value& vst = vs[timings];
+		  extract_browsertime_object(vst, ofs, dview);
 
 		  // Extract and serialize environmental metadata, then stop.
 		  environment env = extract_environment_browsertime(v);
 		  serialize_environment(env, ofname);
-		  break;
 		}
 	      else
-		std::cerr << "dom object statistics not found" << std::endl;
+		std::cerr << "no dom node " << statistics << std::endl;
+
+	      constexpr const char* browserscripts = "browserScripts";
+	      if (v.HasMember(browserscripts))
+		{
+		  std::cerr << "dom node " << browserscripts << std::endl;
+
+		  const rj::Value& vscripts = v[browserscripts];
+		  if (vscripts.IsArray())
+		    {
+		      for (uint j = 0; j < vscripts.Size(); ++j)
+			{
+			  const rj::Value& vssub = vscripts[j];
+			  if (vssub.HasMember(k::vendor))
+			    {
+			      std::cerr << "dom node " << k::vendor << std::endl;
+			      const rj::Value& vendor = vssub[k::vendor];
+			      extract_mozilla_snapshot_ids(vendor, inames, ifile);
+			    }
+			  else
+			    std::cerr << "no dom node " << k::vendor << std::endl;
+			}
+		    }
+		}
+	      else
+		std::cerr << "no dom node " << browserscripts << std::endl;
 	    }
 	}
     }
@@ -567,7 +638,8 @@ int main(int argc, char* argv[])
 
   std::string inames = argv[1];
   std::string idata = argv[2];
-  std::clog << "input files: " << inames << " , " << idata << std::endl;
+  std::clog << "input files: " << std::endl
+	    << inames << std::endl << idata << std::endl;
   std::clog << std::endl;
 
   // Extract data/values from json.

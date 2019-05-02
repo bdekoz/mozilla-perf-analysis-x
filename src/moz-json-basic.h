@@ -122,6 +122,20 @@ serialize_to_json(jsonstream&, string);
 
 
 rj::Document
+parse_stringified_json_to_dom(string stringified)
+{
+ rj::Document dom;
+ dom.Parse(stringified.c_str());
+ if (dom.HasParseError())
+   {
+     std::cerr << "error: cannot parse JSON string" << std::endl;
+     std::cerr << rj::GetParseError_En(dom.GetParseError()) << std::endl;
+     std::cerr << dom.GetErrorOffset() << std::endl;
+   }
+ return dom;
+}
+
+rj::Document
 deserialize_json_to_dom(string input_file)
 {
   // Deserialize input file.
@@ -134,24 +148,10 @@ deserialize_json_to_dom(string input_file)
       json = oss.str();
     }
   else
-    {
-      std::cerr << "error: cannot open input file "
-		<< input_file << std::endl;
-    }
+    std::cerr << "error: cannot open input file " << input_file << std::endl;
 
-  // Validate json file.
-
-  // DOM
-  rj::Document dom;
-  dom.Parse(json.c_str());
-  if (dom.HasParseError())
-    {
-      std::cerr << "error: cannot parse JSON file " << input_file << std::endl;
-      std::cerr << rj::GetParseError_En(dom.GetParseError()) << std::endl;
-      std::cerr << dom.GetErrorOffset() << std::endl;
-    }
-
-  return dom;
+  // Validate json file, or parse immediately and report error?
+  return parse_stringified_json_to_dom(json);
 }
 
 
@@ -436,7 +436,7 @@ extract_scalar_fields(const rj::Value& v, const strings& probes,
 
 // Environment node only.
 environment
-extract_environment_mozilla(const rj::Value& denv)
+extract_environment_mozilla(const rj::Value& denv, bool)
 {
   const string kbuild("build");
   const string ksystem("system");
@@ -480,7 +480,7 @@ extract_environment_mozilla(const rj::Document& dom)
   if (dom.HasMember(kenv.c_str()))
     {
       const rj::Value& denv = dom[kenv.c_str()];
-      env = extract_environment_mozilla(denv);
+      env = extract_environment_mozilla(denv, true);
 
       //payload/processes/parent/scalars
       const char* kparentscalars = "/payload/processes/parent/scalars";
