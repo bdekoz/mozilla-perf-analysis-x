@@ -214,6 +214,7 @@ place_metadata(svg_form& obj, const typography& typo, const environment& env)
 
   typography typolarge = typo;
   typolarge._M_size = 20;
+  place_text_metadata(obj, typolarge, env.hw_name);
   place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores");
   int memi = std::round(env.hw_mem * .001);
   place_text_metadata(obj, typolarge, to_string(memi) + " GB");
