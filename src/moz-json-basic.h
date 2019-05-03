@@ -117,10 +117,6 @@ deserialize_id_value_map(const string ifile, int& value_max)
 }
 
 
-void
-serialize_to_json(jsonstream&, string);
-
-
 rj::Document
 parse_stringified_json_to_dom(string stringified)
 {
@@ -134,6 +130,7 @@ parse_stringified_json_to_dom(string stringified)
    }
  return dom;
 }
+
 
 rj::Document
 deserialize_json_to_dom(string input_file)
@@ -666,7 +663,7 @@ deserialize_environment(string ifile)
  timestamps.first_paint
 */
 uint
-list_object_fields(const string parentfield, const rj::Value& v,
+list_object_fields(const rj::Value& v, const string parentfield = "",
 		   bool recursep = true, bool ftypep = false,
 		   bool fvalp = false)
 {
@@ -697,7 +694,7 @@ list_object_fields(const string parentfield, const rj::Value& v,
 	  std::clog << std::endl;
 
 	  if (recursep)
-	    list_object_fields(nfield, nv);
+	    list_object_fields(nv, nfield);
 	  ++nfields;
 	}
     }
@@ -727,7 +724,7 @@ list_dom_object_fields(const rj::Document& dom,
 	  std::clog << std::endl;
 
 	  if (nestedp)
-	    list_object_fields(nname, nv, true);
+	    list_object_fields(nv, nname, true);
 	}
     }
   else
@@ -746,9 +743,14 @@ list_dom_array_fields(const rj::Document& dom,
     {
       std::clog << "list_dom_array_fields size " << dom.Size() << std::endl;
 
+      uint i(0);
       for (const auto& v : dom.GetArray())
-	if (v.IsObject())
-	  list_object_fields("", v, nestedp, ftypep);
+	{
+	  if (v.IsObject())
+	    list_object_fields(v, "", nestedp, ftypep);
+	  if (v.IsArray())
+	    std::clog << "array " << ++i << " size " << v.Size() << std::endl;
+	}
     }
   else
     std::clog << "list_dom_array_fields:: no DOM array or JSON parse error"
