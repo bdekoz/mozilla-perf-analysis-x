@@ -187,7 +187,7 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
   if (!is_object && !is_string)
     {
       std::clog << "snapshot format failure: input isn't object, string."
-                << "Is it an array? " << is_array << std::endl;
+		<< "Is it an array? " << is_array << std::endl;
       exit (123);
     }
 }
@@ -557,7 +557,7 @@ extract_browsertime_ids(string inames, string ifile,
       for (uint i = 0; i < dom.Size(); ++i)
 	{
 	  const rj::Value& v = dom[i];
-	  if (v.IsObject() && list_object_fields("", v, false, true) > 0)
+	  if (v.IsObject() && list_object_fields(v, "", false, true) > 0)
 	    {
 	      constexpr const char* statistics = "statistics";
 	      if (v.HasMember(statistics))
@@ -592,7 +592,8 @@ extract_browsertime_ids(string inames, string ifile,
 			    {
 			      std::cerr << "dom node " << k::vendor << std::endl;
 			      const rj::Value& vendor = vssub[k::vendor];
-			      extract_mozilla_snapshot_ids(vendor, inames, ifile);
+			      if (list_object_fields(vendor, "", false) > 0)
+				extract_mozilla_snapshot_ids(vendor, inames, ifile);
 			    }
 			  else
 			    std::cerr << "no dom node " << k::vendor << std::endl;

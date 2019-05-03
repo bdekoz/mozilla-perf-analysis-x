@@ -2,6 +2,7 @@
 
 	* src/moz-json-basic.h (list_dom_array_fields): Count arrays, list size.
 	(serialize_to_json): Remove unused stub.
+	* src/moz-telemetry-x-extract.cc: Adjust calls.
 
 2019-05-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
