@@ -1,5 +1,13 @@
 2019-05-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Cleanups.
+	* src/moz-telemetry-x-extract.cc (extract_histogram_nodes): Add.
+	(extract_scalar_nodes): Add.
+	* data/match-identifier-files/mozilla-telemetry-probes-2019.txt:
+	Add load event end.
+
+2019-05-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-json-basic.h (list_dom_array_fields): Count arrays, list size.
 	(serialize_to_json): Remove unused stub.
 	* src/moz-telemetry-x-extract.cc: Adjust calls.
@@ -12,7 +20,8 @@
 
 	* src/moz-json-basic.h (parse_stringified_json_to_dom): Like it says.
 	(deserialize_json_to_dom): Use it.
-	* src/moz-telemetry-x-extract.cc (extract_environment_mozilla): Disambiguate.
+	* src/moz-telemetry-x-extract.cc (extract_environment_mozilla):
+	Disambiguate.
 	(extract_maybe_stringified): New.
 	(extract_histograms_mozilla): Use it.
 	(extract_scalarss_mozilla): Use it.

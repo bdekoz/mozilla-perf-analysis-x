@@ -83,57 +83,75 @@ remove_matches(const strings& total, const strings& found)
 
 
 void
-extract(const strings& found, strings& tremain, strings& tfound)
+update_matches(const strings& nfound, strings& tremain, strings& tfound)
 {
-  std::copy(found.begin(), found.end(), std::back_inserter(tfound));
-  tremain = remove_matches(tremain, found);
+  std::copy(nfound.begin(), nfound.end(), std::back_inserter(tfound));
+  tremain = remove_matches(tremain, nfound);
 }
+
+
+void
+extract_histogram_nodes(const rj::Value& dnode, strings& found, strings& remain,
+		       std::ofstream& ofs, histogram_view_t hvw)
+{
+  const strings& dfound = extract_histogram_fields(dnode, remain, ofs, hvw);
+  update_matches(dfound, remain, found);
+}
+
+
+void
+extract_scalar_nodes(const rj::Value& dnode, strings& found, strings& remain,
+		       std::ofstream& ofs)
+{
+  const strings& dfound = extract_scalar_fields(dnode, remain, ofs);
+  update_matches(dfound, remain, found);
+}
+
 
 
 // Histogram node and sub-nodes.
 void
 extract_histograms_mozilla(const rj::Value& dhisto,
-			   strings& found, strings& remain, std::ofstream& ofs)
+			   strings& found, strings& remain,
+			   std::ofstream& ofs, histogram_view_t hvw)
 {
   // Extract histogram values.
-  extract(extract_histogram_fields(dhisto, remain, ofs), remain, found);
+  extract_histogram_nodes(dhisto, found, remain, ofs, hvw);
 
   if (dhisto.HasMember(k::content))
     {
-      std::clog << k::content << " start" << std::endl;
       const rj::Value& dcontent = dhisto[k::content];
-      extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
+      extract_histogram_nodes(dcontent, found, remain, ofs, hvw);
     }
 
-  std::clog << "histogram " << k::parent << std::endl;
   if (dhisto.HasMember(k::parent))
     {
       const rj::Value& dparent = dhisto[k::parent];
-      extract(extract_histogram_fields(dparent, remain, ofs), remain, found);
+      extract_histogram_nodes(dparent, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::extension))
     {
       const rj::Value& dext = dhisto[k::extension];
-      extract(extract_histogram_fields(dext, remain, ofs), remain, found);
+      extract_histogram_nodes(dext, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::dynamic))
     {
       const rj::Value& ddyn = dhisto[k::dynamic];
-      extract(extract_histogram_fields(ddyn, remain, ofs), remain, found);
+      extract_histogram_nodes(ddyn, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::gpu))
     {
       const rj::Value& dgpu = dhisto[k::gpu];
-      extract(extract_histogram_fields(dgpu, remain, ofs), remain, found);
+      extract_histogram_nodes(dgpu, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::socket))
     {
       const rj::Value& dsocket = dhisto[k::socket];
-      extract(extract_histogram_fields(dsocket, remain, ofs), remain, found);
+      extract_histogram_nodes(dsocket, found, remain, ofs, hvw);
     }
 }
 
@@ -144,18 +162,18 @@ extract_scalars_mozilla(const rj::Value& dscal,
 			strings& found, strings& remain, std::ofstream& ofs)
 {
   // Extract scalar values.
-  extract(extract_histogram_fields(dscal, remain, ofs), remain, found);
+  extract_scalar_nodes(dscal, found, remain, ofs);
 
   if (dscal.HasMember(k::content))
     {
       const rj::Value& dcontent = dscal[k::content];
-      extract(extract_histogram_fields(dcontent, remain, ofs), remain, found);
+      extract_scalar_nodes(dcontent, found, remain, ofs);
     }
 
   if (dscal.HasMember(k::parent))
     {
       const rj::Value& dparent = dscal[k::parent];
-      extract(extract_histogram_fields(dparent, remain, ofs), remain, found);
+      extract_scalar_nodes(dparent, found, remain, ofs);
     }
 }
 
@@ -193,10 +211,43 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 }
 
 
+void
+extract_maybe_stringified(const rj::Value& vnode, strings& found,
+			  strings& remain, std::ofstream& ofs,
+			  const histogram_view_t hvw, auto fn)
+{
+  const bool is_array(vnode.IsArray());
+  const bool is_object(vnode.IsObject());
+  const bool is_string(vnode.IsString());
+
+  if (is_object)
+    {
+      std::clog << "object:" << std::endl;
+      fn(vnode, found, remain, ofs, hvw);
+    }
+
+  if (is_string)
+    {
+      std::clog << "string-ified: " << std::endl;
+      std::string stringified = vnode.GetString();
+      rj::Document d = parse_stringified_json_to_dom(stringified);
+
+      if (d.IsObject())
+	fn(d, found, remain, ofs, hvw);
+    }
+
+  if (!is_object && !is_string)
+    {
+      std::clog << "snapshot format failure: input isn't object, string."
+		<< "Is it an array? " << is_array << std::endl;
+      exit (123);
+    }
+}
+
+
 /// Extract histograms, scalars, and environment info from snapshot node.
 void
-extract_mozilla_snapshot_ids(const rj::Value& dvendor,
-			     string inames, string ifile)
+extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -212,7 +263,8 @@ extract_mozilla_snapshot_ids(const rj::Value& dvendor,
       std::clog << "histogram snapshot start" << std::endl;
       const rj::Value& dhisto = dvendor[k::phistograms];
       auto fn = extract_histograms_mozilla;
-      extract_maybe_stringified(dhisto, found, remain, ofs, fn);
+      const histogram_view_t hwv = histogram_view_t::sum;
+      extract_maybe_stringified(dhisto, found, remain, ofs, hwv, fn);
       std::clog << "histogram snapshot end" << std::endl;
     }
 
@@ -247,6 +299,75 @@ extract_mozilla_snapshot_ids(const rj::Value& dvendor,
 }
 
 
+
+
+/*
+  Takes two arguments
+
+  1. text file with probe names to extract from Mozilla telemetry.
+  2. input telemetry main ping JSON file
+
+  Output is a CSV file of probe names with extracted values
+
+  Top-level fields:
+  scalars
+  keyedScalars
+  histograms
+  keyedHistograms
+ */
+void
+extract_mozilla_android(string inames, string ifile)
+{
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_text_to_strings(inames);
+
+  string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
+  std::ofstream ofs(make_extracted_data_file(ofname));
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  // Given the known details of the Mozilla android telemetry data schema,
+  // save off the most used data nodes for speedier manipulation for
+  // specific probes.
+  const string kscalar("scalars");
+  const string kkeyedscalar("keyedScalars");
+  const string khistogram("histograms");
+  const string kkeyedhistogram("keyedHistograms");
+
+  strings found;
+  strings remain(probes);
+  if (dom.HasMember(kscalar.c_str()))
+    {
+      const rj::Value& ds = dom[kscalar.c_str()];
+      extract_scalars_mozilla(ds, found, remain, ofs);
+    }
+  std::clog << "done scalar" << std::endl;
+
+  if (dom.HasMember(kkeyedscalar.c_str()))
+    {
+      const rj::Value& dks = dom[kkeyedscalar.c_str()];
+      extract_scalars_mozilla(dks, found, remain, ofs);
+    }
+  std::clog << "done keyed scalar" << std::endl;
+
+  auto hwv = histogram_view_t::sum;
+  if (dom.HasMember(khistogram.c_str()))
+    {
+      const rj::Value& dhisto = dom[khistogram.c_str()];
+      extract_histograms_mozilla(dhisto, found, remain, ofs, hwv);
+    }
+  std::clog << "done histogram" << std::endl;
+
+  if (dom.HasMember(kkeyedhistogram.c_str()))
+    {
+      const rj::Value& dkhisto = dom[kkeyedhistogram.c_str()];
+      extract_histograms_mozilla(dkhisto, found, remain, ofs, hwv);
+    }
+  std::clog << "done keyed histogram" << std::endl;
+}
+
+
 /*
   Takes two arguments
 
@@ -267,7 +388,7 @@ extract_mozilla_snapshot_ids(const rj::Value& dvendor,
   environment
  */
 void
-extract_mozilla_main_ids(string inames, string ifile)
+extract_mozilla_main(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -314,14 +435,15 @@ extract_mozilla_main_ids(string inames, string ifile)
 
       // Extract histogram values.
       // list_object_fields(dhistogram);
-      extract(extract_histogram_fields(dhisto, remain, ofs), remain, found);
-      extract(extract_histogram_fields(dcont, remain, ofs), remain, found);
-      extract(extract_histogram_fields(dgpu, remain, ofs), remain, found);
+      auto hvw = histogram_view_t::median;
+      extract_histogram_nodes(dhisto, found, remain, ofs, hvw);
+      extract_histogram_nodes(dcont, found, remain, ofs, hvw);
+      extract_histogram_nodes(dgpu, found, remain, ofs, hvw);
 
       // Extract scalar values.
       // list_object_fields(dsimple);
-      extract(extract_scalar_fields(dsimple, remain, ofs), remain, found);
-      extract(extract_scalar_fields(dparent, remain, ofs), remain, found);
+      extract_scalar_nodes(dsimple, found, remain, ofs);
+      extract_scalar_nodes(dparent, found, remain, ofs);
 
       // List remain.
       std::clog << std::endl;
@@ -338,72 +460,6 @@ extract_mozilla_main_ids(string inames, string ifile)
     }
   else
     std::cerr << k::errorprefix << kpayload << " not found " << std::endl;
-}
-
-
-/*
-  Takes two arguments
-
-  1. text file with probe names to extract from Mozilla telemetry.
-  2. input telemetry main ping JSON file
-
-  Output is a CSV file of probe names with extracted values
-
-  Top-level fields:
-  scalars
-  keyedScalars
-  histograms
-  keyedHistograms
- */
-void
-extract_mozilla_android_ids(string inames, string ifile)
-{
-  // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
-
-  string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
-  std::ofstream ofs(make_extracted_data_file(ofname));
-
-  // Load input JSON data file into DOM.
-  rj::Document dom(deserialize_json_to_dom(ifile));
-
-  // Given the known details of the Mozilla android telemetry data schema,
-  // save off the most used data nodes for speedier manipulation for
-  // specific probes.
-  const string kscalar("scalars");
-  const string kkeyedscalar("keyedScalars");
-  const string khistogram("histograms");
-  const string kkeyedhistogram("keyedHistograms");
-
-  strings found;
-  strings remain(probes);
-  if (dom.HasMember(kscalar.c_str()))
-    {
-      const rj::Value& ds = dom[kscalar.c_str()];
-      extract_scalars_mozilla(ds, found, remain, ofs);
-    }
-  std::clog << "done scalar" << std::endl;
-
-  if (dom.HasMember(kkeyedscalar.c_str()))
-    {
-      const rj::Value& dks = dom[kkeyedscalar.c_str()];
-      extract_scalars_mozilla(dks, found, remain, ofs);
-    }
-  std::clog << "done keyed scalar" << std::endl;
-
-  if (dom.HasMember(khistogram.c_str()))
-    {
-      const rj::Value& dhisto = dom[khistogram.c_str()];
-      extract_histograms_mozilla(dhisto, found, remain, ofs);
-    }
-  std::clog << "done histogram" << std::endl;
-
-  if (dom.HasMember(kkeyedhistogram.c_str()))
-    {
-      const rj::Value& dkhisto = dom[kkeyedhistogram.c_str()];
-      extract_histograms_mozilla(dkhisto, found, remain, ofs);
-    }
-  std::clog << "done keyed histogram" << std::endl;
 }
 
 
@@ -429,7 +485,7 @@ extract_browsertime_nested_object(const rj::Value& v, strings& probes,
 }
 
 
-// Extract nested objects from Browsertime format.
+// Extract objects from Browsertime format.
 void
 extract_browsertime_object(const rj::Value& v,
 			   std::ofstream& ofs, const histogram_view_t dview)
@@ -512,8 +568,7 @@ extract_browsertime_object(const rj::Value& v,
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime_ids(string inames, string ifile,
-			const histogram_view_t dview)
+extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 {
   string ofname(file_path_to_stem(ifile) + "-x-" + "browsertime");
   std::ofstream ofs(make_extracted_data_file(ofname));
@@ -593,7 +648,7 @@ extract_browsertime_ids(string inames, string ifile,
 			      std::cerr << "dom node " << k::vendor << std::endl;
 			      const rj::Value& vendor = vssub[k::vendor];
 			      if (list_object_fields(vendor, "", false) > 0)
-				extract_mozilla_snapshot_ids(vendor, inames, ifile);
+				extract_mozilla_snapshot(vendor, inames, ifile);
 			    }
 			  else
 			    std::cerr << "no dom node " << k::vendor << std::endl;
@@ -614,11 +669,11 @@ void
 extract_identifiers(string inames, string idata)
 {
   if constexpr (djson_t == json_t::browsertime)
-    extract_browsertime_ids(inames, idata, histogram_view_t::median);
+    extract_browsertime(inames, idata, histogram_view_t::median);
   if constexpr (djson_t == json_t::mozilla_android)
-    extract_mozilla_android_ids(inames, idata);
+    extract_mozilla_android(inames, idata);
   if constexpr (djson_t == json_t::mozilla_main)
-    extract_mozilla_main_ids(inames, idata);
+    extract_mozilla_main(inames, idata);
 }
 } // namespace moz
 
