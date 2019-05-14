@@ -63,3 +63,12 @@ user_pref("privacy.reduceTimerPrecision", false);
 user_pref("privacy.resistFingerprinting.reduceTimerPrecision.jitter", false);
 user_pref("privacy.resistFingerprinting.reduceTimerPrecision.microseconds", false);
 
+// Mozilla tabs, pages, notifications.
+user_pref("browser.disableResetPrompt", true);
+user_pref("browser.newtabpage.activity-stream.section.highlights.includePocket", false);
+user_pref("browser.newtabpage.enhanced", false);
+user_pref("browser.newtabpage.introShown", true);
+user_pref("browser.selfsupport.url", "");
+user_pref("browser.shell.checkDefaultBrowser", false);
+user_pref("browser.startup.homepage_override.mstone", "ignore");
+user_pref("datareporting.policy.firstRunURL", "");
