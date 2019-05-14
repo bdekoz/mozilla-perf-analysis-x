@@ -28,6 +28,9 @@ user_pref("toolkit.telemetry.reportingpolicy.firstRun", true);
 user_pref("toolkit.telemetry.shutdownPingSender.enabled", true);
 user_pref("toolkit.telemetry.shutdownPingSender.enabledFirstSession", true);
 user_pref("toolkit.telemetry.firstShutdownPing.enabled", true);
+user_pref("toolkit.telemetry.healthping.enabled", true);
+user_pref("toolkit.telemetry.prioping.enabled", true);
+
 //user_pref("toolkit.telemetry.server", "https://localhost");
 user_pref("toolkit.telemetry.minSubsessionLength", 5);
 user_pref("toolkit.telemetry.idleTimeout", 10);
@@ -53,3 +56,10 @@ user_pref("media.autoplay.default", 1);
 user_pref("media.allowed-to-play.enabled", false);
 
 user_pref("dom.popup_maximum", 0);
+
+// Timer Precision
+// https://developer.mozilla.org/en-US/docs/Mozilla/Benchmarking
+user_pref("privacy.reduceTimerPrecision", false);
+user_pref("privacy.resistFingerprinting.reduceTimerPrecision.jitter", false);
+user_pref("privacy.resistFingerprinting.reduceTimerPrecision.microseconds", false);
+

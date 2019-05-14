@@ -1,3 +1,7 @@
+2019-05-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/config/minimum-user.js: Timing resolution to maximum.
+
 2019-05-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/match-identifier-files/w3c-performance-navigation-timings.txt:
