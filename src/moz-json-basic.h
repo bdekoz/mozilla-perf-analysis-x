@@ -68,6 +68,7 @@ deserialize_text_to_strings(string inames)
 
       std::clog << probes.size() << " match names found in: " << std::endl;
       std::clog << inames << std::endl;
+      std::clog << std::endl;      
     }
   else
     {

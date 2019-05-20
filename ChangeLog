@@ -1,5 +1,10 @@
 2019-05-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-json-basic.h: More whitespace in output message changes.
+	* src/moz-telemetry-x-extract.cc: Same.
+
+2019-05-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x.h (histogram_view_t): Range, for min/max
 	plus median.
 	* src/moz-telemetry-x-extract.cc (remove_matches): Skip bulk of

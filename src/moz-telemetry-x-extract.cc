@@ -275,7 +275,7 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
       auto fn = extract_histograms_mozilla;
       const histogram_view_t hwv = histogram_view_t::median;
       extract_maybe_stringified(dhisto, found, remain, ofs, hwv, fn);
-      std::clog << "histogram snapshot end" << std::endl;
+      std::clog << "histogram snapshot end" << std::endl << std::endl;
     }
 
   if (dvendor.HasMember(k::pscalars))
@@ -284,7 +284,7 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
       const rj::Value& dscal = dvendor[k::pscalars];
       auto fn = extract_scalars_mozilla;
       extract_maybe_stringified(dscal, found, remain, ofs, fn);
-      std::clog << "scalar snapshot end" << std::endl;
+      std::clog << "scalar snapshot end" << std::endl << std::endl;
     }
 
   if (dvendor.HasMember(k::penvironment))
@@ -303,7 +303,7 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
 	env = extract_environment_mozilla(denv, true);
 
       serialize_environment(env, ofname);
-      std::clog << "environment snapshot end" << std::endl;
+      std::clog << "environment snapshot end" << std::endl << std::endl;
     }
 }
 
