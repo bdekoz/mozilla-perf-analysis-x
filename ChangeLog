@@ -1,3 +1,9 @@
+2019-05-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (extract_histogram_field_median):
+	Characterize single-sample histograms for further analysis, and
+	log any found.
+
 2019-05-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/config/minimum-user.js: Disable privacy notice.

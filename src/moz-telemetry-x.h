@@ -114,7 +114,8 @@ enum class histogram_view_t
   sum = 0,
   median = 1,
   mean = 2,
-  quantile = 3
+  quantile = 3,
+  range = 4
 };
 
 constexpr histogram_view_t dhview_t = histogram_view_t::median;

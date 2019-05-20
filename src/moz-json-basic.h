@@ -257,9 +257,22 @@ extract_histogram_field_mean(const rj::Value& v, const string& probe)
 }
 
 
-// Median is the value computed from a set of numbers such that the
-// probability is equal that any number picked from the set has a
-// value higher or lower than it.
+/*
+   Median is the value computed from a set of numbers such that the
+   probability is equal that any number picked from the set has a
+   value higher or lower than it.
+
+   Mozilla telemetry histograms have a particular characteristic, in
+   that the bucket immediately to the left (aka, less) of the first
+   non-zero value is represented (with a zero count), and the bucket
+   immediately to the right (aka more) of the last non-zero value is
+   represented (with a zero count).
+
+   Because of this, some single-sample (aka one non-zero value)
+   histograms can be exactly represented (or flattened to scalar) by
+   using the value of the sum in the case, not computing from the
+   histogram buckets. This case will have one value and three entries.
+*/
 string
 extract_histogram_field_median(const rj::Value& v, const string& probe)
 {
@@ -278,6 +291,7 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
       if (vvs.IsObject())
 	{
 	  // Iterate through object.
+	  int nvalues(0);
 	  std::vector<int> vvalues;
 	  for (vcmem_iterator j = vvs.MemberBegin(); j != vvs.MemberEnd(); ++j)
 	    {
@@ -295,25 +309,48 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 		  // Add bktcount number of bktv values to histogram vector.
 		  vvalues.insert(vvalues.end(), bktcount, bktv);
 		}
+
+	      ++nvalues;
 	    }
 
 	  if (!vvalues.empty())
 	    {
 	      const uint vvsize = vvalues.size();
-	      std::nth_element(vvalues.begin(), vvalues.begin() + vvsize / 2,
-			       vvalues.end());
+	      std::clog << probe << " sample size: " << vvsize << std::endl;
 
-	      // Median differs by even/odd number of elements...
-	      double median(0);
-	      if (vvsize % 2 != 0)
-		median = vvalues[vvsize / 2];
+	      // Check for single-sample case, and if true return sum instead.
+	      if (vvsize == 1)
+		{
+		  // Sanity check that there were zero-fill buckets to
+		  // each side, will assume 3 node is exactly this case...
+		  if (nvalues == 3)
+		    {
+		      const rj::Value& sum = i->value["sum"];
+		      found = field_value_to_string(sum);
+		    }
+		  else
+		    {
+		      string m("single-sample histogram malformed");
+		      throw std::runtime_error(k::errorprefix + m);
+		    }
+		}
 	      else
 		{
-		  auto m1 = vvalues[vvsize / 2];
-		  auto m2 = vvalues[(vvsize / 2) - 1];
-		  median = (m1 + m2) / 2;
+		  std::nth_element(vvalues.begin(), vvalues.begin() + vvsize / 2,
+				   vvalues.end());
+
+		  // Median differs by even/odd number of elements...
+		  double median(0);
+		  if (vvsize % 2 != 0)
+		    median = vvalues[vvsize / 2];
+		  else
+		    {
+		      auto m1 = vvalues[vvsize / 2];
+		      auto m2 = vvalues[(vvsize / 2) - 1];
+		      median = (m1 + m2) / 2;
+		    }
+		  found = to_string(static_cast<uint>(median));
 		}
-	      found = to_string(static_cast<uint>(median));
 	    }
 	}
     }
