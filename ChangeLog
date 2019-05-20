@@ -1,3 +1,14 @@
+2019-05-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x.h (histogram_view_t): Range, for min/max
+	plus median.
+	* src/moz-telemetry-x-extract.cc (remove_matches): Skip bulk of
+	this if nothing found.
+	Add new constants.
+	(extract_browsertime, extract_browsertime_object): Tweak output.
+
+	* data/match-identifier-files/mozilla-telemetry-probes-2019.txt: Sort.
+
 2019-05-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h (extract_histogram_field_median):
