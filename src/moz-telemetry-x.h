@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <vector>
 #include <set>
 #include <unordered_map>
@@ -234,6 +235,31 @@ file_path_to_stem(string ifile)
       ret = ipath.stem().string();
     }
   return ret;
+}
+
+
+std::ofstream
+make_data_file(const string fstem, const string ext,
+	       const std::ios_base::openmode mode = std::ios_base::out)
+{
+  // Prepare output file.
+  const string ofile(fstem + ext);
+  std::ofstream ofs(ofile, mode);
+  if (!ofs.good())
+    std::cerr << k::errorprefix << "cannot open output file "
+	      << ofile << std::endl;
+  return ofs;
+}
+
+
+std::ofstream
+make_log_file(const string fstem)
+{
+  // Log details of the histogram to output files.
+  using openmode = std::ios_base::openmode;
+  openmode mode = std::ios_base::app | std::ios_base::out;
+  std::ofstream ofs = make_data_file(fstem, ".log", mode);
+  return ofs;
 }
 
 

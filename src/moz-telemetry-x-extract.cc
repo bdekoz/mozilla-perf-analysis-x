@@ -53,19 +53,6 @@ namespace constants {
 }
 
 
-std::ofstream
-make_extracted_data_file(string fstem)
-{
-  // Prepare output file.
-  const string ofile(fstem + k::csv_ext);
-  std::ofstream ofs(ofile);
-  if (!ofs.good())
-    std::cerr << k::errorprefix << "cannot open output file "
-	      << ofile << std::endl;
-  return ofs;
-}
-
-
 strings
 remove_matches(const strings& total, const strings& found)
 {
@@ -263,7 +250,7 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
   strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   strings found;
   strings remain(probes);
@@ -308,8 +295,6 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
 }
 
 
-
-
 /*
   Takes two arguments
 
@@ -331,7 +316,7 @@ extract_mozilla_android(string inames, string ifile)
   strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -403,7 +388,7 @@ extract_mozilla_main(string inames, string ifile)
   strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -578,7 +563,7 @@ void
 extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 {
   string ofname(file_path_to_stem(ifile) + "-x-" + "browsertime");
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));

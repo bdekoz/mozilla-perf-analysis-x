@@ -1,3 +1,12 @@
+2019-06-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h: Add histogram sanity check log files.
+	(extract_histogram_field_median): Use them.
+
+	* src/moz-telemetry-x.h (make_data_file): Move here.
+	(make_log_file): New.
+	* src/moz-telemetry-x-extract.cc: Adjust.
+
 2019-05-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-json-basic.h: More whitespace in output message changes.

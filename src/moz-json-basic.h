@@ -31,6 +31,16 @@
 
 
 namespace moz {
+  namespace {
+    const std::string s1 = "histogram-sanity-check-single";
+    const std::string s2 = "histogram-sanity-check-multi";
+    static std::ofstream ofssinglev = make_log_file(s1);
+    static std::ofstream ofsmultiv = make_log_file(s2);
+  } // anonymous namespace
+} // namespace moz
+
+
+namespace moz {
 
 /// Namespace aliases.
 namespace rj = rapidjson;
@@ -68,7 +78,7 @@ deserialize_text_to_strings(string inames)
 
       std::clog << probes.size() << " match names found in: " << std::endl;
       std::clog << inames << std::endl;
-      std::clog << std::endl;      
+      std::clog << std::endl;
     }
   else
     {
@@ -317,23 +327,21 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 	  if (!vvalues.empty())
 	    {
 	      const uint vvsize = vvalues.size();
-	      std::clog << probe << " sample size: " << vvsize << std::endl;
 
-	      // Check for single-sample case, and if true return sum instead.
-	      if (vvsize == 1)
+	      std::ostringstream oss;
+	      oss << std::left << std::setfill(' ') << std::setw(48) << probe
+		  << k::tab << "sample size: " << std::setw(6) << vvsize
+		  << k::tab << "values: " << std::setw(6) << nvalues;
+
+	      // Check for single-sample case, and if true return sum
+	      // instead.  Sanity check that there exist zero-fill
+	      // buckets to each side, will assume 3 values (zero
+	      // left, value, zero right) is exactly this case...
+	      if (vvsize == 1 && nvalues == 3)
 		{
-		  // Sanity check that there were zero-fill buckets to
-		  // each side, will assume 3 node is exactly this case...
-		  if (nvalues == 3)
-		    {
-		      const rj::Value& sum = i->value["sum"];
-		      found = field_value_to_string(sum);
-		    }
-		  else
-		    {
-		      string m("single-sample histogram malformed");
-		      throw std::runtime_error(k::errorprefix + m);
-		    }
+		  const rj::Value& sum = i->value["sum"];
+		  found = field_value_to_string(sum);
+		  ofssinglev << oss.str() << std::endl;
 		}
 	      else
 		{
@@ -351,6 +359,7 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 		      median = (m1 + m2) / 2;
 		    }
 		  found = to_string(static_cast<uint>(median));
+		  ofsmultiv << oss.str() << std::endl;
 		}
 	    }
 	}
@@ -637,7 +646,7 @@ serialize_environment(const environment& env, string ofile)
   writer.EndObject();
 
   // Serialize generated output to JSON data file.
-  std::ofstream of(ofile + k::environment_ext);
+  std::ofstream of = make_data_file(ofile, k::environment_ext);
   if (of.good())
     of << sb.GetString();
 }
