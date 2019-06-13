@@ -12,9 +12,26 @@ user_pref("browser.warnOnQuit", false);
 user_pref("services.sync.prefs.sync.browser.tabs.warnOnClose", false);
 user_pref("services.sync.prefs.sync.browser.tabs.warnOnOpen", false);
 
+user_pref("browser.disableResetPrompt", true);
+user_pref("browser.newtabpage.activity-stream.section.highlights.includePocket", false);
+user_pref("browser.newtabpage.enhanced", false);
+user_pref("browser.newtabpage.introShown", true);
+user_pref("browser.selfsupport.url", "");
+user_pref("browser.shell.checkDefaultBrowser", false);
+user_pref("browser.startup.homepage_override.mstone", "ignore");
+user_pref("datareporting.policy.firstRunURL", "");
+user_pref("dom.popup_maximum", 0);
+
 // Network
 // IPV6 sometimes makes DNS slow on Linux
-// user_pref("network.dns.disableIPv6", true);
+//user_pref("network.dns.disableIPv6", true);
+//user_pref("network.http.rcwn.enabled", true);
+
+// Timer Precision
+// https://developer.mozilla.org/en-US/docs/Mozilla/Benchmarking
+user_pref("privacy.reduceTimerPrecision", false);
+user_pref("privacy.resistFingerprinting.reduceTimerPrecision.jitter", false);
+user_pref("privacy.resistFingerprinting.reduceTimerPrecision.microseconds", false);
 
 // Data
 user_pref("datareporting.policy.dataSubmissionEnabled", true);
@@ -60,23 +77,13 @@ user_pref("dom.enable_performance_navigation_timing", true);
 user_pref("dom.enable_resource_timing", true);
 
 // Media
+// AUTOPLAY OFF
 user_pref("media.autoplay.default", 1);
 user_pref("media.allowed-to-play.enabled", false);
 
-user_pref("dom.popup_maximum", 0);
+// AUTOPLAY ON
+//user_pref("media.autoplay.default", 0);
+//user_pref("media.allowed-to-play.enabled", true);
 
-// Timer Precision
-// https://developer.mozilla.org/en-US/docs/Mozilla/Benchmarking
-user_pref("privacy.reduceTimerPrecision", false);
-user_pref("privacy.resistFingerprinting.reduceTimerPrecision.jitter", false);
-user_pref("privacy.resistFingerprinting.reduceTimerPrecision.microseconds", false);
-
-// Mozilla tabs, pages, notifications.
-user_pref("browser.disableResetPrompt", true);
-user_pref("browser.newtabpage.activity-stream.section.highlights.includePocket", false);
-user_pref("browser.newtabpage.enhanced", false);
-user_pref("browser.newtabpage.introShown", true);
-user_pref("browser.selfsupport.url", "");
-user_pref("browser.shell.checkDefaultBrowser", false);
-user_pref("browser.startup.homepage_override.mstone", "ignore");
-user_pref("datareporting.policy.firstRunURL", "");
+// Privacy
+user_pref("privacy.trackingprotection.enabled", false);
