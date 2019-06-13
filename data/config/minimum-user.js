@@ -1,5 +1,5 @@
 // Perf Testing Preferences (Remote)
-// 2019-01-08
+// 2019-06-13
 
 // Browser Preferences/Config/Setup
 user_pref("browser.startup.homepage", 'about:blank');
@@ -24,22 +24,30 @@ user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);
 user_pref("toolkit.telemetry.enabled", true);
 user_pref("toolkit.telemetry.unified", true);
 user_pref("toolkit.telemetry.archive.enabled", true);
-user_pref("toolkit.telemetry.reportingpolicy.firstRun", true);
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 user_pref("toolkit.telemetry.shutdownPingSender.enabled", true);
 user_pref("toolkit.telemetry.shutdownPingSender.enabledFirstSession", true);
 user_pref("toolkit.telemetry.firstShutdownPing.enabled", true);
 user_pref("toolkit.telemetry.healthping.enabled", true);
+user_pref("toolkit.telemetry.newProfilePing.enabled", true);
+user_pref("toolkit.telemetry.eventping.enabled", true);
+
+// Prio ping, number of prio bundles to send in one ping (default is 10).
 user_pref("toolkit.telemetry.prioping.enabled", true);
+user_pref("toolkit.telemetry.prioping.dataLimit", 2);
 
 //user_pref("toolkit.telemetry.server", "https://localhost");
+user_pref("toolkit.telemetry.initDelay", 0);
 user_pref("toolkit.telemetry.minSubsessionLength", 5);
 user_pref("toolkit.telemetry.idleTimeout", 10);
+user_pref("toolkit.telemetry.send.overrideOfficialCheck", true);
+user_pref("toolkit.telemetry.testing.overridePreRelease", true);
 user_pref("services.sync.telemetry.submissionInterval", 30);
 
 // Telemetry x GV
-user_pref("toolkit.telemetry.isGeckoViewMode", true);
+//user_pref("toolkit.telemetry.isGeckoViewMode", true);
 //user_pref("toolkit.telemetry.geckoPersistenceTimeout", 60000);
-user_pref("toolkit.telemetry.geckoPersistenceTimeout", 3000);
+//user_pref("toolkit.telemetry.geckoPersistenceTimeout", 3000);
 //app.update.lastUpdateTime.telemetry_modules_ping
 
 // Specific Probes
