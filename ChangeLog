@@ -6,6 +6,37 @@
 
 	* data/config/minimum-user.js: Enable prio, set bundle size to 2.
 
+2019-06-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h: Add histogram sanity check log files.
+	(extract_histogram_field_median): Use them.
+
+	* src/moz-telemetry-x.h (make_data_file): Move here.
+	(make_log_file): New.
+	* src/moz-telemetry-x-extract.cc: Adjust.
+
+2019-05-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h: More whitespace in output message changes.
+	* src/moz-telemetry-x-extract.cc: Same.
+
+2019-05-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-telemetry-x.h (histogram_view_t): Range, for min/max
+	plus median.
+	* src/moz-telemetry-x-extract.cc (remove_matches): Skip bulk of
+	this if nothing found.
+	Add new constants.
+	(extract_browsertime, extract_browsertime_object): Tweak output.
+
+	* data/match-identifier-files/mozilla-telemetry-probes-2019.txt: Sort.
+
+2019-05-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-json-basic.h (extract_histogram_field_median):
+	Characterize single-sample histograms for further analysis, and
+	log any found.
+
 2019-05-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/config/minimum-user.js: Disable privacy notice.

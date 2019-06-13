@@ -43,6 +43,9 @@ namespace constants {
   constexpr const char* gpu = "gpu";
   constexpr const char* socket = "socket";
 
+  constexpr const char* browserscripts = "browserScripts";
+  constexpr const char* statistics = "statistics";
+  constexpr const char* timings = "timings";
   constexpr const char* vendor = "vendor";
   constexpr const char* pscalars = "privileged_telemetry_scalars";
   constexpr const char* phistograms = "privileged_telemetry_histograms";
@@ -50,35 +53,27 @@ namespace constants {
 }
 
 
-std::ofstream
-make_extracted_data_file(string fstem)
-{
-  // Prepare output file.
-  const string ofile(fstem + k::csv_ext);
-  std::ofstream ofs(ofile);
-  if (!ofs.good())
-    std::cerr << k::errorprefix << "cannot open output file "
-	      << ofile << std::endl;
-  return ofs;
-}
-
-
 strings
 remove_matches(const strings& total, const strings& found)
 {
   // Update accounting of found, to-find.
-  strings probes1r;
-  std::set_difference(total.begin(), total.end(),
-		      found.begin(), found.end(),
-		      std::inserter(probes1r, probes1r.begin()));
+  strings remaining;
 
-  std::clog << std::endl;
-  std::clog << "probes total: " << total.size() << std::endl;
-  std::clog << "probes found: " << found.size() << std::endl;
-  std::clog << "probes remaining: " << probes1r.size() << std::endl;
-  std::clog << std::endl;
+  if (found.empty())
+    remaining = total;
+  else
+    {
+      std::set_difference(total.begin(), total.end(),
+			  found.begin(), found.end(),
+			  std::inserter(remaining, remaining.begin()));
 
-  return probes1r;
+      std::clog << "probes total: " << total.size() << std::endl;
+      std::clog << "probes found: " << found.size() << std::endl;
+      std::clog << "probes remaining: " << remaining.size() << std::endl;
+      std::clog << std::endl;
+    }
+
+  return remaining;
 }
 
 
@@ -120,36 +115,42 @@ extract_histograms_mozilla(const rj::Value& dhisto,
 
   if (dhisto.HasMember(k::content))
     {
+      std::clog << k::content << std::endl;
       const rj::Value& dcontent = dhisto[k::content];
       extract_histogram_nodes(dcontent, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::parent))
     {
+      std::clog << k::parent << std::endl;
       const rj::Value& dparent = dhisto[k::parent];
       extract_histogram_nodes(dparent, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::extension))
     {
+      std::clog << k::extension << std::endl;
       const rj::Value& dext = dhisto[k::extension];
       extract_histogram_nodes(dext, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::dynamic))
     {
+      std::clog << k::dynamic << std::endl;
       const rj::Value& ddyn = dhisto[k::dynamic];
       extract_histogram_nodes(ddyn, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::gpu))
     {
+      std::clog << k::gpu << std::endl;
       const rj::Value& dgpu = dhisto[k::gpu];
       extract_histogram_nodes(dgpu, found, remain, ofs, hvw);
     }
 
   if (dhisto.HasMember(k::socket))
     {
+      std::clog << k::socket << std::endl;
       const rj::Value& dsocket = dhisto[k::socket];
       extract_histogram_nodes(dsocket, found, remain, ofs, hvw);
     }
@@ -188,13 +189,11 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 
   if (is_object)
     {
-      std::clog << "object:" << std::endl;
       fn(vnode, found, remain, ofs);
     }
 
   if (is_string)
     {
-      std::clog << "string-ified: " << std::endl;
       std::string stringified = vnode.GetString();
       rj::Document d = parse_stringified_json_to_dom(stringified);
 
@@ -222,13 +221,11 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 
   if (is_object)
     {
-      std::clog << "object:" << std::endl;
       fn(vnode, found, remain, ofs, hvw);
     }
 
   if (is_string)
     {
-      std::clog << "string-ified: " << std::endl;
       std::string stringified = vnode.GetString();
       rj::Document d = parse_stringified_json_to_dom(stringified);
 
@@ -253,39 +250,38 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
   strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   strings found;
   strings remain(probes);
 
   if (dvendor.HasMember(k::phistograms))
     {
-      std::clog << "histogram snapshot start" << std::endl;
+      std::clog << k::phistograms << " snapshot start" << std::endl;
       const rj::Value& dhisto = dvendor[k::phistograms];
       auto fn = extract_histograms_mozilla;
-      const histogram_view_t hwv = histogram_view_t::sum;
+      const histogram_view_t hwv = histogram_view_t::median;
       extract_maybe_stringified(dhisto, found, remain, ofs, hwv, fn);
-      std::clog << "histogram snapshot end" << std::endl;
+      std::clog << "histogram snapshot end" << std::endl << std::endl;
     }
 
   if (dvendor.HasMember(k::pscalars))
     {
-      std::clog << "scalar snapshot start" << std::endl;
+      std::clog << k::pscalars << " snapshot start" << std::endl;
       const rj::Value& dscal = dvendor[k::pscalars];
       auto fn = extract_scalars_mozilla;
       extract_maybe_stringified(dscal, found, remain, ofs, fn);
-      std::clog << "scalar snapshot end" << std::endl;
+      std::clog << "scalar snapshot end" << std::endl << std::endl;
     }
 
   if (dvendor.HasMember(k::penvironment))
     {
-      std::clog << "environment snapshot start" << std::endl;
+      std::clog << k::penvironment << " snapshot start" << std::endl;
       const rj::Value& denv = dvendor[k::penvironment];
 
       environment env = { };
       if (denv.IsString())
 	{
-	  std::clog << "string-ified: " << std::endl;
 	  std::string stringified = denv.GetString();
 	  rj::Document d = parse_stringified_json_to_dom(stringified);
 	  env = extract_environment_mozilla(d, true);
@@ -294,11 +290,9 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
 	env = extract_environment_mozilla(denv, true);
 
       serialize_environment(env, ofname);
-      std::clog << "environment snapshot end" << std::endl;
+      std::clog << "environment snapshot end" << std::endl << std::endl;
     }
 }
-
-
 
 
 /*
@@ -322,7 +316,7 @@ extract_mozilla_android(string inames, string ifile)
   strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -394,7 +388,7 @@ extract_mozilla_main(string inames, string ifile)
   strings probes = deserialize_text_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -490,8 +484,6 @@ void
 extract_browsertime_object(const rj::Value& v,
 			   std::ofstream& ofs, const histogram_view_t dview)
 {
-  std::clog << "object probes search starting..." << std::endl;
-
   // Walk top level timings.
   strings found;
 
@@ -531,7 +523,7 @@ extract_browsertime_object(const rj::Value& v,
       extract_browsertime_nested_object(dpaget, found, ofs, dview);
     }
 
-  std::clog << "object probes search found: " << found.size() << std::endl;
+  std::clog << "probes found: " << found.size() << std::endl;
 }
 
 
@@ -571,7 +563,7 @@ void
 extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 {
   string ofname(file_path_to_stem(ifile) + "-x-" + "browsertime");
-  std::ofstream ofs(make_extracted_data_file(ofname));
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -612,17 +604,16 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
       for (uint i = 0; i < dom.Size(); ++i)
 	{
 	  const rj::Value& v = dom[i];
-	  if (v.IsObject() && list_object_fields(v, "", false, true) > 0)
-	    {
-	      constexpr const char* statistics = "statistics";
-	      if (v.HasMember(statistics))
-		{
-		std::cerr << "dom node " << statistics << std::endl;
+	  auto nfields = list_object_fields(v, "", false, true);
+	  std::clog << std::endl;
 
+	  if (v.IsObject() && nfields > 0)
+	    {
+	      if (v.HasMember(k::statistics))
+		{
 		  // Browsertime metrics.
-		  constexpr const char* timings = "timings";
-		  const rj::Value& vs = v[statistics];
-		  const rj::Value& vst = vs[timings];
+		  const rj::Value& vs = v[k::statistics];
+		  const rj::Value& vst = vs[k::timings];
 		  extract_browsertime_object(vst, ofs, dview);
 
 		  // Extract and serialize environmental metadata, then stop.
@@ -630,14 +621,11 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 		  serialize_environment(env, ofname);
 		}
 	      else
-		std::cerr << "no dom node " << statistics << std::endl;
+		std::cerr << "no dom node " << k::statistics << std::endl;
 
-	      constexpr const char* browserscripts = "browserScripts";
-	      if (v.HasMember(browserscripts))
+	      if (v.HasMember(k::browserscripts))
 		{
-		  std::cerr << "dom node " << browserscripts << std::endl;
-
-		  const rj::Value& vscripts = v[browserscripts];
+		  const rj::Value& vscripts = v[k::browserscripts];
 		  if (vscripts.IsArray())
 		    {
 		      for (uint j = 0; j < vscripts.Size(); ++j)
@@ -645,7 +633,6 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 			  const rj::Value& vssub = vscripts[j];
 			  if (vssub.HasMember(k::vendor))
 			    {
-			      std::cerr << "dom node " << k::vendor << std::endl;
 			      const rj::Value& vendor = vssub[k::vendor];
 			      if (list_object_fields(vendor, "", false) > 0)
 				extract_mozilla_snapshot(vendor, inames, ifile);
@@ -656,7 +643,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 		    }
 		}
 	      else
-		std::cerr << "no dom node " << browserscripts << std::endl;
+		std::cerr << "no dom node " << k::browserscripts << std::endl;
 	    }
 	}
     }

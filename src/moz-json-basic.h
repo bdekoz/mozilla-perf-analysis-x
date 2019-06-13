@@ -31,6 +31,16 @@
 
 
 namespace moz {
+  namespace {
+    const std::string s1 = "histogram-sanity-check-single";
+    const std::string s2 = "histogram-sanity-check-multi";
+    static std::ofstream ofssinglev = make_log_file(s1);
+    static std::ofstream ofsmultiv = make_log_file(s2);
+  } // anonymous namespace
+} // namespace moz
+
+
+namespace moz {
 
 /// Namespace aliases.
 namespace rj = rapidjson;
@@ -68,6 +78,7 @@ deserialize_text_to_strings(string inames)
 
       std::clog << probes.size() << " match names found in: " << std::endl;
       std::clog << inames << std::endl;
+      std::clog << std::endl;
     }
   else
     {
@@ -257,9 +268,22 @@ extract_histogram_field_mean(const rj::Value& v, const string& probe)
 }
 
 
-// Median is the value computed from a set of numbers such that the
-// probability is equal that any number picked from the set has a
-// value higher or lower than it.
+/*
+   Median is the value computed from a set of numbers such that the
+   probability is equal that any number picked from the set has a
+   value higher or lower than it.
+
+   Mozilla telemetry histograms have a particular characteristic, in
+   that the bucket immediately to the left (aka, less) of the first
+   non-zero value is represented (with a zero count), and the bucket
+   immediately to the right (aka more) of the last non-zero value is
+   represented (with a zero count).
+
+   Because of this, some single-sample (aka one non-zero value)
+   histograms can be exactly represented (or flattened to scalar) by
+   using the value of the sum in the case, not computing from the
+   histogram buckets. This case will have one value and three entries.
+*/
 string
 extract_histogram_field_median(const rj::Value& v, const string& probe)
 {
@@ -278,6 +302,7 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
       if (vvs.IsObject())
 	{
 	  // Iterate through object.
+	  int nvalues(0);
 	  std::vector<int> vvalues;
 	  for (vcmem_iterator j = vvs.MemberBegin(); j != vvs.MemberEnd(); ++j)
 	    {
@@ -295,25 +320,47 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 		  // Add bktcount number of bktv values to histogram vector.
 		  vvalues.insert(vvalues.end(), bktcount, bktv);
 		}
+
+	      ++nvalues;
 	    }
 
 	  if (!vvalues.empty())
 	    {
 	      const uint vvsize = vvalues.size();
-	      std::nth_element(vvalues.begin(), vvalues.begin() + vvsize / 2,
-			       vvalues.end());
 
-	      // Median differs by even/odd number of elements...
-	      double median(0);
-	      if (vvsize % 2 != 0)
-		median = vvalues[vvsize / 2];
+	      std::ostringstream oss;
+	      oss << std::left << std::setfill(' ') << std::setw(48) << probe
+		  << k::tab << "sample size: " << std::setw(6) << vvsize
+		  << k::tab << "values: " << std::setw(6) << nvalues;
+
+	      // Check for single-sample case, and if true return sum
+	      // instead.  Sanity check that there exist zero-fill
+	      // buckets to each side, will assume 3 values (zero
+	      // left, value, zero right) is exactly this case...
+	      if (vvsize == 1 && nvalues == 3)
+		{
+		  const rj::Value& sum = i->value["sum"];
+		  found = field_value_to_string(sum);
+		  ofssinglev << oss.str() << std::endl;
+		}
 	      else
 		{
-		  auto m1 = vvalues[vvsize / 2];
-		  auto m2 = vvalues[(vvsize / 2) - 1];
-		  median = (m1 + m2) / 2;
+		  std::nth_element(vvalues.begin(), vvalues.begin() + vvsize / 2,
+				   vvalues.end());
+
+		  // Median differs by even/odd number of elements...
+		  double median(0);
+		  if (vvsize % 2 != 0)
+		    median = vvalues[vvsize / 2];
+		  else
+		    {
+		      auto m1 = vvalues[vvsize / 2];
+		      auto m2 = vvalues[(vvsize / 2) - 1];
+		      median = (m1 + m2) / 2;
+		    }
+		  found = to_string(static_cast<uint>(median));
+		  ofsmultiv << oss.str() << std::endl;
 		}
-	      found = to_string(static_cast<uint>(median));
 	    }
 	}
     }
@@ -599,7 +646,7 @@ serialize_environment(const environment& env, string ofile)
   writer.EndObject();
 
   // Serialize generated output to JSON data file.
-  std::ofstream of(ofile + k::environment_ext);
+  std::ofstream of = make_data_file(ofile, k::environment_ext);
   if (of.good())
     of << sb.GetString();
 }
