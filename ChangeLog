@@ -1,5 +1,9 @@
 2019-06-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* data/config/minimum-user.js: Sync with testing-tools repo.
+
+2019-06-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* data/config/minimum-user.js: Enable prio, set bundle size to 2.
 
 2019-05-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
