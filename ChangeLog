@@ -15,7 +15,6 @@
 	(json_t::mozilla_glean): Add.
 	* src/moz-telemetry-x-svg-radial.h: Use it.
 
-
 2019-06-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/config/minimum-user.js: Sync with testing-tools repo.
