@@ -30,8 +30,9 @@
 namespace moz {
 
 double
-normalize_value_on_range(const uint value, const uint min, const uint max,
-			 const uint nfloor, const uint nceil)
+normalize_value_on_range(const value_type value, const value_type min,
+			 const value_type max,
+			 const value_type nfloor, const value_type nceil)
 {
   auto weightn_numer = ((nceil - nfloor) * (value - min));
   auto weightn_denom = (max - min) + nfloor;
@@ -68,7 +69,7 @@ constexpr double maxdeg = 345;
 
 
 inline double
-get_angle(int pvalue, int pmax)
+get_angle(value_type pvalue, value_type pmax)
 {
   // Normalize [0, pmax] to range [0, maxdeg] and put pvalue in it.
   double angled = normalize_value_on_range(pvalue, 0, pmax, 0, maxdeg);
@@ -176,7 +177,7 @@ insert_direction_arc_at_center(svg_form& obj, const double rr, svg::style s)
 */
 void
 radiate_id_by_value(svg_form& obj, const typography& typo, string pname,
-		    int pvalue, int pmax, double r, bool rotatep)
+		    value_type pvalue, value_type pmax, double r, bool rotatep)
 {
   const double angled = get_angle(pvalue, pmax);
   double angler = (k::pi / 180.0) * angled;
@@ -215,7 +216,8 @@ radiate_id_by_value(svg_form& obj, const typography& typo, string pname,
 */
 svg_form
 radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
-			     const id_value_umap& ivm, const int value_max,
+			     const id_value_umap& ivm,
+			     const value_type value_max,
 			     const int rdenom, bool rotatep = true)
 {
   // Probe/Marker display.
@@ -224,7 +226,7 @@ radiate_ids_per_value_on_arc(svg_form& obj, const typography& typo,
   for (const auto& v : ivm)
     {
       string pname(v.first);
-      int pvalue(v.second);
+      value_type pvalue(v.second);
       if (pvalue)
 	radiate_id_by_value(obj, typo, pname, pvalue, value_max, r, rotatep);
     }
@@ -345,7 +347,7 @@ append_ids_at(svg_form& obj, const typography& typo, const strings& ids,
 // Map ids with one value to a point cluster radiating out from a center.
 void
 radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
-		      int pvalue, int pmax, double r,
+		      value_type pvalue, value_type pmax, double r,
 		      double rspace [[maybe_unused]])
 {
   auto& area = obj._M_area;
@@ -383,7 +385,8 @@ radiate_ids_by_uvalue(svg_form& obj, const typography& typo, const strings& ids,
 // arc/angle.
 svg_form
 radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
-			      const id_value_umap& ivm, const int value_max,
+			      const id_value_umap& ivm,
+			      const value_type value_max,
 			      const int rdenom, const int rspace)
 {
   // Make circle perimiter with an arrow to orientate display of data.
@@ -401,9 +404,6 @@ radiate_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
   for (const auto& v : uvalues)
     {
-      auto count = uvaluemm.count(v);
-      std::clog << "value, count: " << v << ',' << count << std::endl;
-
       // Extract all the ids for a given value.
       auto irange = uvaluemm.equal_range(v);
       auto ibegin = irange.first;
@@ -486,7 +486,8 @@ kusama_ids_at_point(svg_form& obj, const typography& typo, const strings& ids,
 */
 svg_form
 kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
-			     const id_value_umap& ivm, const int value_max,
+			     const id_value_umap& ivm,
+			     const value_type value_max,
 			     const int rdenom, const double rbase = 5,
 			     const bool outwardp = true)
 {
@@ -502,7 +503,7 @@ kusama_ids_per_uvalue_on_arc(svg_form& obj, const typography& typo,
   value_id_ummap uvaluemm = to_value_id_mmap(ivm, uvalues);
 
   // Map out preliminary data points.
-  std::vector<int> vuvalues(uvalues.begin(), uvalues.end());
+  std::vector<value_type> vuvalues(uvalues.begin(), uvalues.end());
   std::vector<strings> vids;
   std::vector<pointn> vpointns;
   for (const auto& v : vuvalues)

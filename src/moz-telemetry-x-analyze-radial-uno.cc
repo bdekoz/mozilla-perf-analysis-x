@@ -59,9 +59,17 @@ int main(int argc, char* argv[])
   svg_form obj = initialize_svg(fstem);
 
   // Deserialize CSV files and find max value.
-  int value_max(0);
+  value_type value_max(0);
   typography typo = make_typography_id();
+
+  // Get id map, if in nanoseconds scale to milliseconds
+#if 0
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max);
+#else
+  // nanoseconds
+  id_value_umap iv = deserialize_id_value_map(idatacsv, value_max, 1000000);
+#endif
+
   radiate_ids_per_uvalue_on_arc(obj, typo, iv, value_max, 6, 2);
   //kusama_ids_per_uvalue_on_arc(obj, typo, iv, value_max, 5);
 

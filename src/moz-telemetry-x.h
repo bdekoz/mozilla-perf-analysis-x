@@ -128,15 +128,16 @@ enum class json_t
   browsertime,
   har,
   hybrid,
+  mozilla_desktop,
   mozilla_android,
-  mozilla_main,
   mozilla_snapshot_e,
   mozilla_snapshot_h,
   mozilla_snapshot_s,
+  mozilla_glean,
   w3c
 };
 
-constexpr json_t djson_t = json_t::browsertime;
+constexpr json_t djson_t = json_t::mozilla_glean;
 
 
 /**
@@ -177,12 +178,13 @@ struct environment
 
 /// Hash map of unique id to (not necessarily) unique value.
 /// Use this for sorting by id.
-using id_value_umap = std::unordered_map<string, int>;
+using value_type = long long;
+using id_value_umap = std::unordered_map<string, value_type>;
 
 /// Hash multimap of unique value to (perhaps multiple) unique ids.
 /// Use this form for sorting by value.
-using value_id_ummap = std::unordered_multimap<int, string>;
-using value_set = std::set<int>;
+using value_id_ummap = std::unordered_multimap<value_type, string>;
+using value_set = std::set<value_type>;
 
 /// Remove all from map that match the input (matches) strings.
 /// Return found match entries.
@@ -214,7 +216,7 @@ to_value_id_mmap(const id_value_umap& ivm, value_set& uniquev)
   for (auto& e: ivm)
     {
       string s = e.first;
-      int i = e.second;
+      value_type i = e.second;
       vimm.insert(make_pair(i, s));
       uniquev.insert(i);
     }

@@ -242,6 +242,60 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 }
 
 
+/// Extract histograms, scalars, and environment info from glean-geckoview files.
+void
+extract_mozilla_glean(string ifile)
+{
+  string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
+  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
+
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+
+  // Given the known details of the Mozilla android telemetry data schema,
+  // save off the most used data nodes for speedier manipulation for
+  // specific probes.
+  const string kmetrics("metrics");
+  const string ktiming("timing_distribution");
+
+  // Get Histograms.
+  if (dom.HasMember(kmetrics))
+    {
+      const rj::Value& dmetrics = dom[kmetrics.c_str()];
+      const rj::Value& dtiming = dmetrics[ktiming.c_str()];
+
+      // auto hwv = histogram_view_t::sum;
+      list_object_fields(dtiming, ktiming, false);
+      extract_histogram_fields(dtiming, ofs);
+    }
+
+  // Get environment
+  const string kclient("client_info");
+  const string kping("ping_info");
+  if (dom.HasMember(kclient))
+    {
+      const rj::Value& dclient = dom[kclient.c_str()];
+
+      environment env = { };
+      env.os_name = field_value_to_string(dclient["os"]);
+      env.os_version = field_value_to_string(dclient["os_version"]);
+
+      string manu = field_value_to_string(dclient["device_manufacturer"]);
+      string model = field_value_to_string(dclient["device_model"]);
+      env.hw_name = manu + " " + model;
+
+      env.sw_name = "Firefox Preview (Fenix)";
+      env.sw_arch = field_value_to_string(dclient["architecture"]);
+      env.sw_version = field_value_to_string(dclient["app_display_version"]);
+
+      const rj::Value& dping = dom[kping.c_str()];
+      env.date_time_stamp = field_value_to_string(dping["start_time"]);
+
+      serialize_environment(env, ofname);
+    }
+}
+
+
 /// Extract histograms, scalars, and environment info from snapshot node.
 void
 extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
@@ -382,7 +436,7 @@ extract_mozilla_android(string inames, string ifile)
   environment
  */
 void
-extract_mozilla_main(string inames, string ifile)
+extract_mozilla_desktop(string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -657,10 +711,12 @@ extract_identifiers(string inames, string idata)
 {
   if constexpr (djson_t == json_t::browsertime)
     extract_browsertime(inames, idata, histogram_view_t::median);
+  if constexpr (djson_t == json_t::mozilla_desktop)
+    extract_mozilla_desktop(inames, idata);
   if constexpr (djson_t == json_t::mozilla_android)
     extract_mozilla_android(inames, idata);
-  if constexpr (djson_t == json_t::mozilla_main)
-    extract_mozilla_main(inames, idata);
+  if constexpr (djson_t == json_t::mozilla_glean)
+    extract_mozilla_glean(idata);
 }
 } // namespace moz
 
@@ -687,9 +743,9 @@ int main(int argc, char* argv[])
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
-
-  //list_json_fields(idata, false);
-  //list_json_fields(idata, true);
+  // With (true) or without (false) recursion.
+  // list_json_fields(idata, true);
+  // list_json_fields(idata, true);
 
   extract_identifiers(inames, idata);
 

@@ -92,8 +92,12 @@ deserialize_text_to_strings(string inames)
 
 // Read CSV file of [marker name || probe name] and value, and
 // store in hash_map, return this plus the max value as a tuple.
+// ifile == input csv file
+// vaue_max == maximum value of all inputs
+// scale == default 1, otherwise conversion factor so that value/scale
 id_value_umap
-deserialize_id_value_map(const string ifile, int& value_max)
+deserialize_id_value_map(const string ifile, value_type& value_max,
+			 value_type scale = 1)
 {
   id_value_umap probe_map;
   std::ifstream ifs(ifile);
@@ -105,8 +109,14 @@ deserialize_id_value_map(const string ifile, int& value_max)
 	  getline(ifs, pname, ',');
 	  if (ifs.good())
 	    {
-	      int pvalue;
+	      value_type pvalue(0);
 	      ifs >> pvalue;
+
+	      if (pvalue != 0 && scale != 1)
+		{
+		  // Then scale by given...
+		  pvalue /= scale;
+		}
 
 	      // Extract remaining newline.
 	      ifs.ignore(79, k::newline);
@@ -168,7 +178,7 @@ field_value_to_int(const rj::Value& v)
 {
   int ret(0);
   if (v.IsNumber())
-    ret = v.GetInt();
+    ret = v.GetInt64();
   return ret;
 }
 
@@ -178,7 +188,7 @@ field_value_to_string(const rj::Value& v)
 {
   string ret;
   if (v.IsNumber())
-    ret = std::to_string(v.GetInt());
+    ret = std::to_string(v.GetInt64());
   else if (v.IsString())
     ret = v.GetString();
   else if (v.IsBool())
@@ -420,7 +430,8 @@ extract_histogram_field(const rj::Value& v, const string& probe,
 }
 
 
-// Assume v is the histogram node.
+// Assume v is the base histogram node, probes is the list of
+// histogram names to extract.
 strings
 extract_histogram_fields(const rj::Value& v, const strings& probes,
 			 std::ofstream& ofs,
@@ -436,6 +447,31 @@ extract_histogram_fields(const rj::Value& v, const strings& probes,
 	    {
 	      ofs << probe << "," << hvalue << std::endl;
 	      found.push_back(probe);
+	    }
+	}
+    }
+  return found;
+}
+
+
+// Assume v is the base histogram node, extract all sub-nodes as objects.
+// Use sum only.
+strings
+extract_histogram_fields(const rj::Value& v, std::ofstream& ofs)
+{
+  strings found;
+  if (v.IsObject())
+    {
+      for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
+	{
+	  string nname = i->name.GetString();
+
+	  const rj::Value& nv = i->value["sum"];
+	  string nvalue = field_value_to_string(nv);
+	  if (!nvalue.empty())
+	    {
+	      ofs << nname << "," << nvalue << std::endl;
+	      found.push_back(nname);
 	    }
 	}
     }
