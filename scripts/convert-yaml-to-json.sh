@@ -4,6 +4,6 @@
 IFILE=$1
 OFILE=`echo $IFILE | sed 's/.yaml/.json/g'`
 
-yq . $IFILE >& $OFILE
+yq --prettyPrint -j read $IFILE >& $OFILE
 
 echo "converted to $IFILE to $OFILE"

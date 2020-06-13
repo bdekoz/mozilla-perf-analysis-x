@@ -1,3 +1,11 @@
+2020-06-12  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* scripts/convert-yaml-to-json.sh: Update CLI to new version.
+	* src/moz-json-basic.h (list_object_fields, list_dom_object_fields,
+	list_dom_array_fields): Update parameters from bool to uint.
+	(* src/moz-telemetry-x-extract.cc: Update argument to the number of
+	levels of directory recursion.
+
 2019-10-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Support extraction from the Glean SDK.

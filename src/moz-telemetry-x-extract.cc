@@ -743,11 +743,10 @@ int main(int argc, char* argv[])
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
-  // With (true) or without (false) recursion.
-  // list_json_fields(idata, true);
-  // list_json_fields(idata, true);
+  // list_json_fields(idata, 0);
+  list_json_fields(idata, 1);
 
-  extract_identifiers(inames, idata);
+  //extract_identifiers(inames, idata);
 
   return 0;
 }

@@ -747,7 +747,7 @@ deserialize_environment(string ifile)
 */
 uint
 list_object_fields(const rj::Value& v, const string parentfield = "",
-		   bool recursep = true, bool ftypep = false,
+		   uint recursen = 1, bool ftypep = false,
 		   bool fvalp = false)
 {
   uint nfields(0);
@@ -776,8 +776,11 @@ list_object_fields(const rj::Value& v, const string parentfield = "",
 	    }
 	  std::clog << std::endl;
 
-	  if (recursep)
-	    list_object_fields(nv, nfield);
+	  if (recursen > 1)
+	    {
+	      recursen--;
+	      list_object_fields(nv, nfield, recursen);
+	    }
 	  ++nfields;
 	}
     }
@@ -789,25 +792,17 @@ list_object_fields(const rj::Value& v, const string parentfield = "",
 /// Arguments: first is DOM object, second is display field type
 void
 list_dom_object_fields(const rj::Document& dom,
-		       bool nestedp = true, bool ftypep = false)
+		       uint recursen = 1, bool ftypep = false)
 {
   if (dom.IsObject() && !dom.HasParseError())
     {
       for (vcmem_iterator i = dom.MemberBegin(); i != dom.MemberEnd(); ++i)
 	{
-	  string nname(i->name.GetString());
-	  std::clog << nname;
-
 	  const rj::Value& nv = i->value;
-	  if (ftypep)
-	    {
-	      string ntype(kTypeNames[nv.GetType()]);
-	      std::clog << " " << ntype;
-	    }
-	  std::clog << std::endl;
-
-	  if (nestedp)
-	    list_object_fields(nv, nname, true);
+	  string nname(i->name.GetString());
+	  std::clog << nname << std::endl;
+	  if (recursen > 0)
+	    list_object_fields(nv, nname, recursen, ftypep);
 	}
     }
   else
@@ -820,7 +815,7 @@ list_dom_object_fields(const rj::Document& dom,
 /// Arguments: first is DOM object, second is display field type
 void
 list_dom_array_fields(const rj::Document& dom,
-		      bool nestedp = true, bool ftypep = false)
+		      uint recursen = 1, bool ftypep = false)
 {
   if (dom.IsArray() && !dom.HasParseError())
     {
@@ -830,7 +825,7 @@ list_dom_array_fields(const rj::Document& dom,
       for (const auto& v : dom.GetArray())
 	{
 	  if (v.IsObject())
-	    list_object_fields(v, "", nestedp, ftypep);
+	    list_object_fields(v, "", recursen, ftypep);
 	  if (v.IsArray())
 	    std::clog << "array " << ++i << " size " << v.Size() << std::endl;
 	}
@@ -843,13 +838,13 @@ list_dom_array_fields(const rj::Document& dom,
 
 // List fields in ifile.json.
 void
-list_json_fields(std::string ifile, bool nestedp)
+list_json_fields(std::string ifile,  uint recursen)
 {
   rj::Document dom(deserialize_json_to_dom(ifile));
   if (dom.IsObject())
-    list_dom_object_fields(dom, nestedp);
+    list_dom_object_fields(dom, recursen);
   else
-    list_dom_array_fields(dom, nestedp);
+    list_dom_array_fields(dom, recursen);
 }
 
 
