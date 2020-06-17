@@ -1,5 +1,9 @@
 2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* moz-telemetry-x-analyze-ripple.cc: Remove, just use radial-duo.
+
+2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-telemetry-x.h: Remove default json_t, histogram_view_t.
 	* src/moz-json-basic.h: And here.
 

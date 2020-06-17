@@ -68,6 +68,7 @@ int main(int argc, char* argv[])
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max);
 #else
   // nanoseconds
+  // Glean
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max, 1000000);
 #endif
 
