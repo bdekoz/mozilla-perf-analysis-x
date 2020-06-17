@@ -27,7 +27,7 @@
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/reader.h"
 
-#include "moz-telemetry-x.h"
+#include "moz-telemetry-x-svg.h"
 
 
 namespace moz {

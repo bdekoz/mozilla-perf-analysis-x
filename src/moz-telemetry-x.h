@@ -176,53 +176,6 @@ struct environment
   string	date_time_stamp;
 };
 
-/// Hash map of unique id to (not necessarily) unique value.
-/// Use this for sorting by id.
-using value_type = long long;
-using id_value_umap = std::unordered_map<string, value_type>;
-
-/// Hash multimap of unique value to (perhaps multiple) unique ids.
-/// Use this form for sorting by value.
-using value_id_ummap = std::unordered_multimap<value_type, string>;
-using value_set = std::set<value_type>;
-
-/// Remove all from map that match the input (matches) strings.
-/// Return found match entries.
-id_value_umap
-remove_matches_id_value_map(id_value_umap& ivm, const strings& matches)
-{
-  id_value_umap foundmap;
-  for (const auto& key: matches)
-    {
-      id_value_umap::iterator iter = ivm.find(key);
-      if (iter != ivm.end())
-	{
-	  // Insert found element into return map....
-	  foundmap.insert(*iter);
-
-	  // Remove found elment from originating map (ivm)
-	  ivm.erase(iter);
-	}
-    }
-  return foundmap;
-}
-
-
-/// Convert id_value_umap to value_id_mmap + set of unique values.
-value_id_ummap
-to_value_id_mmap(const id_value_umap& ivm, value_set& uniquev)
-{
-  value_id_ummap vimm;
-  for (auto& e: ivm)
-    {
-      string s = e.first;
-      value_type i = e.second;
-      vimm.insert(make_pair(i, s));
-      uniquev.insert(i);
-    }
-  return vimm;
-}
-
 
 /// Sanity check input file and path exist, and then return stem.
 string

@@ -1,6 +1,6 @@
 // telemetry radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2019, Mozilla
+// Copyright (c) 2018-2020, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -23,7 +23,6 @@
 #include <unordered_map>
 
 #include "moz-json-basic.h"
-#include "moz-telemetry-x-svg-radial.h"
 
 
 namespace moz {
@@ -72,18 +71,19 @@ int main(int argc, char* argv[])
   const string fstem1 = file_path_to_stem(idata1csv);
   const string fstem2 = file_path_to_stem(idata2csv);
   const string fstem(fstem1 + "-x-" + "browsertime");
-  svg_form obj = initialize_svg(fstem);
+  svg_element obj = initialize_svg(fstem);
 
   // Deserialize CSV files.
-  int maxv1(0);
+  value_type maxv1(0);
   id_value_umap iv1 = deserialize_id_value_map(idata1csv, maxv1);
 
-  int maxv2(0);
+  value_type maxv2(0);
   id_value_umap iv2 = deserialize_id_value_map(idata2csv, maxv2);
 
   // Find max value of all inputs.
   const int value_max(std::max(maxv1, maxv2));
   typography typo = make_typography_id();
+  const point_2t origin = obj.center_point();
 
   // Draw radial rings on canvas  from inner to outter ripple.
   // Size is inverse of denomenator argument below.
@@ -94,8 +94,8 @@ int main(int argc, char* argv[])
   if (argc == 3)
     {
       // 1. Telemetry baseline ripple
-      radiate_ids_per_uvalue_on_arc(obj, typo, iv1, value_max, 10, 1);
-      //kusama_ids_per_uvalue_on_arc(obj, typof, iv1, value_max, 10, 5, false);
+      radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv1, value_max, 10, 1);
+      //kusama_ids_per_uvalue_on_arc(obj, origin, typof, iv1, value_max, 10, 5, false);
     }
   else
     {
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
       id_value_umap iv1hi = remove_matches_id_value_map(iv1, hilights);
       std::clog << iv1hi.size() << " found matches map size" << std::endl;
       std::clog << iv1.size() << " edited original map size" << std::endl;
-      radiate_ids_per_uvalue_on_arc(obj, typo, iv1, value_max, 10, 2);
+      radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv1, value_max, 10, 2);
 
       // 2. Moz Telemetry highlight blue ripple, same size as first
       if (!iv1hi.empty())
@@ -113,15 +113,16 @@ int main(int argc, char* argv[])
 	  typography typohi = typo;
 	  typohi._M_size = 20;
 	  typohi._M_style._M_fill_color = colore::ruriiro;
-	  radiate_ids_per_uvalue_on_arc(obj, typohi, iv1hi, value_max, 10, 2);
+	  radiate_ids_per_uvalue_on_arc(obj, origin, typohi, iv1hi,
+					value_max, 10, 2);
 	}
     }
 
   // 3. Browsertime performance timings orange ripple, next bigger size
   typography typoc = typo;
   typoc._M_style._M_fill_color = colore::asamaorange;
-  radiate_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3, 2);
-  //kusama_ids_per_uvalue_on_arc(obj, typoc, iv2, value_max, 3, 5, false);
+  radiate_ids_per_uvalue_on_arc(obj, origin, typoc, iv2, value_max, 3, 2);
+  //kusama_ids_per_uvalue_on_arc(obj, origin, typoc, iv2, value_max, 3, 5, false);
 
   // Add metadata.
   // Depending on the JSON schema, an environment file may not be generated

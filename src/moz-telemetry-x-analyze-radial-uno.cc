@@ -1,6 +1,6 @@
 // telemetry radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2019, Mozilla
+// Copyright (c) 2018-2020, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -23,7 +23,7 @@
 #include <unordered_map>
 
 #include "moz-json-basic.h"
-#include "moz-telemetry-x-svg-radial.h"
+#include "moz-telemetry-x-svg.h"
 
 
 namespace moz {
@@ -56,11 +56,12 @@ int main(int argc, char* argv[])
 
  // Create svg canvas.
   const string fstem = file_path_to_stem(idatacsv);
-  svg_form obj = initialize_svg(fstem);
+  svg_element obj = initialize_svg(fstem);
 
   // Deserialize CSV files and find max value.
   value_type value_max(0);
   typography typo = make_typography_id();
+  const point_2t origin = obj.center_point();
 
   // Get id map, if in nanoseconds scale to milliseconds
 #if 0
@@ -70,8 +71,8 @@ int main(int argc, char* argv[])
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max, 1000000);
 #endif
 
-  radiate_ids_per_uvalue_on_arc(obj, typo, iv, value_max, 6, 2);
-  //kusama_ids_per_uvalue_on_arc(obj, typo, iv, value_max, 5);
+  radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 6, 2);
+  //kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 5);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);

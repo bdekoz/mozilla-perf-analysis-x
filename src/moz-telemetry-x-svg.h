@@ -1,6 +1,6 @@
 // telemetry radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2019, Mozilla
+// Copyright (c) 2018-2020, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -18,9 +18,9 @@
 #ifndef moz_TELEMETRY_X_SVG_H
 #define moz_TELEMETRY_X_SVG_H 1
 
-#include "a60-svg-base.h"
-
 #include "moz-telemetry-x.h"
+#include "a60-svg.h"
+#include "a60-svg-render-radial.h"
 
 
 namespace moz {
@@ -35,14 +35,14 @@ using color = svg::colore;
 
 
 // Create an svg object with 1080p dimensions and return it.
-svg_form
+svg_element
 initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
 	       const int width = 1920, const int height = 1080)
 {
-  area<> a = { unit::pixel, width, height };
-  svg_form obj(ofile, a);
+  area<> a = { width, height };
+  svg_element obj(ofile, a);
 
-  group_form g;
+  group_element g;
   g.start_element("mozilla viz experiment 20190102.v3");
   g.finish_element();
   obj.add_element(g);
@@ -54,8 +54,8 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
 // Origin of glyph placement is center of SVG.
 // iflile is a plain SVG file with a 1:1 aspect ratio.
 // isize is image size, base svg image is 185 pixels.
-svg_form
-insert_svg_at_center(svg_form& obj, const double isize = 185,
+svg_element
+insert_svg_at_center(svg_element& obj, const double isize = 185,
 		     const string ifile = direction_glyph)
 {
   // Read SVG to insert.
@@ -101,7 +101,7 @@ insert_svg_at_center(svg_form& obj, const double isize = 185,
 
   string ts(xformtranslate + k::space + xformscale);
 
-  group_form gsvg;
+  group_element gsvg;
   gsvg.start_element("mozilla inset radial svg", transform(), ts);
   gsvg.add_raw(isvg);
   gsvg.finish_element();
@@ -155,11 +155,11 @@ make_typography_metadata()
 
 
 void
-place_text_at_point(svg_form& obj, const typography& typo, const string mtext,
+place_text_at_point(svg_element& obj, const typography& typo, const string mtext,
 		    const int tx, const int ty)
 {
-  text_form::data dt = { tx, ty, mtext, typo };
-  text_form t;
+  text_element::data dt = { tx, ty, mtext, typo };
+  text_element t;
   t.start_element();
   t.add_data(dt);
   t.finish_element();
@@ -168,7 +168,7 @@ place_text_at_point(svg_form& obj, const typography& typo, const string mtext,
 
 
 void
-place_text_metadata(svg_form& obj, const typography& typo, string mtext)
+place_text_metadata(svg_element& obj, const typography& typo, string mtext)
 {
   int tx = k::margin;
   static int ty = k::margin;
@@ -184,11 +184,11 @@ place_text_metadata(svg_form& obj, const typography& typo, string mtext)
 
 
 void
-place_text_id(svg_form& obj, const typography& typo, string label,
+place_text_id(svg_element& obj, const typography& typo, string label,
 	      int tx, int ty, const double deg = 0.0)
 {
-  text_form::data dt = { tx, ty, label, typo };
-  text_form t;
+  text_element::data dt = { tx, ty, label, typo };
+  text_element t;
   t.start_element();
 
   // IFF degrees, then rotate text.
@@ -203,7 +203,7 @@ place_text_id(svg_form& obj, const typography& typo, string label,
 
 
 void
-place_metadata(svg_form& obj, const typography& typo, const environment& env)
+place_metadata(svg_element& obj, const typography& typo, const environment& env)
 {
   // place_text_metadata(obj, typo, env.os_vendor);
   place_text_metadata(obj, typo, env.os_name);
@@ -236,7 +236,7 @@ place_metadata(svg_form& obj, const typography& typo, const environment& env)
 
 // Uno
 void
-render_metadata_environment(svg_form& obj, const environment& env)
+render_metadata_environment(svg_element& obj, const environment& env)
 {
   typography typo = make_typography_metadata();
   place_metadata(obj, typo, env);
@@ -244,7 +244,7 @@ render_metadata_environment(svg_form& obj, const environment& env)
 
 // Duo
 void
-render_metadata_environment(svg_form& obj,
+render_metadata_environment(svg_element& obj,
 			    const environment& env1, const environment&)
 {
   typography typo = make_typography_metadata();
@@ -263,7 +263,7 @@ render_metadata_environment(svg_form& obj,
 
 
 void
-render_metadata_time(svg_form& obj, const int timen, const colore& c, int y)
+render_metadata_time(svg_element& obj, const int timen, const colore& c, int y)
 {
   // Total time.
   typography typot = make_typography_metadata();
@@ -278,7 +278,7 @@ render_metadata_time(svg_form& obj, const int timen, const colore& c, int y)
 
 
 void
-render_input_files_title(svg_form& obj, const string fstem1,
+render_input_files_title(svg_element& obj, const string fstem1,
 			 const string fstem2, const string hilights)
 {
   // Vertical offset.
@@ -305,7 +305,7 @@ render_input_files_title(svg_form& obj, const string fstem1,
 
 
 void
-render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
+render_metadata_title(svg_element& obj, const int time_max, const string fstem1,
 		      const string fstem2 = "", const string hilights = "")
 {
   render_metadata_time(obj, time_max, colore::red, obj._M_area._M_height / 2);
@@ -314,7 +314,7 @@ render_metadata_title(svg_form& obj, const int time_max, const string fstem1,
 
 
 void
-render_metadata_title(svg_form& obj, const int time_max, const string fstem,
+render_metadata_title(svg_element& obj, const int time_max, const string fstem,
 		      const colore& c, int y, int x = k::margin)
 {
   const typography typom = make_typography_metadata();
