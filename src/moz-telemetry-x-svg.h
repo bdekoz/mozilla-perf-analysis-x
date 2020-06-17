@@ -20,7 +20,7 @@
 
 #include "moz-telemetry-x.h"
 #include "a60-svg.h"
-#include "a60-svg-render-radial.h"
+#include "a60-svg-radial.h"
 
 
 namespace moz {

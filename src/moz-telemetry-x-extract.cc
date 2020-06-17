@@ -707,15 +707,15 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 
 
 void
-extract_identifiers(string inames, string idata)
+extract_identifiers(string inames, string idata, const json_t schema)
 {
-  if constexpr (djson_t == json_t::browsertime)
+  if (schema == json_t::browsertime)
     extract_browsertime(inames, idata, histogram_view_t::median);
-  if constexpr (djson_t == json_t::mozilla_desktop)
+  if (schema == json_t::mozilla_desktop)
     extract_mozilla_desktop(inames, idata);
-  if constexpr (djson_t == json_t::mozilla_android)
+  if (schema == json_t::mozilla_android)
     extract_mozilla_android(inames, idata);
-  if constexpr (djson_t == json_t::mozilla_glean)
+  if (schema == json_t::mozilla_glean)
     extract_mozilla_glean(idata);
 }
 } // namespace moz
@@ -746,7 +746,7 @@ int main(int argc, char* argv[])
   // list_json_fields(idata, 0);
   list_json_fields(idata, 1);
 
-  //extract_identifiers(inames, idata);
+  extract_identifiers(inames, idata, json_t::browsertime);
 
   return 0;
 }

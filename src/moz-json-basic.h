@@ -435,7 +435,7 @@ extract_histogram_field(const rj::Value& v, const string& probe,
 strings
 extract_histogram_fields(const rj::Value& v, const strings& probes,
 			 std::ofstream& ofs,
-			 const histogram_view_t hview = dhview_t)
+			 const histogram_view_t hview)
 {
   strings found;
   if (v.IsObject())
