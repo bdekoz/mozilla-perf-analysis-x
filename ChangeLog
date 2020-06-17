@@ -1,5 +1,23 @@
 2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Rename files to...
+	* src/moz-telemetry-x-analyze-radial-duo.cc ->
+	* src/moz-perf-x-analyze-radial-duo.cc
+
+	* src/moz-telemetry-x-analyze-radial-uno.cc ->
+	* src/moz-perf-x-analyze-radial-uno.cc
+
+	* src/moz-telemetry-x-extract.cc ->
+	* src/moz-perf-x-extract.cc
+
+	* src/moz-telemetry-x-svg.h ->
+	* src/moz-perf-x-svg.h
+
+	* src/moz-telemetry-x.h ->
+	* src/moz-perf-x.h
+
+2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* moz-telemetry-x-analyze-ripple.cc: Remove, just use radial-duo.
 
 2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>

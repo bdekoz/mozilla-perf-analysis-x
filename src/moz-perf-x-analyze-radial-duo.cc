@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include "moz-json-basic.h"
+#include "moz-perf-x-json.h"
 
 
 namespace moz {

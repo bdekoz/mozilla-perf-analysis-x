@@ -18,7 +18,7 @@
 #ifndef moz_TELEMETRY_X_SVG_H
 #define moz_TELEMETRY_X_SVG_H 1
 
-#include "moz-telemetry-x.h"
+#include "moz-perf-x.h"
 #include "a60-svg.h"
 #include "a60-svg-radial.h"
 

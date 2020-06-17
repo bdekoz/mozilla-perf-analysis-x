@@ -22,8 +22,8 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include "moz-json-basic.h"
-#include "moz-telemetry-x-svg.h"
+#include "moz-perf-x-json.h"
+#include "moz-perf-x-svg.h"
 
 
 namespace moz {
