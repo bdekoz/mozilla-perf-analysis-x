@@ -1,5 +1,12 @@
 2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-perf-x-json.h (extract_environment_browsertime): Guard
+	"browser" and "userAgent" extraction, it looks like this is
+	removed from Chrome output in browsertime after Chrome 81's UA
+	phase out.
+
+2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	Rename files to...
 	* src/moz-telemetry-x-analyze-radial-duo.cc ->
 	* src/moz-perf-x-analyze-radial-duo.cc

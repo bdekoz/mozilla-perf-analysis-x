@@ -586,6 +586,8 @@ extract_environment_browsertime(const rj::Value& v)
 {
   environment env = { };
   const string kinfo("info");
+  const string kbrowser("browser");
+  const string kua("userAgent");
   if (v.HasMember(kinfo.c_str()))
     {
       const rj::Value& dinfo = v[kinfo.c_str()];
@@ -610,13 +612,20 @@ extract_environment_browsertime(const rj::Value& v)
 	    {
 	      const rj::Value& vbscript = *j;
 
-	      const rj::Value& dbrowser = vbscript["browser"];
-	      const rj::Value& dua = dbrowser["userAgent"];
+	      // Look for browser info, current Chrome removes this...
+	      if (vbscript.HasMember(kbrowser.c_str()))
+		{
+		  const rj::Value& dbrowser = vbscript[kbrowser.c_str()];
+		  if (dbrowser.HasMember(kua.c_str()))
+		    {
+		      const rj::Value& dua = dbrowser[kua.c_str()];
 
-	      // Remove other user agent compatibility strings.
-	      string s = dua.GetString();
-	      s = s.substr(0, s.find(')') + 1);
-	      env.sw_name = s;
+		      // Remove other user agent compatibility strings.
+		      string s = dua.GetString();
+		      s = s.substr(0, s.find(')') + 1);
+		      env.sw_name = s;
+		    }
+		}
 	    }
 	}
     }
