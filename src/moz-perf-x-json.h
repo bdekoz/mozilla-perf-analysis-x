@@ -633,6 +633,33 @@ extract_environment_browsertime(const rj::Value& v)
 }
 
 
+environment
+extract_environment_har(const string& harfile)
+{
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(harfile));
+
+  environment env = { };
+  const string klog("log");
+  const string kbrowser("browser");
+  if (v.HasMember(klog.c_str()))
+    {
+      const rj::Value& dlog = v[klog.c_str()];
+      const rj::Value& dbrowser = dbrowser[kbrowser.c_str()];
+
+      const string kname("name");
+      const rj::Value& dname = dbrowser[kname.c_str()];
+
+      const string kver("version");
+      const rj::Value& dver = dbrowser[kver.c_str()];
+
+      env.sw_name = field_value_to_string(dname);
+      env.sw_version = field_value_to_string(dver);
+    }
+  return env;
+}
+
+
 /*
   Take environment objects from both the browsertime and mozilla
   telemetry data, and make one unified environment object that
