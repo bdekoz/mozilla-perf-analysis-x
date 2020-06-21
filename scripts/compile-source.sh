@@ -4,7 +4,7 @@
 
 COMPILEF="-Wall -Wextra -Wfatal-errors -Wno-deprecated-declarations -std=gnu++17 -O2 -g -march=native -pthread -fconcepts"
 
-BASEINCLUDEF="-I/usr/include/boost -I/home/bkoz/src/mila60"
+BASEINCLUDEF="-I/usr/include/boost -I/home/bkoz/src/izzi"
 INCLUDEF=$BASEINCLUDEF
 
 BASELINKF="-lstdc++fs -lssl -lcrypto"
