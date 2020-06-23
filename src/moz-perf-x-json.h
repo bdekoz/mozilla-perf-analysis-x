@@ -355,7 +355,8 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 		}
 	      else
 		{
-		  std::nth_element(vvalues.begin(), vvalues.begin() + vvsize / 2,
+		  std::nth_element(vvalues.begin(),
+				   vvalues.begin() + vvsize / 2,
 				   vvalues.end());
 
 		  // Median differs by even/odd number of elements...
@@ -598,6 +599,17 @@ extract_environment_browsertime(const rj::Value& v)
       const string ktimestamp("timestamp");
       const rj::Value& dts = dinfo[ktimestamp.c_str()];
 
+      const string kandroid("android");
+      if (dinfo.HasMember(kandroid.c_str()))
+	{
+	  const rj::Value& ddroid = v[kandroid.c_str()];
+	  const rj::Value& ddroidm = ddroid["model"];
+	  const rj::Value& ddroidv = ddroid["androidVersion"];
+	  env.hw_name = field_value_to_string(ddroidm);
+	  env.os_version = field_value_to_string(ddroidv);
+	}
+
+      env.os_name = "Android";
       env.uri_count = 1;
       env.url = field_value_to_string(durl);
       env.date_time_stamp = field_value_to_string(dts);

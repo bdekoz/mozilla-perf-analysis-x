@@ -622,7 +622,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
 
-  // Data is either an array of objects or just one object. IF it is
+  // Data is either an array of objects or just one object. If it is
   // an array, just use the first one.
 
   std::clog << "start dom extract" << std::endl << std::endl;

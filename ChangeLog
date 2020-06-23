@@ -1,3 +1,9 @@
+2020-06-20  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-extract.cc: Fix typo in comment.
+	* src/moz-perf-x-json.h (extract_environment_browsertime):
+	Add hw_name, os_version from browsertime info section.
+
 2020-06-17  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-json.h (extract_environment_browsertime): Guard
