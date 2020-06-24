@@ -561,6 +561,33 @@ extract_browsertime_object(const rj::Value& v,
       found.push_back(kfl);
     }
 
+  const char* kttcp = "timeToContentfulPaint";
+  if (v.HasMember(kttcp))
+    {
+      const rj::Value& dttcp = v[kttcp];
+      int ittcp = extract_pseudo_histogram_field(dttcp, dview);
+      ofs << kttcp << "," << ittcp << std::endl;
+      found.push_back(kttcp);
+    }
+
+  const char* kttdcf = "timeToDomContentFlushed";
+  if (v.HasMember(kttdcf))
+    {
+      const rj::Value& dttdcf = v[kttdcf];
+      int ittdcf = extract_pseudo_histogram_field(dttdcf, dview);
+      ofs << kttdcf << "," << ittdcf << std::endl;
+      found.push_back(kttdcf);
+    }
+
+  const char* krum = "rumSpeedIndex";
+  if (v.HasMember(krum))
+    {
+      const rj::Value& drum = v[krum];
+      int irum = extract_pseudo_histogram_field(drum, dview);
+      ofs << krum << "," << irum << std::endl;
+      found.push_back(krum);
+    }
+
   // Walk navigation timing.
   const char* knavt = "navigationTiming";
   if (v.HasMember(knavt))
@@ -746,8 +773,8 @@ int main(int argc, char* argv[])
   list_json_fields(idata, 0);
   //list_json_fields(idata, 1);
 
-  //extract_identifiers(inames, idata, json_t::browsertime);
-  extract_identifiers(inames, idata, json_t::har);
+  extract_identifiers(inames, idata, json_t::browsertime);
+  //  extract_identifiers(inames, idata, json_t::har);
 
   return 0;
 }

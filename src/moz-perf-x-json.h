@@ -602,7 +602,7 @@ extract_environment_browsertime(const rj::Value& v)
       const string kandroid("android");
       if (dinfo.HasMember(kandroid.c_str()))
 	{
-	  const rj::Value& ddroid = v[kandroid.c_str()];
+	  const rj::Value& ddroid = dinfo[kandroid.c_str()];
 	  const rj::Value& ddroidm = ddroid["model"];
 	  const rj::Value& ddroidv = ddroid["androidVersion"];
 	  env.hw_name = field_value_to_string(ddroidm);
