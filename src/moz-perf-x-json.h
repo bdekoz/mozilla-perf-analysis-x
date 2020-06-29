@@ -93,7 +93,7 @@ deserialize_text_to_strings(string inames)
 // Read CSV file of [marker name || probe name] and value, and
 // store in hash_map, return this plus the max value as a tuple.
 // ifile == input csv file
-// vaue_max == maximum value of all inputs
+// value_max == maximum value of all inputs
 // scale == default 1, otherwise conversion factor so that value/scale
 id_value_umap
 deserialize_id_value_map(const string ifile, value_type& value_max,

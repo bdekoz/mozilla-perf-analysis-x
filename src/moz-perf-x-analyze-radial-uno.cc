@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
   const point_2t origin = obj.center_point();
 
   // Get id map, if in nanoseconds scale to milliseconds
-#if 0
+#if 1
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max);
 #else
   // nanoseconds
@@ -72,8 +72,8 @@ int main(int argc, char* argv[])
   id_value_umap iv = deserialize_id_value_map(idatacsv, value_max, 1000000);
 #endif
 
-  radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 6, 2);
-  //kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 5);
+  //radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
+  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 20);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);

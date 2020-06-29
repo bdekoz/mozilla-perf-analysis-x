@@ -30,7 +30,7 @@ namespace moz {
 string
 usage()
 {
-  string binname("moz-telemetry-x-analyze-ripple.exe");
+  string binname("moz-telemetry-x-analyze-radial-duo.exe");
   string s("usage:  " + binname + " data1.csv data2.csv (edit.txt)");
   s += '\n';
   s += "data1.csv is a CSV file containing a firefox telemetry main ping";

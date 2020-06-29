@@ -1,6 +1,6 @@
 // telemetry sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2019, Mozilla
+// Copyright (c) 2018-2020, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -27,7 +27,7 @@ namespace moz {
 std::string
 usage()
 {
-  std::string s("usage: moz-telemetry-x-extract.exe names.txt data.json");
+  std::string s("usage: moz-telemetry-x-extract.exe data.json (names.txt)");
   return s;
 }
 
@@ -643,7 +643,12 @@ extract_browsertime_object(const rj::Value& v,
 void
 extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 {
-  string ofname(file_path_to_stem(ifile) + "-x-" + "browsertime");
+  string ofname(file_path_to_stem(ifile));
+  if (!inames.empty())
+    {
+      ofname += "-x-";
+      ofname += inames;
+    }
   std::ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
@@ -754,18 +759,21 @@ int main(int argc, char* argv[])
   using namespace moz;
 
   // Sanity check.
-  if (argc != 3)
+  if (argc < 2 || argc > 3)
     {
       std::cerr << usage() << std::endl;
       return 1;
     }
 
   // Input match names file, input JSON data file
+  std::string idata = argv[1];
 
-  std::string inames = argv[1];
-  std::string idata = argv[2];
+  std::string inames;
+  if (argc == 3)
+    inames = argv[2];
+
   std::clog << "input files: " << std::endl
-	    << inames << std::endl << idata << std::endl;
+	    << idata << std::endl << inames << std::endl;
   std::clog << std::endl;
 
   // Extract data/values from json.

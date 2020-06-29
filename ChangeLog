@@ -1,3 +1,11 @@
+2020-06-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-analyze-radial-duo.cc: Fix usage comment.
+	* src/moz-perf-x-analyze-radial-uno.cc: Try kusama again.
+	* src/moz-perf-x-extract.cc (usage): Update.
+	(extract_browsertime): Make match list optional.
+	* src/moz-perf-x-json.h: Whitespace cleanup.
+
 2020-06-23  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-extract.cc (extract_browsertime_object)
