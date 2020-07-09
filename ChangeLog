@@ -1,3 +1,10 @@
+2020-07-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-extract.cc (extract_browsertime_statistics)
+	Extract Visual Metrics.
+	* src/moz-perf-x-json.h (extract_pseudo_histogram_field):
+	Return either float or int types.
+
 2020-06-26  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-analyze-radial-duo.cc: Fix usage comment.

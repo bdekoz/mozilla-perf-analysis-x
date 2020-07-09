@@ -380,22 +380,28 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 
 
 // Use with Browsertime pre-calculated histogram summary types.
-int
+auto
 extract_pseudo_histogram_field(const rj::Value& v, const histogram_view_t hview)
 {
-  int nvalue;
+  auto nvalue = 0;
   switch (hview)
     {
       case histogram_view_t::median:
 	{
 	  const rj::Value& dnmedian = v["median"];
-	  nvalue = dnmedian.GetInt();
+	  if (dnmedian.IsInt())
+	    nvalue = dnmedian.GetInt();
+	  else
+	    nvalue = dnmedian.GetDouble();
 	  break;
 	}
       case histogram_view_t::mean:
 	{
 	  const rj::Value& dnmean = v["mean"];
-	  nvalue = dnmean.GetInt();
+	  if (dnmean.IsInt())
+	    nvalue = dnmean.GetInt();
+	  else
+	    nvalue = dnmean.GetDouble();
 	  break;
 	}
       default:

@@ -46,6 +46,7 @@ namespace constants {
   constexpr const char* browserscripts = "browserScripts";
   constexpr const char* statistics = "statistics";
   constexpr const char* timings = "timings";
+  constexpr const char* visualmetrics = "visualMetrics";
   constexpr const char* vendor = "vendor";
   constexpr const char* pscalars = "privileged_telemetry_scalars";
   constexpr const char* phistograms = "privileged_telemetry_histograms";
@@ -525,7 +526,7 @@ extract_browsertime_nested_object(const rj::Value& v, strings& probes,
 	  probes.push_back(nname);
 
 	  const rj::Value& nv = i->value;
-	  int iv = extract_pseudo_histogram_field(nv, dview);
+	  auto iv = extract_pseudo_histogram_field(nv, dview);
 
 	  ofs << nname << "," << iv << std::endl;
 	}
@@ -533,75 +534,97 @@ extract_browsertime_nested_object(const rj::Value& v, strings& probes,
 }
 
 
-// Extract objects from Browsertime format.
+// Extract metrics (as object nodes in JSON) from Browsertime format.
+// Assuming the statistics/timing and statistics/visualMetrics nodes.
 void
-extract_browsertime_object(const rj::Value& v,
-			   std::ofstream& ofs, const histogram_view_t dview)
+extract_browsertime_statistics(const rj::Value& v,
+			       std::ofstream& ofs, const histogram_view_t dview)
 {
-  // Walk top level timings.
   strings found;
+
+  const rj::Value& vt = v[k::timings];
+
+  // Walk top level timings.
 
   // firstPaint
   // fullyLoaded
   const char* kfp = "firstPaint";
-  if (v.HasMember(kfp))
+  if (vt.HasMember(kfp))
     {
-      const rj::Value& dfp = v[kfp];
-      int ifp = extract_pseudo_histogram_field(dfp, dview);
+      const rj::Value& dfp = vt[kfp];
+      auto ifp = extract_pseudo_histogram_field(dfp, dview);
       ofs << kfp << "," << ifp << std::endl;
       found.push_back(kfp);
     }
 
   const char* kfl = "fullyLoaded";
-  if (v.HasMember(kfl))
+  if (vt.HasMember(kfl))
     {
-      const rj::Value& dfl = v[kfl];
-      int ifl = extract_pseudo_histogram_field(dfl, dview);
+      const rj::Value& dfl = vt[kfl];
+      auto ifl = extract_pseudo_histogram_field(dfl, dview);
       ofs << kfl << "," << ifl << std::endl;
       found.push_back(kfl);
     }
 
   const char* kttcp = "timeToContentfulPaint";
-  if (v.HasMember(kttcp))
+  if (vt.HasMember(kttcp))
     {
-      const rj::Value& dttcp = v[kttcp];
-      int ittcp = extract_pseudo_histogram_field(dttcp, dview);
+      const rj::Value& dttcp = vt[kttcp];
+      auto ittcp = extract_pseudo_histogram_field(dttcp, dview);
       ofs << kttcp << "," << ittcp << std::endl;
       found.push_back(kttcp);
     }
 
   const char* kttdcf = "timeToDomContentFlushed";
-  if (v.HasMember(kttdcf))
+  if (vt.HasMember(kttdcf))
     {
-      const rj::Value& dttdcf = v[kttdcf];
-      int ittdcf = extract_pseudo_histogram_field(dttdcf, dview);
+      const rj::Value& dttdcf = vt[kttdcf];
+      auto ittdcf = extract_pseudo_histogram_field(dttdcf, dview);
       ofs << kttdcf << "," << ittdcf << std::endl;
       found.push_back(kttdcf);
     }
 
-  const char* krum = "rumSpeedIndex";
-  if (v.HasMember(krum))
+  const char* kttfi = "timeToFirstInteractive";
+  if (vt.HasMember(kttfi))
     {
-      const rj::Value& drum = v[krum];
-      int irum = extract_pseudo_histogram_field(drum, dview);
+      const rj::Value& dttfi = vt[kttfi];
+      auto ittfi = extract_pseudo_histogram_field(dttfi, dview);
+      ofs << kttfi << "," << ittfi << std::endl;
+      found.push_back(kttfi);
+    }
+
+  const char* krum = "rumSpeedIndex";
+  if (vt.HasMember(krum))
+    {
+      const rj::Value& drum = vt[krum];
+      auto irum = extract_pseudo_histogram_field(drum, dview);
       ofs << krum << "," << irum << std::endl;
       found.push_back(krum);
     }
 
-  // Walk navigation timing.
+  // Walk nested navigation timing.
   const char* knavt = "navigationTiming";
-  if (v.HasMember(knavt))
+  if (vt.HasMember(knavt))
     {
-      const rj::Value& dnavt = v[knavt];
+      const rj::Value& dnavt = vt[knavt];
       extract_browsertime_nested_object(dnavt, found, ofs, dview);
     }
 
-  // Walk page timings.
+#if 1
+  // Walk nested page timings.
   const char* kpaget = "pageTimings";
-  if (v.HasMember(kpaget))
+  if (vt.HasMember(kpaget))
     {
-      const rj::Value& dpaget = v[kpaget];
+      const rj::Value& dpaget = vt[kpaget];
       extract_browsertime_nested_object(dpaget, found, ofs, dview);
+    }
+#endif
+
+  // Walk nested visual metrics.
+  if (v.HasMember(k::visualmetrics))
+    {
+      const rj::Value& dvismet = v[k::visualmetrics];
+      extract_browsertime_nested_object(dvismet, found, ofs, dview);
     }
 
   std::clog << "probes found: " << found.size() << std::endl;
@@ -672,7 +695,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
       if (pv)
 	{
 	  const rj::Value& v = *pv;
-	  extract_browsertime_object(v, ofs, dview);
+	  extract_browsertime_statistics(v, ofs, dview);
 
 	  // Extract and serialize environmental metadata.
 	  environment env = extract_environment_browsertime(dom);
@@ -699,8 +722,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 		{
 		  // Browsertime metrics.
 		  const rj::Value& vs = v[k::statistics];
-		  const rj::Value& vst = vs[k::timings];
-		  extract_browsertime_object(vst, ofs, dview);
+		  extract_browsertime_statistics(vs, ofs, dview);
 
 		  // Extract and serialize environmental metadata, then stop.
 		  environment env = extract_environment_browsertime(v);
