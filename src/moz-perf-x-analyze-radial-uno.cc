@@ -36,6 +36,24 @@ usage()
   return s;
 }
 
+
+strings
+init_id_render_state_cache()
+{
+  strings special;
+  id_render_state_umap& cache = get_id_render_state_cache();
+
+  // Default.
+  auto opacity = 0.33;
+  id_render_state default_state(svg::k::b_style);
+  default_state.styl._M_fill_opacity = opacity;
+  default_state.styl._M_stroke_opacity = opacity;
+  default_state.set(default_state.visible_mode, svg::k::select::glyph);
+  cache.insert(std::make_pair("", default_state));
+  special.push_back("");
+
+  return special;
+}
 } // namespace moz
 
 
@@ -57,6 +75,7 @@ int main(int argc, char* argv[])
  // Create svg canvas.
   const string fstem = file_path_to_stem(idatacsv);
   svg_element obj = initialize_svg(fstem);
+  init_id_render_state_cache();
 
   // Deserialize CSV files and find max value.
   value_type value_max(0);
@@ -73,7 +92,7 @@ int main(int argc, char* argv[])
 #endif
 
   //radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
-  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 20);
+  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 20, true);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);
