@@ -1,3 +1,10 @@
+2020-07-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-json.h (deserialize_environment): Add hw_name.
+	* src/moz-perf-x-svg.h (place_metadata): Guard
+	hardware specifics such that they only are displayed if not empty.
+	* src/moz-perf-x.h (environment): Order members consistently.
+
 2020-07-08  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-extract.cc (extract_browsertime_statistics)

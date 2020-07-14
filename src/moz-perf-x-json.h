@@ -770,6 +770,7 @@ deserialize_environment(string ifile)
       env.os_version = dom["os_version"].GetString();
       env.os_locale = dom["os_locale"].GetString();
 
+      env.hw_name = dom["hw_name"].GetString();
       env.hw_cpu = dom["hw_cpu"].GetInt();
       env.hw_mem = dom["hw_mem"].GetInt();
 

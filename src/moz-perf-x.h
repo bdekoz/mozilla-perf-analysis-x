@@ -158,9 +158,9 @@ struct environment
   string	os_version;
   string	os_locale;
 
+  string	hw_name;
   int		hw_cpu;
   int		hw_mem;
-  string	hw_name;
 
   string	sw_name;
   string	sw_arch;

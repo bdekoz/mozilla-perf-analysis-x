@@ -155,8 +155,8 @@ make_typography_metadata()
 
 
 void
-place_text_at_point(svg_element& obj, const typography& typo, const string mtext,
-		    const int tx, const int ty)
+place_text_at_point(svg_element& obj, const typography& typo,
+		    const string mtext, const int tx, const int ty)
 {
   text_element::data dt = { tx, ty, mtext, typo };
   text_element t;
@@ -206,18 +206,24 @@ void
 place_metadata(svg_element& obj, const typography& typo, const environment& env)
 {
   // place_text_metadata(obj, typo, env.os_vendor);
-  place_text_metadata(obj, typo, env.os_name);
-  place_text_metadata(obj, typo, env.os_version);
+  string osnv(env.os_name + " " + env.os_version);
+  place_text_metadata(obj, typo, osnv);
   place_text_metadata(obj, typo, env.os_locale);
 
   place_text_metadata(obj, typo, " ");
 
-  typography typolarge = typo;
-  typolarge._M_size = 20;
-  place_text_metadata(obj, typolarge, env.hw_name);
-  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores");
-  int memi = std::round(env.hw_mem * .001);
-  place_text_metadata(obj, typolarge, to_string(memi) + " GB");
+  if (!env.hw_name.empty())
+    {
+      typography typolarge = typo;
+      typolarge._M_size = 20;
+      place_text_metadata(obj, typolarge, env.hw_name);
+      if (env.hw_cpu)
+	{
+	  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores");
+	  int memi = std::round(env.hw_mem * .001);
+	  place_text_metadata(obj, typolarge, to_string(memi) + " GB");
+	}
+    }
 
   place_text_metadata(obj, typo, " ");
 
@@ -230,6 +236,9 @@ place_metadata(svg_element& obj, const typography& typo, const environment& env)
 
   place_text_metadata(obj, typo, to_string(env.uri_count) + " uri count");
   place_text_metadata(obj, typo, env.url);
+
+  place_text_metadata(obj, typo, " ");
+
   place_text_metadata(obj, typo, env.date_time_stamp);
 }
 
