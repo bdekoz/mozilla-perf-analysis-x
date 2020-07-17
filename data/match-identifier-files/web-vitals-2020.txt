@@ -1,0 +1,7 @@
+LCP
+LargestContentfulPaint
+FID
+FirstInputDelay
+CLS
+CumulativeLayoutShift
+
