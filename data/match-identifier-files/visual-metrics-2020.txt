@@ -1,0 +1,6 @@
+rumSpeedIndex
+connectStart
+responseEnd
+ContentfulSpeedIndex
+PerceptualSpeedIndex
+FirstVisualChange

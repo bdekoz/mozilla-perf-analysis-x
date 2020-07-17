@@ -84,15 +84,18 @@ int main(int argc, char* argv[])
 
   // Get id map, if in nanoseconds scale to milliseconds
 #if 1
-  id_value_umap iv = deserialize_id_value_map(idatacsv, value_max);
+  id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max);
 #else
   // nanoseconds
   // Glean
-  id_value_umap iv = deserialize_id_value_map(idatacsv, value_max, 1000000);
+  id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max,
+						     1000000);
 #endif
 
   //radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
-  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 20, true);
+
+  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 10,
+			       true, false, true);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);

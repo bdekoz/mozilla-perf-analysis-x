@@ -1,3 +1,18 @@
+2020-07-16  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/match-identifier-files/visual-metrics-2020.txt: New.
+
+	* src/moz-perf-x-analyze-radial-duo.cc: Adjust deserialization call.
+	* src/moz-perf-x-analyze-radial-uno.cc: Same.
+	* src/moz-perf-x-extract.cc: Change extract* to take ofstream
+	argument so that ofstream and ostringstream work.
+	(extract_browsertime): Use the edit list names to edit return
+	values.
+	* src/moz-perf-x-json.h: Break deserialization into
+	work function and ifstream-specific invocation for CSV files.
+	(deserialize_csv_to_id_value_map): New, the latter.
+	* src/moz-perf-x.h: Inject [i,o][f, string] stream types.
+
 2020-07-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-json.h (deserialize_environment): Add hw_name.

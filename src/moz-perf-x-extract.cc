@@ -88,7 +88,7 @@ update_matches(const strings& nfound, strings& tremain, strings& tfound)
 
 void
 extract_histogram_nodes(const rj::Value& dnode, strings& found, strings& remain,
-		       std::ofstream& ofs, histogram_view_t hvw)
+		       ostream& ofs, histogram_view_t hvw)
 {
   const strings& dfound = extract_histogram_fields(dnode, remain, ofs, hvw);
   update_matches(dfound, remain, found);
@@ -97,7 +97,7 @@ extract_histogram_nodes(const rj::Value& dnode, strings& found, strings& remain,
 
 void
 extract_scalar_nodes(const rj::Value& dnode, strings& found, strings& remain,
-		       std::ofstream& ofs)
+		       ostream& ofs)
 {
   const strings& dfound = extract_scalar_fields(dnode, remain, ofs);
   update_matches(dfound, remain, found);
@@ -109,7 +109,7 @@ extract_scalar_nodes(const rj::Value& dnode, strings& found, strings& remain,
 void
 extract_histograms_mozilla(const rj::Value& dhisto,
 			   strings& found, strings& remain,
-			   std::ofstream& ofs, histogram_view_t hvw)
+			   ostream& ofs, histogram_view_t hvw)
 {
   // Extract histogram values.
   extract_histogram_nodes(dhisto, found, remain, ofs, hvw);
@@ -161,7 +161,7 @@ extract_histograms_mozilla(const rj::Value& dhisto,
 // Scalar node and sub-nodes.
 void
 extract_scalars_mozilla(const rj::Value& dscal,
-			strings& found, strings& remain, std::ofstream& ofs)
+			strings& found, strings& remain, ostream& ofs)
 {
   // Extract scalar values.
   extract_scalar_nodes(dscal, found, remain, ofs);
@@ -182,7 +182,7 @@ extract_scalars_mozilla(const rj::Value& dscal,
 
 void
 extract_maybe_stringified(const rj::Value& vnode, strings& found,
-			  strings& remain, std::ofstream& ofs, auto fn)
+			  strings& remain, ostream& ofs, auto fn)
 {
   const bool is_array(vnode.IsArray());
   const bool is_object(vnode.IsObject());
@@ -213,7 +213,7 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 
 void
 extract_maybe_stringified(const rj::Value& vnode, strings& found,
-			  strings& remain, std::ofstream& ofs,
+			  strings& remain, ostream& ofs,
 			  const histogram_view_t hvw, auto fn)
 {
   const bool is_array(vnode.IsArray());
@@ -243,12 +243,12 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 }
 
 
-/// Extract histograms, scalars, and environment info from glean-geckoview files.
+/// Extract histograms, scalars, and environment info from glean-geckoview.
 void
 extract_mozilla_glean(string ifile)
 {
   string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
-  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
+  ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -515,7 +515,7 @@ extract_mozilla_desktop(string inames, string ifile)
 // Extract nested objects from Browsertime format.
 void
 extract_browsertime_nested_object(const rj::Value& v, strings& probes,
-				  std::ofstream& ofs,
+				  ostream& ofs,
 				  const histogram_view_t dview)
 {
   if (v.IsObject())
@@ -538,7 +538,7 @@ extract_browsertime_nested_object(const rj::Value& v, strings& probes,
 // Assuming the statistics/timing and statistics/visualMetrics nodes.
 void
 extract_browsertime_statistics(const rj::Value& v,
-			       std::ofstream& ofs, const histogram_view_t dview)
+			       ostream& ofs, const histogram_view_t dview)
 {
   strings found;
 
@@ -666,13 +666,16 @@ extract_browsertime_statistics(const rj::Value& v,
 void
 extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 {
+  // Setup output.
   string ofname(file_path_to_stem(ifile));
   if (!inames.empty())
     {
       ofname += "-x-";
-      ofname += inames;
+      string ifname(file_path_to_stem(inames));
+      ofname += ifname;
     }
-  std::ofstream ofs(make_data_file(ofname, k::csv_ext));
+  ofstream ofs(make_data_file(ofname, k::csv_ext));
+  ostringstream oss;
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
@@ -695,7 +698,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
       if (pv)
 	{
 	  const rj::Value& v = *pv;
-	  extract_browsertime_statistics(v, ofs, dview);
+	  extract_browsertime_statistics(v, oss, dview);
 
 	  // Extract and serialize environmental metadata.
 	  environment env = extract_environment_browsertime(dom);
@@ -722,7 +725,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 		{
 		  // Browsertime metrics.
 		  const rj::Value& vs = v[k::statistics];
-		  extract_browsertime_statistics(vs, ofs, dview);
+		  extract_browsertime_statistics(vs, oss, dview);
 
 		  // Extract and serialize environmental metadata, then stop.
 		  environment env = extract_environment_browsertime(v);
@@ -746,7 +749,8 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 				extract_mozilla_snapshot(vendor, inames, ifile);
 			    }
 			  else
-			    std::cerr << "no dom node " << k::vendor << std::endl;
+			    std::cerr << "no dom node " << k::vendor
+				      << std::endl;
 			}
 		    }
 		}
@@ -757,6 +761,23 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
     }
 
   std::clog << std::endl << "end dom extract" << std::endl;
+
+  // Do edit list.
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_text_to_strings(inames);
+
+  value_type v(0);
+  istringstream iss(oss.str());
+  id_value_umap actual = deserialize_id_value_map(iss, v);
+  for (const string& probe : probes)
+    {
+      if (actual.count(probe) == 1)
+	{
+	  auto itr = actual.find(probe);
+	  auto [ p, v] = *itr;
+	  ofs << probe << "," << v << std::endl;
+	}
+    }
 }
 
 

@@ -52,8 +52,6 @@ namespace moz::constants {
   constexpr int margin = 100;
   constexpr int spacer = 10;
 
-  constexpr double pi(3.14159);
-
 } // namespace moz::constants
 
 
@@ -65,6 +63,14 @@ using std::string;
 using std::to_string;
 using strings = std::vector<std::string>;
 
+using ostream = std::ostream;
+using ofstream = std::ofstream;
+using ostringstream = std::ostringstream;
+
+using istream = std::istream;
+using iftream = std::ifstream;
+using istringstream = std::istringstream;
+
 using point = std::tuple<double, double>;
 using pointn = std::tuple<point, int>;
 
@@ -72,7 +78,6 @@ using pointn = std::tuple<point, int>;
 namespace filesystem = std::experimental::filesystem;
 
 /// Alias namespace moz::k to mozilla::constants.
-namespace constants { }
 namespace k = moz::constants;
 
 

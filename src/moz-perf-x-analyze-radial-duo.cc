@@ -75,10 +75,10 @@ int main(int argc, char* argv[])
 
   // Deserialize CSV files.
   value_type maxv1(0);
-  id_value_umap iv1 = deserialize_id_value_map(idata1csv, maxv1);
+  id_value_umap iv1 = deserialize_csv_to_id_value_map(idata1csv, maxv1);
 
   value_type maxv2(0);
-  id_value_umap iv2 = deserialize_id_value_map(idata2csv, maxv2);
+  id_value_umap iv2 = deserialize_csv_to_id_value_map(idata2csv, maxv2);
 
   // Find max value of all inputs.
   const int value_max(std::max(maxv1, maxv2));

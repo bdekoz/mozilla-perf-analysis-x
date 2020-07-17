@@ -1,6 +1,6 @@
 // mozilla serialize/deserialize forward declarations -*- mode: C++ -*-
 
-// Copyright (c) 2018-2019, Mozilla
+// Copyright (c) 2018-2020, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -89,52 +89,56 @@ deserialize_text_to_strings(string inames)
   return probes;
 }
 
-
 // Read CSV file of [marker name || probe name] and value, and
 // store in hash_map, return this plus the max value as a tuple.
 // ifile == input csv file
 // value_max == maximum value of all inputs
 // scale == default 1, otherwise conversion factor so that value/scale
 id_value_umap
-deserialize_id_value_map(const string ifile, value_type& value_max,
+deserialize_id_value_map(istream& istr, value_type& value_max,
 			 value_type scale = 1)
 {
   id_value_umap probe_map;
-  std::ifstream ifs(ifile);
-  if (ifs.good())
+  do
     {
-      do
+      string pname;
+      getline(istr, pname, ',');
+      if (istr.good())
 	{
-	  string pname;
-	  getline(ifs, pname, ',');
-	  if (ifs.good())
+	  value_type pvalue(0);
+	  istr >> pvalue;
+
+	  if (pvalue != 0 && scale != 1)
 	    {
-	      value_type pvalue(0);
-	      ifs >> pvalue;
-
-	      if (pvalue != 0 && scale != 1)
-		{
-		  // Then scale by given...
-		  pvalue /= scale;
-		}
-
-	      // Extract remaining newline.
-	      ifs.ignore(79, k::newline);
-
-	      probe_map.insert(make_pair(pname, pvalue));
-	      value_max = std::max(pvalue, value_max);
+	      // Then scale by given...
+	      pvalue /= scale;
 	    }
+
+	  // Extract remaining newline.
+	  istr.ignore(79, k::newline);
+
+	  probe_map.insert(make_pair(pname, pvalue));
+	  value_max = std::max(pvalue, value_max);
 	}
-      while (ifs.good());
+    }
+  while (istr.good());
+  return probe_map;
+}
+
+
+id_value_umap
+deserialize_csv_to_id_value_map(const string& ifile, value_type& value_max,
+				value_type scale = 1)
+{
+  std::ifstream ifs(ifile);
+  if (!ifs.good())
+    {
+      ostringstream mss;
+      mss << k::errorprefix << "cannot open input file " << ifile << std::endl;
+      throw std::runtime_error(mss.str());
     }
   else
-    {
-      std::cerr << k::errorprefix << "cannot open input file "
-		<< ifile << std::endl;
-    }
-  std::clog << probe_map.size() << " ids found with max value "
-	    << value_max << std::endl;
-  return probe_map;
+    return deserialize_id_value_map(ifs, value_max, scale);
 }
 
 
@@ -441,7 +445,7 @@ extract_histogram_field(const rj::Value& v, const string& probe,
 // histogram names to extract.
 strings
 extract_histogram_fields(const rj::Value& v, const strings& probes,
-			 std::ofstream& ofs,
+			 ostream& ofs,
 			 const histogram_view_t hview)
 {
   strings found;
@@ -464,7 +468,7 @@ extract_histogram_fields(const rj::Value& v, const strings& probes,
 // Assume v is the base histogram node, extract all sub-nodes as objects.
 // Use sum only.
 strings
-extract_histogram_fields(const rj::Value& v, std::ofstream& ofs)
+extract_histogram_fields(const rj::Value& v, ostream& ofs)
 {
   strings found;
   if (v.IsObject())
@@ -502,7 +506,7 @@ extract_scalar_field(const rj::Value& v, const string& probe)
 
 strings
 extract_scalar_fields(const rj::Value& v, const strings& probes,
-		      std::ofstream& ofs)
+		      ostream& ofs)
 {
   strings found;
   if (v.IsObject())
