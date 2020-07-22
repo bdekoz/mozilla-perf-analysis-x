@@ -94,8 +94,9 @@ int main(int argc, char* argv[])
 
   //radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
 
-  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 10,
-			       true, false, true);
+  // weigh-by-value, collision-avoidance, insert-arrow
+  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 22,
+			       false, false, true);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);

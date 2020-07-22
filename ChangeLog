@@ -1,3 +1,7 @@
+2020-07-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-analyze-radial-uno.cc: Tweak parameters.
+
 2020-07-16  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* data/match-identifier-files/visual-metrics-2020.txt: New.
