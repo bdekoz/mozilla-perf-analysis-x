@@ -1,5 +1,10 @@
 2020-07-23  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-perf-x-analyze-radial-uno.cc (hilite): Add hilight string.
+	Select time value from this.
+
+2020-07-23  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-perf-x-analyze-radial-uno.cc (init_id_render_state_cache):
 	Add hilight style for one metric.
 	Changeup title/metadata, use condensed format.
