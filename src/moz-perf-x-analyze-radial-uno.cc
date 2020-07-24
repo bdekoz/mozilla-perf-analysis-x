@@ -37,22 +37,19 @@ usage()
 }
 
 
-strings
-init_id_render_state_cache()
+void
+init_id_render_state_cache(double opacity = 0.33)
 {
-  strings special;
-  id_render_state_umap& cache = get_id_render_state_cache();
+  const svg::k::select dviz = svg::k::select::glyph | svg::k::select::vector;
 
   // Default.
-  auto opacity = 0.33;
-  id_render_state default_state(svg::k::b_style);
-  default_state.styl._M_fill_opacity = opacity;
-  default_state.styl._M_stroke_opacity = opacity;
-  default_state.set(default_state.visible_mode, svg::k::select::glyph);
-  cache.insert(std::make_pair("", default_state));
-  special.push_back("");
+  style dstyl = { colore::black, opacity, colore::white, opacity, 3 };
+  add_to_id_render_state_cache("", dstyl, dviz);
 
-  return special;
+  // Pull out one it to highlight, say rumSpeedIndex.
+  const string hilite("rumSpeedIndex");
+  style histyl = { colore::red, 1.0, colore::red, 0, 3 };
+  add_to_id_render_state_cache(hilite, histyl, dviz);
 }
 } // namespace moz
 
@@ -72,36 +69,50 @@ int main(int argc, char* argv[])
   std::string idatacsv = argv[1];
   std::clog << "input files: " << idatacsv << std::endl;
 
- // Create svg canvas.
+  // Create svg canvas.
+  init_id_render_state_cache();
+  set_label_spaces(9);
+
   const string fstem = file_path_to_stem(idatacsv);
   svg_element obj = initialize_svg(fstem);
-  init_id_render_state_cache();
+  typography typo = make_typography_id();
 
   // Deserialize CSV files and find max value.
   value_type value_max(0);
-  typography typo = make_typography_id();
   const point_2t origin = obj.center_point();
+  auto [ x, y ] = origin;
 
   // Get id map, if in nanoseconds scale to milliseconds
-#if 1
-  id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max);
-#else
+  value_type ts = 1;
+#if 0
   // nanoseconds
   // Glean
-  id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max,
-						     1000000);
+  ts = 1000000;
 #endif
+  id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max, ts);
 
-  //radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
-
+  // Render
+#if 0
+  radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
+#else
   // weigh-by-value, collision-avoidance, insert-arrow
   kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 22,
 			       false, false, true);
+#endif
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);
   render_metadata_environment(obj, env);
-  render_metadata_title(obj, value_max, fstem);
+
+  auto yprime = obj._M_area._M_height - moz::k::margin;
+  render_metadata_time(obj, value_max, colore::red, x, yprime);
+
+  value_type tsz = 14;
+  typography typot = make_typography_metadata(tsz, true);
+  string browserua = env.sw_name;
+  if (browserua.empty())
+    browserua = "Chrome";
+  place_text_at_point(obj, typot, env.sw_name, x, yprime + (2 * tsz));
 
   return 0;
 }

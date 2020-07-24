@@ -140,16 +140,26 @@ make_typography_values()
 
 
 typography
-make_typography_metadata()
+make_typography_metadata(size_type fs = 14, const bool centerp = false)
 {
   // Metadata typographics.
   typography typom = svg::k::zslab_typo;
-  typom._M_align = svg::typography::align::left;
-  typom._M_a = svg::typography::anchor::start;
-  typom._M_size = 14;
-  typom._M_style = svg::k::b_style;
   typom._M_w = svg::typography::weight::medium;
+  typom._M_size = fs;
+  typom._M_style = svg::k::b_style;
   typom._M_style._M_fill_color = colore::gray50;
+
+  if (centerp)
+    {
+      typom._M_align = typography::align::center;
+      typom._M_a = typography::anchor::middle;
+    }
+  else
+    {
+      typom._M_align = svg::typography::align::left;
+      typom._M_a = svg::typography::anchor::start;
+    }
+
   return typom;
 }
 
@@ -205,18 +215,16 @@ place_text_id(svg_element& obj, const typography& typo, string label,
 void
 place_metadata(svg_element& obj, const typography& typo, const environment& env)
 {
-  // place_text_metadata(obj, typo, env.os_vendor);
-  string osnv(env.os_name + " " + env.os_version);
-  place_text_metadata(obj, typo, osnv);
-  place_text_metadata(obj, typo, env.os_locale);
-
-  place_text_metadata(obj, typo, " ");
+  string osnvloc(env.os_name + " " + env.os_version);
+  if (!env.os_locale.empty())
+    osnvloc += " " + env.os_locale;
 
   if (!env.hw_name.empty())
     {
       typography typolarge = typo;
       typolarge._M_size = 20;
-      place_text_metadata(obj, typolarge, env.hw_name);
+      string hwsw = env.hw_name + " / " + osnvloc;
+      place_text_metadata(obj, typolarge, hwsw);
       if (env.hw_cpu)
 	{
 	  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores");
@@ -227,14 +235,15 @@ place_metadata(svg_element& obj, const typography& typo, const environment& env)
 
   place_text_metadata(obj, typo, " ");
 
+#if 0
   place_text_metadata(obj, typo, env.sw_name);
   place_text_metadata(obj, typo, env.sw_arch);
   place_text_metadata(obj, typo, env.sw_version);
   place_text_metadata(obj, typo, env.sw_build_id);
 
   place_text_metadata(obj, typo, " ");
+#endif
 
-  place_text_metadata(obj, typo, to_string(env.uri_count) + " uri count");
   place_text_metadata(obj, typo, env.url);
 
   place_text_metadata(obj, typo, " ");
@@ -272,17 +281,17 @@ render_metadata_environment(svg_element& obj,
 
 
 void
-render_metadata_time(svg_element& obj, const int timen, const colore& c, int y)
+render_metadata_time(svg_element& obj, const int timen, const colore& c,
+		     int x, int y)
 {
   // Total time.
-  typography typot = make_typography_metadata();
-  typot._M_size = 48;
+  typography typot = make_typography_metadata(48, true);
   typot._M_style._M_fill_color = c;
 
   std::ostringstream oss;
   oss.imbue(std::locale(""));
   oss << timen << " ms";
-  place_text_at_point(obj, typot, oss.str(), k::margin, y);
+  place_text_at_point(obj, typot, oss.str(), x, y);
 }
 
 
@@ -317,17 +326,18 @@ void
 render_metadata_title(svg_element& obj, const int time_max, const string fstem1,
 		      const string fstem2 = "", const string hilights = "")
 {
-  render_metadata_time(obj, time_max, colore::red, obj._M_area._M_height / 2);
+  render_metadata_time(obj, time_max, colore::red,
+		       moz::k::margin, obj._M_area._M_height / 2);
   render_input_files_title(obj, fstem1, fstem2, hilights);
 }
 
 
 void
 render_metadata_title(svg_element& obj, const int time_max, const string fstem,
-		      const colore& c, int y, int x = k::margin)
+		      const colore& c, int x, int y)
 {
   const typography typom = make_typography_metadata();
-  render_metadata_time(obj, time_max, c, y);
+  render_metadata_time(obj, time_max, c, x, y);
   place_text_at_point(obj, typom, fstem, x, y + 20);
 }
 } // namespace moz
