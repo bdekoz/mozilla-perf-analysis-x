@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 
   // Create svg canvas.
   init_id_render_state_cache();
-  set_label_spaces(9);
+  set_label_spaces(6);
 
   const string fstem = file_path_to_stem(idatacsv);
   svg_element obj = initialize_svg(fstem);
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
   radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
 #else
   // weigh-by-value, collision-avoidance, insert-arrow
-  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 22,
+  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 24,
 			       false, false, true);
 #endif
 
