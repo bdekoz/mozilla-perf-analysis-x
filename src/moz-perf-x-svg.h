@@ -43,69 +43,9 @@ initialize_svg(const string ofile = "moz-telemetry-radiating-lines",
   svg_element obj(ofile, a);
 
   group_element g;
-  g.start_element("mozilla viz experiment 20190102.v3");
+  g.start_element("mozilla viz experiment 20200724.v6");
   g.finish_element();
   obj.add_element(g);
-
-  return obj;
-}
-
-
-// Origin of glyph placement is center of SVG.
-// iflile is a plain SVG file with a 1:1 aspect ratio.
-// isize is image size, base svg image is 185 pixels.
-svg_element
-insert_svg_at_center(svg_element& obj, const double isize = 185,
-		     const string ifile = direction_glyph)
-{
-  // Read SVG to insert.
-  std::ifstream ifs(ifile);
-  string isvg;
-  if (ifs.good())
-    {
-      // Strip out any XML version line in the SVG file.
-      // Search for and discard lines with "xml version", iff exists
-      string xmlheader;
-      getline(ifs, xmlheader);
-      if (xmlheader.find("xml version") == string::npos)
-	ifs.seekg(0, ifs.beg);
-
-      std::ostringstream oss;
-      oss << ifs.rdbuf();
-      isvg = oss.str();
-    }
-  else
-    {
-      string m(k::errorprefix + "initialize_svg:: insert nested SVG failed ");
-      m += ifile;
-      m += k::newline;
-      throw std::runtime_error(m);
-    }
-
-  // Insert nested SVG element of red arc with arrow (scaled and with offset).
-
-  // Offset and origin.
-  auto [ objx, objy ] = obj.center_point();
-  const int x = objx - (isize / 2);
-  const int y = objy - (isize / 2);
-  string xformtranslate(transform::translate(x, y));
-
-  // scaled
-  const double origsize(185); // 185
-  const double scalex(isize / origsize);
-  std::clog << "scale factor: " << scalex << k::tab << isize << std::endl;
-
-  string xformscale;
-  if (scalex > 1)
-    xformscale = transform::scale(scalex);
-
-  string ts(xformtranslate + k::space + xformscale);
-
-  group_element gsvg;
-  gsvg.start_element("mozilla inset radial svg", transform(), ts);
-  gsvg.add_raw(isvg);
-  gsvg.finish_element();
-  obj.add_element(gsvg);
 
   return obj;
 }

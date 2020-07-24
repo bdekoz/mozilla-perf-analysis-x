@@ -1,3 +1,10 @@
+2020-07-24  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-analyze-radial-duo.cc: Adjust call for
+	interface changes.
+	* src/moz-perf-x-svg.h: Remove unused insert_* function. Update
+	date and version info.
+
 2020-07-23  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-analyze-radial-uno.cc (hilite): Add hilight string.

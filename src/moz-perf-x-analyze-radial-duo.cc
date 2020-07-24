@@ -142,10 +142,11 @@ int main(int argc, char* argv[])
   render_metadata_environment(obj, env);
 
   auto y = obj._M_area._M_height / 2;
+  auto x = moz::k::margin;
   string s1 = "Mozilla Telemetry";
   string s2 = "Sitespeed.io Browsertime";
-  render_metadata_title(obj, maxv1, s1, colore::ruriiro, y - 50);
-  render_metadata_title(obj, maxv2, s2, colore::asamaorange, y + 50);
+  render_metadata_title(obj, maxv1, s1, colore::ruriiro, x, y - 50);
+  render_metadata_title(obj, maxv2, s2, colore::asamaorange, x, y + 50);
 
   render_input_files_title(obj, idata1csv, idata2csv,idatatxt);
 
