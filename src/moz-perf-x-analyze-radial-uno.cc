@@ -36,6 +36,7 @@ usage()
   return s;
 }
 
+const string hilite("rumSpeedIndex");
 
 void
 init_id_render_state_cache(double opacity = 0.33)
@@ -47,7 +48,6 @@ init_id_render_state_cache(double opacity = 0.33)
   add_to_id_render_state_cache("", dstyl, dviz);
 
   // Pull out one it to highlight, say rumSpeedIndex.
-  const string hilite("rumSpeedIndex");
   style histyl = { colore::red, 1.0, colore::red, 0, 3 };
   add_to_id_render_state_cache(hilite, histyl, dviz);
 }
@@ -104,8 +104,14 @@ int main(int argc, char* argv[])
   environment env = deserialize_environment(idatacsv);
   render_metadata_environment(obj, env);
 
+  value_type timev;
+  if (iv.count(hilite))
+    timev = iv[hilite];
+  else
+    timev = value_max;
+
   auto yprime = obj._M_area._M_height - moz::k::margin;
-  render_metadata_time(obj, value_max, colore::red, x, yprime);
+  render_metadata_time(obj, timev, colore::red, x, yprime);
 
   value_type tsz = 14;
   typography typot = make_typography_metadata(tsz, true);
