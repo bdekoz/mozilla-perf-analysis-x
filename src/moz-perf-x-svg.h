@@ -18,9 +18,9 @@
 #ifndef moz_TELEMETRY_X_SVG_H
 #define moz_TELEMETRY_X_SVG_H 1
 
-#include "moz-perf-x.h"
 #include "a60-svg.h"
 #include "a60-svg-radial.h"
+#include "moz-perf-x.h"
 
 
 namespace moz {
@@ -200,6 +200,7 @@ render_metadata_environment(svg_element& obj, const environment& env)
   place_metadata(obj, typo, env);
 }
 
+
 // Duo
 void
 render_metadata_environment(svg_element& obj,
@@ -217,7 +218,6 @@ render_metadata_environment(svg_element& obj,
   place_text_metadata(obj, typo, env1.url);
   place_text_metadata(obj, typo, env1.date_time_stamp);
 }
-
 
 
 void
@@ -280,6 +280,7 @@ render_metadata_title(svg_element& obj, const int time_max, const string fstem,
   render_metadata_time(obj, time_max, c, x, y);
   place_text_at_point(obj, typom, fstem, x, y + 20);
 }
+
 } // namespace moz
 
 #endif

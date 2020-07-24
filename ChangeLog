@@ -1,5 +1,11 @@
 2020-07-24  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-perf-x-analyze-radial-uno.cc (render_radial):
+	Consolidate per-radial glyphs into this.
+	* src/moz-perf-x-svg.h: Adjust includes, spacing.
+
+2020-07-24  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-perf-x-analyze-radial-duo.cc: Adjust call for
 	interface changes.
 	* src/moz-perf-x-svg.h: Remove unused insert_* function. Update
