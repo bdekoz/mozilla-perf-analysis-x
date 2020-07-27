@@ -15,8 +15,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
 
-#ifndef moz_JSON_FWD_H
-#define moz_JSON_FWD_H 1
+#ifndef moz_X_JSON_H
+#define moz_X_JSON_H 1
 
 #define RAPIDJSON_HAS_STDSTRING 1
 
@@ -27,7 +27,7 @@
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/reader.h"
 
-#include "moz-perf-x-svg.h"
+#include "moz-perf-x.h"
 
 
 namespace moz {
@@ -54,93 +54,6 @@ using vcval_iterator = rj::Value::ConstValueIterator;
 /// Constants.
 const char* kTypeNames[] =
   { "Null", "False", "True", "Object", "Array", "String", "Number" };
-
-
-// Convert from input file name to an in-memory vector of strings
-// representing identifiers/names to match against field names in a
-// JSON file.
-strings
-deserialize_text_to_strings(string inames)
-{
-  strings probes;
-  std::ifstream ifs(inames);
-  if (ifs.good())
-    {
-      string line;
-      do
-	{
-	  std::getline(ifs, line);
-	  if (ifs.good())
-	    probes.push_back(line);
-	}
-      while (!ifs.eof());
-      std::sort(probes.begin(), probes.end());
-
-      std::clog << probes.size() << " match names found in: " << std::endl;
-      std::clog << inames << std::endl;
-      std::clog << std::endl;
-    }
-  else
-    {
-      std::cerr << k::errorprefix
-		<< "error: cannot open input file " << inames << std::endl;
-    }
-
-  return probes;
-}
-
-// Read CSV file of [marker name || probe name] and value, and
-// store in hash_map, return this plus the max value as a tuple.
-// ifile == input csv file
-// value_max == maximum value of all inputs
-// scale == default 1, otherwise conversion factor so that value/scale
-id_value_umap
-deserialize_id_value_map(istream& istr, value_type& value_max,
-			 value_type scale = 1)
-{
-  id_value_umap probe_map;
-  do
-    {
-      string pname;
-      getline(istr, pname, ',');
-      if (istr.good())
-	{
-	  value_type pvalue(0);
-	  istr >> pvalue;
-
-	  if (pvalue != 0 && scale != 1)
-	    {
-	      // Then scale by given...
-	      pvalue /= scale;
-	    }
-
-	  // Extract remaining newline.
-	  istr.ignore(79, k::newline);
-
-	  probe_map.insert(make_pair(pname, pvalue));
-	  value_max = std::max(pvalue, value_max);
-	}
-    }
-  while (istr.good());
-  return probe_map;
-}
-
-
-id_value_umap
-deserialize_csv_to_id_value_map(const string& ifile, value_type& value_max,
-				value_type scale = 1)
-{
-  std::ifstream ifs(ifile);
-  if (!ifs.good())
-    {
-      ostringstream mss;
-      mss << k::errorprefix << "cannot open input file " << ifile << std::endl;
-      throw std::runtime_error(mss.str());
-    }
-  else
-    return deserialize_id_value_map(ifs, value_max, scale);
-}
-
 
 rj::Document
 parse_stringified_json_to_dom(string stringified)

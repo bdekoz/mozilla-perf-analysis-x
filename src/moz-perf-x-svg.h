@@ -15,8 +15,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
 
-#ifndef moz_TELEMETRY_X_SVG_H
-#define moz_TELEMETRY_X_SVG_H 1
+#ifndef moz_X_SVG_H
+#define moz_X_SVG_H 1
 
 #include "a60-svg.h"
 #include "a60-svg-radial.h"

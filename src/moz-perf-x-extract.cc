@@ -19,7 +19,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "moz-perf-x-json.h"
+#include "moz-perf-x-radial.h"
 
 
 namespace moz {

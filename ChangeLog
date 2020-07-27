@@ -1,3 +1,18 @@
+2020-07-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-radial.h: Consolidate radial routines
+	that need both json and svg includes here.
+	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: New,
+	side-by side dual presentation, as opposed to dual presentation ripple.
+	Eventually there will be side-by-side and ripple, but hang on...
+	* src/moz-perf-x-analyze-radial-duo-ripple.cc: New, WIP.
+
+	* src/moz-perf-x-analyze-radial-uno.cc: Edits as above.
+	* src/moz-perf-x-extract.cc: Same.
+	* src/moz-perf-x-json.h: Same.
+	* src/moz-perf-x-svg.h: Same.
+	* src/moz-perf-x.h: Same.
+
 2020-07-24  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-analyze-radial-uno.cc (render_radial):

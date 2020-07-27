@@ -1,6 +1,6 @@
-// mozilla serialize/deserialize forward declarations -*- mode: C++ -*-
+// mozilla performance analysis -*- mode: C++ -*-
 
-// Copyright (c) 2018-2019, Mozilla
+// Copyright (c) 2018-2020, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -15,8 +15,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Public License for more details.
 
-#ifndef moz_TELEMETRY_X_H
-#define moz_TELEMETRY_X_H 1
+#ifndef moz_PERF_X_H
+#define moz_PERF_X_H 1
 
 #include <cstdlib>
 #include <fstream>
