@@ -169,7 +169,7 @@ render_radial(svg_element& obj, const string idatacsv, const point_2t origin,
   string browserua = env.sw_name;
   if (browserua.empty())
     browserua = "Chrome";
-  place_text_at_point(obj, typot, env.sw_name, x, yprime + (2 * tsz));
+  place_text_at_point(obj, typot, browserua, x, yprime + (2 * tsz));
 
   return obj;
 }

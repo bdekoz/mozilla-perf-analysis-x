@@ -31,9 +31,50 @@ std::string
 usage()
 {
   std::string s("usage: moz-perf-x-analyze-radial-duo-side-by-side.exe "
-		"data1.csv data2.csv");
+		"result-directory1 results-directory2");
   s += '\n';
   return s;
+}
+
+
+using namespace std::experimental::filesystem;
+
+/// Takes a string representing a path to directory in the filesystem,
+/// returns a list of contents as a std::vector<string>.
+strings
+populate_files(string dir, string ext = "", string cllm = "", string filem = "")
+{
+  strings ret;
+  path target_path(dir);
+  if (exists(target_path) && is_directory(target_path))
+    {
+      directory_iterator iter(target_path);
+      directory_iterator end_iter;
+	for (; iter != end_iter ; ++iter)
+	  {
+	    if (is_regular_file(iter->status()))
+	      {
+		path p = iter->path();
+		string ipath = p.string();
+		if (ext.empty() && cllm.empty() && filem.empty())
+		  ret.push_back(ipath);
+		else
+		  {
+		    string ifilename = p.filename().string();
+		    auto pext = ifilename.find(ext);
+		    auto pcllm = ifilename.find(cllm);
+		    auto pfilem = ifilename.find(filem);
+		    bool extp = ext.empty() || pext != string::npos;
+		    bool cllp = cllm.empty() || pcllm != string::npos;
+		    bool filep = filem.empty() || pfilem != string::npos;
+		    if (extp && filep && cllp)
+		      ret.push_back(ipath);
+		  }
+	      }
+	  }
+      }
+    std::sort(ret.begin(), ret.end());
+    return ret;
 }
 
 } // namespace moz
@@ -42,42 +83,69 @@ usage()
 int main(int argc, char* argv[])
 {
    using namespace moz;
+   using std::cerr;
+   using std::clog;
+   using std::endl;
 
    // Sanity check.
   if (argc != 3)
     {
-      std::cerr << usage() << std::endl;
+      std::cerr << usage() << endl;
       return 1;
     }
 
   // Input are CSV dirs with same number of csv files in each.
-  std::string idata1 = argv[1];
-  std::string idata2 = argv[2];
-  std::clog << "input directories: " << std::endl
-	    << idata1 << std::endl
-	    << idata2 << std::endl;
+  string idata1 = argv[1];
+  string idata2 = argv[2];
+  clog << "input directories: " << endl
+       << idata1 << endl
+       << idata2 << endl;
+  strings files1 = populate_files(idata1, ".csv");
+  strings files2 = populate_files(idata2, ".csv");
+  if (files1.empty() || files2.empty() || files1.size() != files2.size())
+    {
+      cerr << "error: input directories are not valid" << endl;
+      cerr << files1.size() << " files in directory: " << idata1 << endl;
+      cerr << files2.size() << " files in directory: " << idata2 << endl;
+      return 2;
+    }
 
   const string hilite("rumSpeedIndex");
 
   // Create svg canvas.
   init_id_render_state_cache(0.33, hilite);
   set_label_spaces(6);
+  const svg::area canvas = svg::k::v1080p_h;
+  auto [ width, height ] = canvas;
 
   // For each unique TLD/site in directories, use CSV file to do...
-  for (uint i = 0; i < sz; ++i)
+  for (uint i = 0; i < files1.size(); ++i)
     {
-      const string fstem = file_path_to_stem(idata1);
-      svg_element obj = initialize_svg(fstem);
-      auto xdelta = obj._M_area._M_width / 4;
+      const string& f1 = files1[i];
+      const string& f2 = files2[i];
+
+      const string fstem = file_path_to_stem(f1) + "-duo-ripple";
+      svg_element obj = initialize_svg(fstem, width, height);
+      auto xdelta = width / 4;
 
       auto [ x, y ] = obj.center_point();
       auto x1 = x - xdelta;
       auto x2 = x + xdelta;
-      render_radial(obj, idata1, point_2t(x1, y));
-      render_radial(obj, idata2, point_2t(x2, y));
+      render_radial(obj, f1, point_2t(x1, y));
+      render_radial(obj, f2, point_2t(x2, y));
 
       // Add metadata.
-      environment env = deserialize_environment(idata1);
+      environment env;
+      try
+	{
+	  environment env1 = deserialize_environment(f1);
+	  environment env2 = deserialize_environment(f2);
+	  env = coalesce_environments(env1, env2);
+	}
+      catch (const std::runtime_error& e)
+	{
+	  env = deserialize_environment(f1);
+	}
       render_metadata_environment(obj, env);
     }
 

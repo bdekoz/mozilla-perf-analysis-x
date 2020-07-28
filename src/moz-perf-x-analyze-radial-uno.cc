@@ -35,7 +35,6 @@ usage()
   return s;
 }
 
-
 } // namespace moz
 
 
