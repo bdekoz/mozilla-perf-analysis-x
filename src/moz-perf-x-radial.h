@@ -25,7 +25,6 @@
 namespace moz {
 
 
-
 // Convert from input file name to an in-memory vector of strings
 // representing identifiers/names to match against field names in a
 // JSON file.

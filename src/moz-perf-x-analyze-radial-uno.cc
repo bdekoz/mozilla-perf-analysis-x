@@ -30,7 +30,7 @@ namespace moz {
 std::string
 usage()
 {
-  std::string s("usage: moz-telemetry-x-analyze-radial.exe data.csv");
+  std::string s("usage: moz-perf-x-analyze-radial-uno.exe data.csv");
   s += '\n';
   return s;
 }
@@ -50,17 +50,19 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-  // Input CSV file.
+  // Input is CSV file.
   std::string idatacsv = argv[1];
   std::clog << "input files: " << idatacsv << std::endl;
 
+  const string hilite("rumSpeedIndex");
+
   // Create svg canvas.
-  init_id_render_state_cache();
+  init_id_render_state_cache(0.33, hilite);
   set_label_spaces(6);
   const string fstem = file_path_to_stem(idatacsv);
   svg_element obj = initialize_svg(fstem);
   const point_2t origin = obj.center_point();
-  render_radial(obj, idatacsv, origin);
+  render_radial(obj, idatacsv, origin, hilite);
 
   // Add metadata.
   environment env = deserialize_environment(idatacsv);

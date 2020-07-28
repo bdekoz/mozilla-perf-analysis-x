@@ -1,5 +1,12 @@
 2020-07-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: Make consistent
+	with other analysis-* files.
+	* src/moz-perf-x-analyze-radial-uno.cc: Same.
+	* src/moz-perf-x-radial.h: Tweak spacing.
+
+2020-07-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-perf-x-radial.h: Consolidate radial routines
 	that need both json and svg includes here.
 	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: New,
