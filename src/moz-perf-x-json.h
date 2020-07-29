@@ -53,7 +53,8 @@ using vcval_iterator = rj::Value::ConstValueIterator;
 
 /// Constants.
 const char* kTypeNames[] =
-  { "Null", "False", "True", "Object", "Array", "String", "Number" };
+{ "Null", "False", "True", "Object", "Array", "String", "Number" };
+
 
 rj::Document
 parse_stringified_json_to_dom(string stringified)

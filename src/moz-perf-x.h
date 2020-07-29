@@ -125,10 +125,11 @@ enum class histogram_view_t
 };
 
 
-/// Compile time switches for input data processing, JSON format.
+/// Compile time switches for input data processing.
 enum class json_t
 {
   browsertime,
+  browsertime_log,
   har,
   hybrid,
   mozilla_desktop,
