@@ -1,5 +1,14 @@
 2020-07-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	* src/moz-perf-x-radial.h (render_radial): Add radius,
+	rspace parameters.
+	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: Adjust.
+
+	* src/moz-perf-x-analyze-radial-duo-ripple.cc: Re-write using
+	new render_radial routines.
+
+2020-07-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: Move...
 	* src/moz-perf-x.h (populate_files): ...here.
 

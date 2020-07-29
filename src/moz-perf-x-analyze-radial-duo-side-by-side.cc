@@ -77,21 +77,21 @@ int main(int argc, char* argv[])
   const svg::area canvas = svg::k::v1080p_h;
   auto [ width, height ] = canvas;
 
-  // For each unique TLD/site in directories, use CSV file to do...
+  // For each unique TLD/site in directories, use CSV files to do...
   for (uint i = 0; i < files1.size(); ++i)
     {
       const string& f1 = files1[i];
       const string& f2 = files2[i];
 
-      const string fstem = file_path_to_stem(f1) + "-duo-ripple";
+      const string fstem = file_path_to_stem(f1) + "-duo-side-by-side";
       svg_element obj = initialize_svg(fstem, width, height);
       auto xdelta = width / 4;
 
       auto [ x, y ] = obj.center_point();
       auto x1 = x - xdelta;
       auto x2 = x + xdelta;
-      render_radial(obj, f1, point_2t(x1, y));
-      render_radial(obj, f2, point_2t(x2, y));
+      render_radial(obj, point_2t(x1, y), f1, hilite);
+      render_radial(obj, point_2t(x2, y), f2, hilite);
 
       // Add metadata.
       environment env;

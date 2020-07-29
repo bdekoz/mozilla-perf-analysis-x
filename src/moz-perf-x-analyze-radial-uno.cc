@@ -50,21 +50,21 @@ int main(int argc, char* argv[])
     }
 
   // Input is CSV file.
-  std::string idatacsv = argv[1];
-  std::clog << "input files: " << idatacsv << std::endl;
+  std::string idata = argv[1];
+  std::clog << "input files: " << idata << std::endl;
 
   const string hilite("rumSpeedIndex");
 
   // Create svg canvas.
   init_id_render_state_cache(0.33, hilite);
   set_label_spaces(6);
-  const string fstem = file_path_to_stem(idatacsv);
+  const string fstem = file_path_to_stem(idata);
   svg_element obj = initialize_svg(fstem);
   const point_2t origin = obj.center_point();
-  render_radial(obj, idatacsv, origin, hilite);
+  render_radial(obj, origin, idata, hilite);
 
   // Add metadata.
-  environment env = deserialize_environment(idatacsv);
+  environment env = deserialize_environment(idata);
   render_metadata_environment(obj, env);
 
   return 0;

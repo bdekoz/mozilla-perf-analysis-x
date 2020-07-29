@@ -128,48 +128,60 @@ init_id_render_state_cache(double opacity = 0.33,
 
 
 svg_element
-render_radial(svg_element& obj, const string idatacsv, const point_2t origin,
-	      const string hilite = "rumSpeedIndex")
+render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
+	      const string hilite = "rumSpeedIndex", const value_type vmax = 0,
+	      const int radius = 80, const int rspace = 24,
+	      const bool rendercontextp = true)
 {
-  value_type value_max(0);
   typography typo = make_typography_id();
 
   auto [ x, y ] = origin;
 
-  // Get id map, if in nanoseconds scale to milliseconds
+  // Get id map and outcomes.
+  // Iif in nanoseconds scale to milliseconds
+  // Iif vmax non-zero, scale rendered radials to vmax.
   value_type ts = 1;
 #if 0
   // nanoseconds
   // Glean
   ts = 1000000;
 #endif
+  value_type value_max(0);
   id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max, ts);
+  if (vmax != 0)
+    value_max = vmax;
 
   // Render
 #if 0
-  radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 60, 10);
+  radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max,
+				radius, rspace);
 #else
   // weigh-by-value, collision-avoidance, insert-arrow
-  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max, 80, 24,
-			       false, false, true);
+  kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max,
+			       radius, rspace, false, false, true);
 #endif
 
-  value_type timev;
-  if (iv.count(hilite))
+  // Render titles, times, or other context.
+  // NB: Assumes an environment data file exists, which may not be the case...
+  if (rendercontextp)
+    {
+      value_type timev;
+      if (iv.count(hilite))
     timev = iv[hilite];
-  else
-    timev = value_max;
+      else
+	timev = value_max;
 
-  auto yprime = obj._M_area._M_height - moz::k::margin;
-  render_metadata_time(obj, timev, colore::red, x, yprime);
+      auto yprime = obj._M_area._M_height - moz::k::margin;
+      render_metadata_time(obj, timev, colore::red, x, yprime);
 
-  environment env = deserialize_environment(idatacsv);
-  value_type tsz = 14;
-  typography typot = make_typography_metadata(tsz, true);
-  string browserua = env.sw_name;
-  if (browserua.empty())
-    browserua = "Chrome";
-  place_text_at_point(obj, typot, browserua, x, yprime + (2 * tsz));
+      environment env = deserialize_environment(idatacsv);
+      value_type tsz = 14;
+      typography typot = make_typography_metadata(tsz, true);
+      string browserua = env.sw_name;
+      if (browserua.empty())
+	browserua = "Chrome";
+      place_text_at_point(obj, typot, browserua, x, yprime + (2 * tsz));
+    }
 
   return obj;
 }

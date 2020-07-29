@@ -31,13 +31,10 @@ string
 usage()
 {
   string binname("moz-telemetry-x-analyze-radial-duo.exe");
-  string s("usage:  " + binname + " data1.csv data2.csv (edit.txt)");
+  string s("usage:  " + binname + " csvdir1 csvdir2");
   s += '\n';
-  s += "data1.csv is a CSV file containing a firefox telemetry main ping";
-  s += '\n';
-  s += "data2.csv is a CSV file containing firefox browsertime results";
-  s += '\n';
-  s += "edit.xt is an optional TEXT file containing higlight id matches";
+  s += "csvdir1 is a CSV directory of browsertime JSON converted to csv files";
+  s += "csvdir2 is a CSV directory of browsertime LOG converted to csv files";
   s += '\n';
   return s;
 }
@@ -48,107 +45,74 @@ usage()
 int main(int argc, char* argv[])
 {
   using namespace moz;
+  using std::cerr;
+  using std::clog;
+  using std::endl;
 
-   // Sanity check.
-  if (argc < 3 || argc > 4)
+  // Sanity check.
+  if (argc != 3)
     {
       std::cerr << usage() << std::endl;
       return 1;
     }
 
-  // Input CSV files.
-  string idata1csv = argv[1];
-  string idata2csv = argv[2];
-  string idatatxt;
-  if (argc == 4)
-    idatatxt = argv[3];
-  std::clog << "input files: " << std::endl
-	    << idata1csv << std::endl
-	    << idata2csv << std::endl
-	    << idatatxt << std::endl;
+  // Input are CSV dirs with same number of csv files in each.
+  string idata1 = argv[1];
+  string idata2 = argv[2];
+  clog << "input directories: " << endl
+       << idata1 << endl
+       << idata2 << endl;
+  strings files1 = populate_files(idata1, ".csv");
+  strings files2 = populate_files(idata2, ".csv");
+  if (files1.empty() || files2.empty() || files1.size() != files2.size())
+    {
+      cerr << "error: input directories are not valid" << endl;
+      cerr << files1.size() << " files in directory: " << idata1 << endl;
+      cerr << files2.size() << " files in directory: " << idata2 << endl;
+      return 2;
+    }
+
+  const string hilite("rumSpeedIndex");
 
   // Create svg canvas.
-  const string fstem1 = file_path_to_stem(idata1csv);
-  const string fstem2 = file_path_to_stem(idata2csv);
-  const string fstem(fstem1 + "-x-" + "browsertime");
-  svg_element obj = initialize_svg(fstem);
+  init_id_render_state_cache(0.33, hilite);
+  set_label_spaces(6);
+  const svg::area canvas = svg::k::v1080p_h;
+  auto [ width, height ] = canvas;
 
-  // Deserialize CSV files.
-  value_type maxv1(0);
-  id_value_umap iv1 = deserialize_csv_to_id_value_map(idata1csv, maxv1);
-
-  value_type maxv2(0);
-  id_value_umap iv2 = deserialize_csv_to_id_value_map(idata2csv, maxv2);
-
-  // Find max value of all inputs.
-  const int value_max(std::max(maxv1, maxv2));
-  typography typo = make_typography_id();
-  const point_2t origin = obj.center_point();
-
-  // Draw radial rings on canvas  from inner to outter ripple.
-  // Size is inverse of denomenator argument below.
-
-  // If a highlight input file exists, split the first
-  // id_value_umap object into a found matches object and a remaining object.
-  // Otherwise, just use the first id_value_umap as-is.
-  if (argc == 3)
+  // For each unique TLD/site in directories, use CSV files to do...
+  for (uint i = 0; i < files1.size(); ++i)
     {
-      // 1. Telemetry baseline ripple
-      radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv1, value_max, 10, 1);
-      //kusama_ids_per_uvalue_on_arc(obj, origin, typof, iv1, value_max, 10, 5, false);
+      const string& f1 = files1[i];
+      const string& f2 = files2[i];
+
+      const string fstem = file_path_to_stem(f1) + "-duo-ripple";
+
+      clog << i << moz::k::tab << fstem << endl;
+      clog << f1 << endl;
+      clog << f2 << endl;
+
+      svg_element obj = initialize_svg(fstem, width, height);
+      const point_2t origin = obj.center_point();
+
+      // Find max value in input files...
+      value_type maxv1(0);
+      id_value_umap iv1 = deserialize_csv_to_id_value_map(f1, maxv1);
+      value_type maxv2(0);
+      id_value_umap iv2 = deserialize_csv_to_id_value_map(f2, maxv2);
+      const int value_max(std::max(maxv1, maxv2));
+
+      clog << "value_max: " << value_max << endl;
+
+      render_radial(obj, origin, f1, hilite, value_max, 80, 24);
+      render_radial(obj, origin, f2, hilite, value_max, 320, 24, false);
+
+      clog << "done render" << endl;
+
+      // Add metadata.
+      environment env = deserialize_environment(f1);
+      render_metadata_environment(obj, env);
     }
-  else
-    {
-      // 1. Telemetry baseline ripple.
-      const strings hilights = deserialize_text_to_strings(idatatxt);
-      std::clog << iv1.size() << " original map size" << std::endl;
-      id_value_umap iv1hi = remove_matches_id_value_map(iv1, hilights);
-      std::clog << iv1hi.size() << " found matches map size" << std::endl;
-      std::clog << iv1.size() << " edited original map size" << std::endl;
-      radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv1, value_max, 10, 2);
-
-      // 2. Moz Telemetry highlight blue ripple, same size as first
-      if (!iv1hi.empty())
-	{
-	  typography typohi = typo;
-	  typohi._M_size = 20;
-	  typohi._M_style._M_fill_color = colore::ruriiro;
-	  radiate_ids_per_uvalue_on_arc(obj, origin, typohi, iv1hi,
-					value_max, 10, 2);
-	}
-    }
-
-  // 3. Browsertime performance timings orange ripple, next bigger size
-  typography typoc = typo;
-  typoc._M_style._M_fill_color = colore::asamaorange;
-  radiate_ids_per_uvalue_on_arc(obj, origin, typoc, iv2, value_max, 3, 2);
-  //kusama_ids_per_uvalue_on_arc(obj, origin, typoc, iv2, value_max, 3, 5, false);
-
-  // Add metadata.
-  // Depending on the JSON schema, an environment file may not be generated
-  // AKA, mozilla_android.
-  environment env;
-  try
-    {
-      environment env1 = deserialize_environment(idata1csv);
-      environment env2 = deserialize_environment(idata2csv);
-      env = coalesce_environments(env1, env2);
-    }
-  catch (const std::runtime_error& e)
-    {
-      env = deserialize_environment(idata2csv);
-    }
-
-  render_metadata_environment(obj, env);
-
-  auto y = obj._M_area._M_height / 2;
-  auto x = moz::k::margin;
-  string s1 = "Mozilla Telemetry";
-  string s2 = "Sitespeed.io Browsertime";
-  render_metadata_title(obj, maxv1, s1, colore::ruriiro, x, y - 50);
-  render_metadata_title(obj, maxv2, s2, colore::asamaorange, x, y + 50);
-
-  render_input_files_title(obj, idata1csv, idata2csv,idatatxt);
 
   return 0;
 }
