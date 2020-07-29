@@ -58,6 +58,9 @@ namespace moz::constants {
 
 namespace moz {
 
+/// Alias namespace moz::k to mozilla::constants.
+namespace k = moz::constants;
+
 /// Types.
 using std::string;
 using std::to_string;
@@ -77,8 +80,46 @@ using pointn = std::tuple<point, int>;
 /// Alias namespace moz::filesystem to std::experimental::filesystem.
 namespace filesystem = std::experimental::filesystem;
 
-/// Alias namespace moz::k to mozilla::constants.
-namespace k = moz::constants;
+
+/// Takes a string representing a path to directory in the filesystem,
+/// returns a list of contents as a std::vector<string>.
+strings
+populate_files(string dir, string ext = "", string cllm = "", string filem = "")
+{
+  using namespace filesystem;
+
+  strings ret;
+  path target_path(dir);
+  if (exists(target_path) && is_directory(target_path))
+    {
+      directory_iterator iter(target_path);
+      directory_iterator end_iter;
+	for (; iter != end_iter ; ++iter)
+	  {
+	    if (is_regular_file(iter->status()))
+	      {
+		path p = iter->path();
+		string ipath = p.string();
+		if (ext.empty() && cllm.empty() && filem.empty())
+		  ret.push_back(ipath);
+		else
+		  {
+		    string ifilename = p.filename().string();
+		    auto pext = ifilename.find(ext);
+		    auto pcllm = ifilename.find(cllm);
+		    auto pfilem = ifilename.find(filem);
+		    bool extp = ext.empty() || pext != string::npos;
+		    bool cllp = cllm.empty() || pcllm != string::npos;
+		    bool filep = filem.empty() || pfilem != string::npos;
+		    if (extp && filep && cllp)
+		      ret.push_back(ipath);
+		  }
+	      }
+	  }
+      }
+    std::sort(ret.begin(), ret.end());
+    return ret;
+}
 
 
 /// Point to string.
