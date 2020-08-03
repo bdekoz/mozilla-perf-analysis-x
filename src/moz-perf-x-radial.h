@@ -124,6 +124,12 @@ init_id_render_state_cache(double opacity = 0.33,
   // Pull out one it to highlight, say rumSpeedIndex.
   style histyl = { colore::red, 1.0, colore::red, 0, 3 };
   add_to_id_render_state_cache(hilite, histyl, dviz);
+
+  style webvitalsstyl = { colore::asamablue, 1.0, colore::asamablue, 0, 3 };
+  add_to_id_render_state_cache("TTFB", webvitalsstyl, dviz);
+  add_to_id_render_state_cache("firstPaint", webvitalsstyl, dviz);
+  add_to_id_render_state_cache("FCP", webvitalsstyl, dviz);
+  add_to_id_render_state_cache("LCP", webvitalsstyl, dviz);
 }
 
 
@@ -167,7 +173,7 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
     {
       value_type timev;
       if (iv.count(hilite))
-    timev = iv[hilite];
+	timev = iv[hilite];
       else
 	timev = value_max;
 

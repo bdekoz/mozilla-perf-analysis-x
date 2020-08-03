@@ -1,3 +1,11 @@
+2020-07-31  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-extract.cc: Use edit list to create final probes list.
+	* src/moz-perf-x-radial.h (nit_id_render_state_cache):
+	Color web vitals blue.
+	* src/moz-perf-x-svg.h (place_text_metadata, place_text_id): Add
+	y parameter.
+
 2020-07-29  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-radial.h (render_radial): Add radius,

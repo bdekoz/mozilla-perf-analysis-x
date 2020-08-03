@@ -118,11 +118,10 @@ place_text_at_point(svg_element& obj, const typography& typo,
 
 
 void
-place_text_metadata(svg_element& obj, const typography& typo, string mtext)
+place_text_metadata(svg_element& obj, const typography& typo, string mtext,
+		    int& ty)
 {
   int tx = k::margin;
-  static int ty = k::margin;
-
   if (!mtext.empty())
     {
       place_text_at_point(obj, typo, mtext, tx, ty);
@@ -155,6 +154,8 @@ place_text_id(svg_element& obj, const typography& typo, string label,
 void
 place_metadata(svg_element& obj, const typography& typo, const environment& env)
 {
+  static int ty = k::margin;
+
   string osnvloc(env.os_name + " " + env.os_version);
   if (!env.os_locale.empty())
     osnvloc += " " + env.os_locale;
@@ -164,31 +165,32 @@ place_metadata(svg_element& obj, const typography& typo, const environment& env)
       typography typolarge = typo;
       typolarge._M_size = 20;
       string hwsw = env.hw_name + " / " + osnvloc;
-      place_text_metadata(obj, typolarge, hwsw);
+      place_text_metadata(obj, typolarge, hwsw, ty);
       if (env.hw_cpu)
 	{
-	  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores");
+	  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores",
+			      ty);
 	  int memi = std::round(env.hw_mem * .001);
-	  place_text_metadata(obj, typolarge, to_string(memi) + " GB");
+	  place_text_metadata(obj, typolarge, to_string(memi) + " GB", ty);
 	}
     }
 
-  place_text_metadata(obj, typo, " ");
+  place_text_metadata(obj, typo, " ", ty);
 
 #if 0
-  place_text_metadata(obj, typo, env.sw_name);
-  place_text_metadata(obj, typo, env.sw_arch);
-  place_text_metadata(obj, typo, env.sw_version);
-  place_text_metadata(obj, typo, env.sw_build_id);
+  place_text_metadata(obj, typo, env.sw_name, ty);
+  place_text_metadata(obj, typo, env.sw_arch, ty);
+  place_text_metadata(obj, typo, env.sw_version, ty);
+  place_text_metadata(obj, typo, env.sw_build_id, ty);
 
-  place_text_metadata(obj, typo, " ");
+  place_text_metadata(obj, typo, " ", ty);
 #endif
 
-  place_text_metadata(obj, typo, env.url);
+  place_text_metadata(obj, typo, env.url, ty);
 
-  place_text_metadata(obj, typo, " ");
+  place_text_metadata(obj, typo, " ", ty);
 
-  place_text_metadata(obj, typo, env.date_time_stamp);
+  place_text_metadata(obj, typo, env.date_time_stamp, ty);
 }
 
 
@@ -206,17 +208,18 @@ void
 render_metadata_environment(svg_element& obj,
 			    const environment& env1, const environment&)
 {
+  static int ty = k::margin;
   typography typo = make_typography_metadata();
 
-  place_text_metadata(obj, typo, env1.sw_name);
-  place_text_metadata(obj, typo, " ");
-  place_text_metadata(obj, typo, "Firefox x WebView (System)");
+  place_text_metadata(obj, typo, env1.sw_name, ty);
+  place_text_metadata(obj, typo, " ", ty);
+  place_text_metadata(obj, typo, "Firefox x WebView (System)", ty);
 
-  place_text_metadata(obj, typo, " ");
+  place_text_metadata(obj, typo, " ", ty);
 
-  place_text_metadata(obj, typo, to_string(env1.uri_count) + " uri count");
-  place_text_metadata(obj, typo, env1.url);
-  place_text_metadata(obj, typo, env1.date_time_stamp);
+  place_text_metadata(obj, typo, to_string(env1.uri_count) + " uri count", ty);
+  place_text_metadata(obj, typo, env1.url, ty);
+  place_text_metadata(obj, typo, env1.date_time_stamp, ty);
 }
 
 

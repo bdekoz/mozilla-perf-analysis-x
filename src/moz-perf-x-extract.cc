@@ -794,7 +794,7 @@ Pase these logs to 3-field CSV of form (metric,time in ms, variance in ms) as:
 TTFB,357,103.34
  */
 void
-extract_browsertime_log(string logfile, string /*inames*/)
+extract_browsertime_log(string logfile, string inames)
 {
   std::ostringstream ostrs;
   std::ifstream ifs(logfile);
@@ -879,7 +879,23 @@ extract_browsertime_log(string logfile, string /*inames*/)
   string oname = logfile.substr(0, logfile.size() - 4); // extension
   oname += ".csv";
   std::ofstream ofs(oname);
-  ofs << ostrs.str();
+
+  // Do edit list.
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_text_to_strings(inames);
+
+  value_type v(0);
+  istringstream iss(ostrs.str());
+  id_value_umap actual = deserialize_id_value_map(iss, v);
+  for (const string& probe : probes)
+    {
+      if (actual.count(probe) == 1)
+	{
+	  auto itr = actual.find(probe);
+	  auto [ p, v] = *itr;
+	  ofs << probe << "," << v << std::endl;
+	}
+    }
 }
 
 
