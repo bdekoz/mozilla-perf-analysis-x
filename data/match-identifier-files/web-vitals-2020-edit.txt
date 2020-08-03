@@ -1,0 +1,4 @@
+TTFB
+firstPaint
+FCP
+LCP
