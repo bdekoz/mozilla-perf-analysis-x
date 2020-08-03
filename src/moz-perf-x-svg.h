@@ -25,13 +25,8 @@
 
 namespace moz {
 
-namespace {
-  // Directional glyph.
-  std::string direction_glyph = get_data_path() + "image/circle-arrow-gray.svg";
-} // namespace anonymous
 
 using namespace svg;
-using color = svg::colore;
 
 
 // Create an svg object with 1080p dimensions and return it.
@@ -152,7 +147,8 @@ place_text_id(svg_element& obj, const typography& typo, string label,
 
 
 void
-place_metadata(svg_element& obj, const typography& typo, const environment& env)
+place_metadata(svg_element& obj, const typography& typo, const environment& env,
+	       const bool swmetadatap = false)
 {
   static int ty = k::margin;
 
@@ -177,14 +173,15 @@ place_metadata(svg_element& obj, const typography& typo, const environment& env)
 
   place_text_metadata(obj, typo, " ", ty);
 
-#if 0
-  place_text_metadata(obj, typo, env.sw_name, ty);
-  place_text_metadata(obj, typo, env.sw_arch, ty);
-  place_text_metadata(obj, typo, env.sw_version, ty);
-  place_text_metadata(obj, typo, env.sw_build_id, ty);
-
-  place_text_metadata(obj, typo, " ", ty);
-#endif
+  if (swmetadatap)
+    {
+      place_text_metadata(obj, typo, env.sw_name, ty);
+      place_text_metadata(obj, typo, env.sw_arch, ty);
+      place_text_metadata(obj, typo, env.sw_version, ty);
+      place_text_metadata(obj, typo, env.sw_build_id, ty);
+      
+      place_text_metadata(obj, typo, " ", ty);
+    }
 
   place_text_metadata(obj, typo, env.url, ty);
 
