@@ -31,7 +31,8 @@ std::string
 usage()
 {
   std::string s("usage: moz-perf-x-analyze-radial-duo-side-by-side.exe "
-		"result-directory1 results-directory2");
+		"result-directory1 results-directory2 "
+		"(metric-to-compare-or-highlight)");
   s += '\n';
   return s;
 }
@@ -47,9 +48,9 @@ int main(int argc, char* argv[])
    using std::endl;
 
    // Sanity check.
-  if (argc != 3)
+  if (argc != 3 || argc != 4)
     {
-      std::cerr << usage() << endl;
+      cerr << usage() << endl;
       return 1;
     }
 
@@ -69,7 +70,10 @@ int main(int argc, char* argv[])
       return 2;
     }
 
-  const string hilite("rumSpeedIndex");
+  string hilite = "ContentfulSpeedIndex";
+  if (argc == 4)
+    hilite = argv[3];
+  clog << "key metric: " << hilite << endl;
 
   // Create svg canvas.
   init_id_render_state_cache(0.33, hilite);

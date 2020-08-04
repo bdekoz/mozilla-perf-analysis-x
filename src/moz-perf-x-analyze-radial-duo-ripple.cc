@@ -31,7 +31,8 @@ string
 usage()
 {
   string binname("moz-telemetry-x-analyze-radial-duo.exe");
-  string s("usage:  " + binname + " csvdir1 csvdir2");
+  string s("usage:  " + binname + " csvdir1 csvdir2 "
+	   "(metric-to-compare-or-highlight)");
   s += '\n';
   s += "csvdir1 is a CSV directory of browsertime JSON converted to csv files";
   s += "csvdir2 is a CSV directory of browsertime LOG converted to csv files";
@@ -50,7 +51,7 @@ int main(int argc, char* argv[])
   using std::endl;
 
   // Sanity check.
-  if (argc != 3)
+  if (argc != 3 || argc != 4)
     {
       std::cerr << usage() << std::endl;
       return 1;
@@ -72,7 +73,10 @@ int main(int argc, char* argv[])
       return 2;
     }
 
-  const string hilite("rumSpeedIndex");
+  string hilite = "ContentfulSpeedIndex";
+  if (argc == 4)
+    hilite = argv[3];
+  clog << "key metric: " << hilite << endl;
 
   // Create svg canvas.
   init_id_render_state_cache(0.33, hilite);
@@ -95,13 +99,7 @@ int main(int argc, char* argv[])
       svg_element obj = initialize_svg(fstem, width, height);
       const point_2t origin = obj.center_point();
 
-      // Find max value in input files...
-      value_type maxv1(0);
-      id_value_umap iv1 = deserialize_csv_to_id_value_map(f1, maxv1);
-      value_type maxv2(0);
-      id_value_umap iv2 = deserialize_csv_to_id_value_map(f2, maxv2);
-      const int value_max(std::max(maxv1, maxv2));
-
+      value_type value_max = largest_value_in_files(f1, f2);
       clog << "value_max: " << value_max << endl;
 
       render_radial(obj, origin, f1, hilite, value_max, 80, 24);

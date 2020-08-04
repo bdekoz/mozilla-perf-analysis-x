@@ -179,7 +179,7 @@ place_metadata(svg_element& obj, const typography& typo, const environment& env,
       place_text_metadata(obj, typo, env.sw_arch, ty);
       place_text_metadata(obj, typo, env.sw_version, ty);
       place_text_metadata(obj, typo, env.sw_build_id, ty);
-      
+
       place_text_metadata(obj, typo, " ", ty);
     }
 

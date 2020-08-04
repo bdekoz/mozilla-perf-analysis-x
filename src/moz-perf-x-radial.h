@@ -111,6 +111,18 @@ deserialize_csv_to_id_value_map(const string& ifile, value_type& value_max,
 }
 
 
+value_type
+largest_value_in_files(const string& f1, const string& f2)
+{
+  // Find max value in input files...
+  value_type maxv1(0);
+  id_value_umap iv1 = deserialize_csv_to_id_value_map(f1, maxv1);
+  value_type maxv2(0);
+  id_value_umap iv2 = deserialize_csv_to_id_value_map(f2, maxv2);
+  return std::max(maxv1, maxv2);
+}
+
+
 void
 init_id_render_state_cache(double opacity = 0.33,
 			   const string hilite = "rumSpeedIndex")
@@ -125,6 +137,7 @@ init_id_render_state_cache(double opacity = 0.33,
   style histyl = { colore::red, 1.0, colore::red, 0, 3 };
   add_to_id_render_state_cache(hilite, histyl, dviz);
 
+  // Colors: colore::ruriiro, colore::asamaorange.
   style webvitalsstyl = { colore::asamablue, 1.0, colore::asamablue, 0, 3 };
   add_to_id_render_state_cache("TTFB", webvitalsstyl, dviz);
   add_to_id_render_state_cache("firstPaint", webvitalsstyl, dviz);
@@ -152,6 +165,7 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
   // Glean
   ts = 1000000;
 #endif
+
   value_type value_max(0);
   id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max, ts);
   if (vmax != 0)

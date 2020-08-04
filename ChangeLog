@@ -1,5 +1,14 @@
 2020-08-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
+	Use command-line argument to select highlight metric.
+	* src/moz-perf-x-analyze-radial-duo-ripple.cc: Here.
+	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: Here.
+	* src/moz-perf-x-analyze-radial-uno.cc: Here.
+	* src/moz-perf-x-radial.h (largest_value_in_files): Consolidate here.
+	* src/moz-perf-x-svg.h: Fix whitespace.
+
+2020-08-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
 	* moz-perf-x-svg.h: Cleanups, remove unused and cruft.
 
 2020-08-03  Benjamin De Kosnik  <bdekoz@mozilla.com>

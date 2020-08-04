@@ -30,7 +30,8 @@ namespace moz {
 std::string
 usage()
 {
-  std::string s("usage: moz-perf-x-analyze-radial-uno.exe data.csv");
+  std::string s("usage: moz-perf-x-analyze-radial-uno.exe data.csv "
+		"(metric-to-compare-or-highlight)");
   s += '\n';
   return s;
 }
@@ -41,19 +42,25 @@ usage()
 int main(int argc, char* argv[])
 {
    using namespace moz;
+   using std::cerr;
+   using std::clog;
+   using std::endl;
 
    // Sanity check.
-  if (argc != 2)
+  if (argc != 2 || argc != 3)
     {
-      std::cerr << usage() << std::endl;
+      cerr << usage() << endl;
       return 1;
     }
 
   // Input is CSV file.
   std::string idata = argv[1];
-  std::clog << "input files: " << idata << std::endl;
+  clog << "input files: " << idata << endl;
 
-  const string hilite("rumSpeedIndex");
+  string hilite = "ContentfulSpeedIndex";
+  if (argc == 3)
+    hilite = argv[2];
+  clog << "key metric: " << hilite << endl;
 
   // Create svg canvas.
   init_id_render_state_cache(0.33, hilite);
