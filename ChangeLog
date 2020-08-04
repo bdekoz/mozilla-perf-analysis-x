@@ -1,3 +1,9 @@
+2020-08-04  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-radial.h (largest_value_in): Change
+	signature, default last parameter, change name.
+	* src/moz-perf-x-analyze-radial-duo-ripple.cc: Adjust.
+
 2020-08-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Use command-line argument to select highlight metric.

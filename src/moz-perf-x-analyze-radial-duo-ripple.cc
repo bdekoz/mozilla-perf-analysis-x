@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
       svg_element obj = initialize_svg(fstem, width, height);
       const point_2t origin = obj.center_point();
 
-      value_type value_max = largest_value_in_files(f1, f2);
+      value_type value_max = largest_value_in(f1, f2);
       clog << "value_max: " << value_max << endl;
 
       render_radial(obj, origin, f1, hilite, value_max, 80, 24);

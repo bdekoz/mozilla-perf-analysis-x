@@ -112,13 +112,16 @@ deserialize_csv_to_id_value_map(const string& ifile, value_type& value_max,
 
 
 value_type
-largest_value_in_files(const string& f1, const string& f2)
+largest_value_in(const string f1, const string f2 = "")
 {
   // Find max value in input files...
   value_type maxv1(0);
-  id_value_umap iv1 = deserialize_csv_to_id_value_map(f1, maxv1);
+  if (!f1.empty())
+    id_value_umap iv1 = deserialize_csv_to_id_value_map(f1, maxv1);
+
   value_type maxv2(0);
-  id_value_umap iv2 = deserialize_csv_to_id_value_map(f2, maxv2);
+  if (!f2.empty())
+    id_value_umap iv2 = deserialize_csv_to_id_value_map(f2, maxv2);
   return std::max(maxv1, maxv2);
 }
 
