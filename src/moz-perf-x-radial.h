@@ -149,11 +149,26 @@ init_id_render_state_cache(double opacity = 0.33,
 }
 
 
+/**
+   Render metrics in an arc centered at origin, starting at 0 degrees
+   north and continuing around clockwise, according to metrics and
+   values in csv file.
+
+   hilite	== metric to highlight
+
+   vmax		== maximum value on arc corresponding with end, if not the
+		   maximum value from the csv file. (ie doing relational arcs).
+
+   radius       == radius of arc
+   rspace       == space between arc end and label text begin
+
+   contextp	== add in metadata about context if true, otherwise just do arc.
+ */
 svg_element
 render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
 	      const string hilite = "rumSpeedIndex", const value_type vmax = 0,
 	      const int radius = 80, const int rspace = 24,
-	      const bool rendercontextp = true)
+	      const bool contextp = true)
 {
   typography typo = make_typography_id();
 
@@ -186,7 +201,7 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
 
   // Render titles, times, or other context.
   // NB: Assumes an environment data file exists, which may not be the case...
-  if (rendercontextp)
+  if (contextp)
     {
       value_type timev;
       if (iv.count(hilite))
