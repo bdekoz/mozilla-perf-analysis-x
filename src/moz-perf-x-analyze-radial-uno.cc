@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
    using std::endl;
 
    // Sanity check.
-  if (argc != 2 || argc != 3)
+  if (argc != 2 && argc != 3)
     {
       cerr << usage() << endl;
       return 1;
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 
   // Add metadata.
   environment env = deserialize_environment(idata);
-  render_metadata_environment(obj, env);
+  render_metadata(obj, env, hilite);
 
   return 0;
 }

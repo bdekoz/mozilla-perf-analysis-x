@@ -156,7 +156,7 @@ init_id_render_state_cache(double opacity = 0.33,
 
    hilite	== metric to highlight
 
-   vmax		== maximum value on arc corresponding with end, if not the
+   vmax		== maximum value corresponding with end of arc, if not the
 		   maximum value from the csv file. (ie doing relational arcs).
 
    radius       == radius of arc
@@ -213,7 +213,7 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
       render_metadata_time(obj, timev, colore::red, x, yprime);
 
       environment env = deserialize_environment(idatacsv);
-      value_type tsz = 14;
+      value_type tsz = 12;
       typography typot = make_typography_metadata(tsz, true);
       string browserua = env.sw_name;
       if (browserua.empty())

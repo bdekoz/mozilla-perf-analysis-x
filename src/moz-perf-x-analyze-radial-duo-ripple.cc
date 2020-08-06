@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 
       // Add metadata.
       environment env = deserialize_environment(f1);
-      render_metadata_environment(obj, env);
+      render_metadata(obj, env, hilite);
     }
 
   return 0;

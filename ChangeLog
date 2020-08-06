@@ -1,3 +1,16 @@
+2020-08-05  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* data/match-identifier-files/visual-metrics-2020.txt: Just
+	measured, not computed, visual metrics only.
+
+	* src/moz-perf-x-radial.h (render_metadata): Consolidate
+	various metadata routines here.
+	* src/moz-perf-x-svg.h (render_radial): Adjust results display
+	typography.
+	* src/moz-perf-x-analyze-radial-duo-ripple.cc: Fix up for above.
+	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: Same.
+	* src/moz-perf-x-analyze-radial-uno.cc: Same.
+
 2020-08-04  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-radial.h (render_radial): Comment.

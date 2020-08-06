@@ -113,21 +113,6 @@ place_text_at_point(svg_element& obj, const typography& typo,
 
 
 void
-place_text_metadata(svg_element& obj, const typography& typo, string mtext,
-		    int& ty)
-{
-  int tx = k::margin;
-  if (!mtext.empty())
-    {
-      place_text_at_point(obj, typo, mtext, tx, ty);
-
-      // Increment vertical, assume higher moves text down the page.
-      ty += typo._M_size;
-    }
-}
-
-
-void
 place_text_id(svg_element& obj, const typography& typo, string label,
 	      int tx, int ty, const double deg = 0.0)
 {
@@ -147,76 +132,64 @@ place_text_id(svg_element& obj, const typography& typo, string label,
 
 
 void
-place_metadata(svg_element& obj, const typography& typo, const environment& env,
-	       const bool swmetadatap = false)
+render_metadata(svg_element& obj, const environment& env,
+		const string hilite,
+		const bool centerp = false, const bool swmetadatap = false)
 {
-  static int ty = k::margin;
+  int tx = centerp ? obj._M_area._M_width / 2 : k::margin;
+  int ty = obj._M_area._M_height - k::margin;
 
+  typography typom = make_typography_metadata(12, centerp);
+  typography typolarge = typom;
+  typolarge._M_size = 16; // time is 48
+  typography typohi = typolarge;
+  typohi._M_size = 24; // time is 48
+  typohi._M_style._M_fill_color = colore::red;
+
+  // Metric
+  place_text_at_point(obj, typohi, hilite, tx, ty);
+  ty += typohi._M_size;
+
+  // SW/HW environment.
   string osnvloc(env.os_name + " " + env.os_version);
   if (!env.os_locale.empty())
     osnvloc += " " + env.os_locale;
 
   if (!env.hw_name.empty())
     {
-      typography typolarge = typo;
-      typolarge._M_size = 20;
       string hwsw = env.hw_name + " / " + osnvloc;
-      place_text_metadata(obj, typolarge, hwsw, ty);
+      place_text_at_point(obj, typolarge, hwsw, tx, ty);
+      ty += typolarge._M_size;
+
       if (env.hw_cpu)
 	{
-	  place_text_metadata(obj, typolarge, to_string(env.hw_cpu) + " cores",
-			      ty);
+	  string corestr = to_string(env.hw_cpu) + " cores";
+	  place_text_at_point(obj, typolarge, corestr, tx, ty);
+	  ty += typolarge._M_size;
+
 	  int memi = std::round(env.hw_mem * .001);
-	  place_text_metadata(obj, typolarge, to_string(memi) + " GB", ty);
+	  place_text_at_point(obj, typolarge, to_string(memi) + " GB", tx, ty);
+	  ty += typolarge._M_size;
 	}
     }
 
-  place_text_metadata(obj, typo, " ", ty);
-
   if (swmetadatap)
     {
-      place_text_metadata(obj, typo, env.sw_name, ty);
-      place_text_metadata(obj, typo, env.sw_arch, ty);
-      place_text_metadata(obj, typo, env.sw_version, ty);
-      place_text_metadata(obj, typo, env.sw_build_id, ty);
-
-      place_text_metadata(obj, typo, " ", ty);
+      place_text_at_point(obj, typom, env.sw_name, tx, ty);
+      ty += typom._M_size;
+      place_text_at_point(obj, typom, env.sw_arch, tx, ty);
+      ty += typom._M_size;
+      place_text_at_point(obj, typom, env.sw_version, tx, ty);
+      ty += typom._M_size;
+      place_text_at_point(obj, typom, env.sw_build_id, tx, ty);
+      ty += typom._M_size;
     }
 
-  place_text_metadata(obj, typo, env.url, ty);
-
-  place_text_metadata(obj, typo, " ", ty);
-
-  place_text_metadata(obj, typo, env.date_time_stamp, ty);
-}
-
-
-// Uno
-void
-render_metadata_environment(svg_element& obj, const environment& env)
-{
-  typography typo = make_typography_metadata();
-  place_metadata(obj, typo, env);
-}
-
-
-// Duo
-void
-render_metadata_environment(svg_element& obj,
-			    const environment& env1, const environment&)
-{
-  static int ty = k::margin;
-  typography typo = make_typography_metadata();
-
-  place_text_metadata(obj, typo, env1.sw_name, ty);
-  place_text_metadata(obj, typo, " ", ty);
-  place_text_metadata(obj, typo, "Firefox x WebView (System)", ty);
-
-  place_text_metadata(obj, typo, " ", ty);
-
-  place_text_metadata(obj, typo, to_string(env1.uri_count) + " uri count", ty);
-  place_text_metadata(obj, typo, env1.url, ty);
-  place_text_metadata(obj, typo, env1.date_time_stamp, ty);
+  // URL/Date
+  ty += typom._M_size;
+  place_text_at_point(obj, typom, env.date_time_stamp, tx, ty);
+  ty += typom._M_size;
+  place_text_at_point(obj, typom, env.url, tx, ty);
 }
 
 

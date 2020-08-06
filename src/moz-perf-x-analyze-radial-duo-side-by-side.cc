@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
    using std::endl;
 
    // Sanity check.
-  if (argc != 3 || argc != 4)
+  if (argc != 3 && argc != 4)
     {
       cerr << usage() << endl;
       return 1;
@@ -81,6 +81,8 @@ int main(int argc, char* argv[])
   const svg::area canvas = svg::k::v1080p_h;
   auto [ width, height ] = canvas;
 
+  const bool scalep = true;
+
   // For each unique TLD/site in directories, use CSV files to do...
   for (uint i = 0; i < files1.size(); ++i)
     {
@@ -89,13 +91,38 @@ int main(int argc, char* argv[])
 
       const string fstem = file_path_to_stem(f1) + "-duo-side-by-side";
       svg_element obj = initialize_svg(fstem, width, height);
-      auto xdelta = width / 4;
 
+      // Scaling, if desired.
+      value_type vmax = 0;
+      int radius1 = 80;
+      int rspace1 = 24;
+      int radius2 = 80;
+      int rspace2 = 24;
+      if (scalep)
+	{
+	  value_type max1 = largest_value_in(f1);
+	  value_type max2 = largest_value_in(f2);
+	  if (max1 > max2)
+	    {
+	      double ratio = max1 / max2;
+	      radius1 *= ratio;
+	    }
+	  else
+	    {
+	      double ratio = max2 / max1;
+	      radius2 *= ratio;
+	    }
+	}
+
+      // Find arc centers.
       auto [ x, y ] = obj.center_point();
-      auto x1 = x - xdelta;
-      auto x2 = x + xdelta;
-      render_radial(obj, point_2t(x1, y), f1, hilite);
-      render_radial(obj, point_2t(x2, y), f2, hilite);
+      const auto xdelta = width / 4;
+      const auto x1 = x - xdelta;
+      const auto x2 = x + xdelta;
+
+      // Draw arcs.
+      render_radial(obj, point_2t(x1, y), f1, hilite, vmax, radius1, rspace1);
+      render_radial(obj, point_2t(x2, y), f2, hilite, vmax, radius2, rspace2);
 
       // Add metadata.
       environment env;
@@ -109,7 +136,7 @@ int main(int argc, char* argv[])
 	{
 	  env = deserialize_environment(f1);
 	}
-      render_metadata_environment(obj, env);
+      render_metadata(obj, env, hilite, true);
     }
 
   return 0;
