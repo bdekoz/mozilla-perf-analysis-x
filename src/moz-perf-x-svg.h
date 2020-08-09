@@ -82,7 +82,7 @@ make_typography_metadata(size_type fs = 14, const bool centerp = false)
   typom._M_w = svg::typography::weight::medium;
   typom._M_size = fs;
   typom._M_style = svg::k::b_style;
-  typom._M_style._M_fill_color = colore::gray50;
+  typom._M_style._M_fill_color = color::gray50;
 
   if (centerp)
     {
@@ -144,7 +144,7 @@ render_metadata(svg_element& obj, const environment& env,
   typolarge._M_size = 16; // time is 48
   typography typohi = typolarge;
   typohi._M_size = 24; // time is 48
-  typohi._M_style._M_fill_color = colore::red;
+  typohi._M_style._M_fill_color = color::red;
 
   // Metric
   place_text_at_point(obj, typohi, hilite, tx, ty);
@@ -194,7 +194,7 @@ render_metadata(svg_element& obj, const environment& env,
 
 
 void
-render_metadata_time(svg_element& obj, const int timen, const colore& c,
+render_metadata_time(svg_element& obj, const int timen, const color& c,
 		     int x, int y)
 {
   // Total time.
@@ -239,7 +239,7 @@ void
 render_metadata_title(svg_element& obj, const int time_max, const string fstem1,
 		      const string fstem2 = "", const string hilights = "")
 {
-  render_metadata_time(obj, time_max, colore::red,
+  render_metadata_time(obj, time_max, color::red,
 		       moz::k::margin, obj._M_area._M_height / 2);
   render_input_files_title(obj, fstem1, fstem2, hilights);
 }
@@ -247,7 +247,7 @@ render_metadata_title(svg_element& obj, const int time_max, const string fstem1,
 
 void
 render_metadata_title(svg_element& obj, const int time_max, const string fstem,
-		      const colore& c, int x, int y)
+		      const color& c, int x, int y)
 {
   const typography typom = make_typography_metadata();
   render_metadata_time(obj, time_max, c, x, y);

@@ -133,15 +133,15 @@ init_id_render_state_cache(double opacity = 0.33,
   const svg::k::select dviz = svg::k::select::glyph | svg::k::select::vector;
 
   // Default.
-  style dstyl = { colore::black, opacity, colore::white, opacity, 3 };
+  style dstyl = { color::black, opacity, color::white, opacity, 3 };
   add_to_id_render_state_cache("", dstyl, dviz);
 
   // Pull out one it to highlight, say rumSpeedIndex.
-  style histyl = { colore::red, 1.0, colore::red, 0, 3 };
+  style histyl = { color::red, 1.0, color::red, 0, 3 };
   add_to_id_render_state_cache(hilite, histyl, dviz);
 
-  // Colors: colore::ruriiro, colore::asamaorange.
-  style webvitalsstyl = { colore::asamablue, 1.0, colore::asamablue, 0, 3 };
+  // Colors: color::ruriiro, color::asamaorange.
+  style webvitalsstyl = { color::asamablue, 1.0, color::asamablue, 0, 3 };
   add_to_id_render_state_cache("TTFB", webvitalsstyl, dviz);
   add_to_id_render_state_cache("firstPaint", webvitalsstyl, dviz);
   add_to_id_render_state_cache("FCP", webvitalsstyl, dviz);
@@ -210,7 +210,7 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
 	timev = value_max;
 
       auto yprime = obj._M_area._M_height - moz::k::margin;
-      render_metadata_time(obj, timev, colore::red, x, yprime);
+      render_metadata_time(obj, timev, color::red, x, yprime);
 
       environment env = deserialize_environment(idatacsv);
       value_type tsz = 12;
