@@ -783,19 +783,30 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 
 /**
 
+Parse the log bits that look like this:
+
 Fenix
 [2020-07-21 22:11:47] INFO: [browsertime] https://cnn.com/ampstories/us/why-hurricane-michael-is-a-monster-unlike-any-other TTFB: 419ms (±37.43ms), firstPaint: 1.12s (±70.13ms), firstVisualChange: 2.27s (±53.92ms), DOMContentLoaded: 529ms (±39.98ms), Load: 1.47s (±64.08ms), speedIndex: 2.29s (±52.76ms), perceptualSpeedIndex: 2.29s (±52.78ms), contentfulSpeedIndex: 2.27s (±53.91ms), visualComplete85: 2.29s (±52.93ms), lastVisualChange: 2.75s (±52.84ms) (10 runs)
 
 Chrome
 [2020-07-21 21:15:13] INFO: [browsertime] https://cnn.com/ampstories/us/why-hurricane-michael-is-a-monster-unlike-any-other 28 requests, TTFB: 357ms (±103.34ms), firstPaint: 1.84s (±95.03ms), firstVisualChange: 2.14s (±91.56ms), FCP: 2.16s (±92.83ms), DOMContentLoaded: 510ms (±104.30ms), LCP: 1.78s (±108.67ms), CLS: 0 (±0.00), Load: 1.42s (±211.46ms), speedIndex: 2.25s (±89.90ms), perceptualSpeedIndex: 2.24s (±89.95ms), contentfulSpeedIndex: 2.14s (±93.25ms), visualComplete85: 2.26s (±91.85ms), lastVisualChange: 2.26s (±91.85ms) (10 runs)
 
-Pase these logs to 3-field CSV of form (metric,time in ms, variance in ms) as:
-
+Pass these logs to 3-field CSV of form (metric,time in ms, variance in ms) as:
 TTFB,357,103.34
+
+logfile = input browsertime log file
+inames = input file of probe names to find in log file, if none extract all
+iterations = number of browsertime interations in log file
  */
 void
-extract_browsertime_log(string logfile, string inames)
+extract_browsertime_log(const string logfile, const string inames = "",
+			const uint iterations = 10)
 {
+  // Do edit list.
+  // Read probe names from input file, and put into vector<string>
+  strings probes = deserialize_text_to_strings(inames);
+  const auto probends = probes.end();
+
   std::ostringstream ostrs;
   std::ifstream ifs(logfile);
   if (ifs.good())
@@ -808,11 +819,13 @@ extract_browsertime_log(string logfile, string inames)
       auto lastttfbpos = raw.rfind("TTFB: ");
       if (lastttfbpos != string::npos)
 	{
-	  auto lastiterpos = raw.rfind(" (10 runs)");
+	  const string runsstr(" (" + to_string(iterations) + " runs)");
+	  auto lastiterpos = raw.rfind(runsstr);
 	  if (lastiterpos != string::npos)
 	    {
 	      resultsblock = raw.substr(lastttfbpos, lastiterpos - lastttfbpos);
-	      std::cout << resultsblock << std::endl;
+	      std::cout << "results block raw: " << std::endl;
+	      std::cout << resultsblock << std::endl << std::endl;
 	    }
 	}
       else
@@ -828,7 +841,10 @@ extract_browsertime_log(string logfile, string inames)
 	{
 	  string pname;
 	  getline(istrs, pname, ':');
-	  if (istrs.good())
+	  std::cout << pname << std::endl;
+
+	  const bool foundp = find(probes.begin(), probends, pname) != probends;
+	  if (istrs.good() && (foundp || probes.empty()))
 	    {
 	      double pvalue(0);
 	      istrs >> pvalue;
@@ -866,37 +882,39 @@ extract_browsertime_log(string logfile, string inames)
 		    }
 		}
 
-	      istrs.ignore(1); // space after comma
-
 	      // Output as csv.
 	      ostrs << pname << k::comma << pvalue << k::comma << variance
 		    << std::endl;
 	    }
+	  else
+	    {
+	      istrs.ignore(20, k::comma);
+	    }
+
+	  // Extract space after comma and before next probe name.
+	  istrs.ignore(1);
 	}
       while (istrs.good());
-    }
 
-  string oname = logfile.substr(0, logfile.size() - 4); // extension
-  oname += ".csv";
-  std::ofstream ofs(oname);
 
-  // Do edit list.
-  // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
-
-  value_type v(0);
-  istringstream iss(ostrs.str());
-  id_value_umap actual = deserialize_id_value_map(iss, v);
-  for (const string& probe : probes)
-    {
-      if (actual.count(probe) == 1)
+      // Results as csv.
+      const string processed(ostrs.str());
+      if (!processed.empty())
 	{
-	  auto itr = actual.find(probe);
-	  auto [ p, v] = *itr;
-	  ofs << probe << "," << v << std::endl;
+	  string oname = logfile.substr(0, logfile.size() - 4) + k::csv_ext;
+	  std::cout << "output filename: " << oname << std::endl << std::endl;
+	  std::cout << "summary block processed as: " << std::endl;
+	  std::cout << processed << std::endl
+		    << std::endl;
+
+	  std::ofstream ofs(oname);
+	  ofs << ostrs.str();
 	}
+      else
+	std::cout << "no probes found" << std::endl;
+
     }
-}
+ }
 
 
 void

@@ -51,8 +51,9 @@ deserialize_text_to_strings(string inames)
     }
   else
     {
-      std::cerr << k::errorprefix
-		<< "error: cannot open input file " << inames << std::endl;
+      std::cerr << k::errorprefix << "deserialize_text_to_strings:: "
+		<< "cannot open input file: "
+		<< inames << std::endl;
     }
 
   return probes;
@@ -103,7 +104,9 @@ deserialize_csv_to_id_value_map(const string& ifile, value_type& value_max,
   if (!ifs.good())
     {
       ostringstream mss;
-      mss << k::errorprefix << "cannot open input file " << ifile << std::endl;
+      mss << k::errorprefix << "deserialize_csv_to_id_value_map:: "
+	  << "cannot open input file: "
+	  << ifile << std::endl;
       throw std::runtime_error(mss.str());
     }
   else

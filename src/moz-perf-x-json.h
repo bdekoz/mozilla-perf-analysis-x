@@ -84,7 +84,13 @@ deserialize_json_to_dom(string input_file)
       json = oss.str();
     }
   else
-    std::cerr << "error: cannot open input file " << input_file << std::endl;
+    {
+      ostringstream mss;
+      mss<< k::errorprefix << "deserialize_jason_to_dom:: "
+	      << "cannot open input file: "
+	      << input_file << std::endl;
+      throw std::runtime_error(mss.str());
+    }
 
   // Validate json file, or parse immediately and report error?
   return parse_stringified_json_to_dom(json);
