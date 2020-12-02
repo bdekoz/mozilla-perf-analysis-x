@@ -31,7 +31,7 @@ std::string
 usage()
 {
   std::string s("usage: moz-perf-x-analyze-radial-uno.exe data.csv "
-		"(metric-to-compare-or-highlight)");
+		"metric-cosmology (metric-key-to-compare-or-highlight)");
   s += '\n';
   return s;
 }
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
    using std::endl;
 
    // Sanity check.
-  if (argc != 2 && argc != 3)
+  if (argc != 3 && argc != 4)
     {
       cerr << usage() << endl;
       return 1;
@@ -55,11 +55,13 @@ int main(int argc, char* argv[])
 
   // Input is CSV file.
   std::string idata = argv[1];
+  std::string imetrictype = argv[2];
   clog << "input files: " << idata << endl;
+  clog << "metric type: " << imetrictype << endl;
 
   string hilite = "ContentfulSpeedIndex";
-  if (argc == 3)
-    hilite = argv[2];
+  if (argc == 4)
+    hilite = argv[3];
   clog << "key metric: " << hilite << endl;
 
   // Create svg canvas.
@@ -68,11 +70,11 @@ int main(int argc, char* argv[])
   const string fstem = file_path_to_stem(idata);
   svg_element obj = initialize_svg(fstem);
   const point_2t origin = obj.center_point();
-  render_radial(obj, origin, idata, hilite);
+  render_radial(obj, origin, idata, imetrictype, hilite);
 
   // Add metadata.
   environment env = deserialize_environment(idata);
-  render_metadata(obj, env, hilite);
+  render_metadata(obj, env);
 
   return 0;
 }

@@ -169,6 +169,7 @@ init_id_render_state_cache(double opacity = 0.33,
  */
 svg_element
 render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
+	      const string imetrictype,
 	      const string hilite = "rumSpeedIndex", const value_type vmax = 0,
 	      const int radius = 80, const int rspace = 24,
 	      const bool contextp = true)
@@ -215,13 +216,9 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
       auto yprime = obj._M_area._M_height - moz::k::margin;
       render_metadata_time(obj, timev, color::red, x, yprime);
 
-      environment env = deserialize_environment(idatacsv);
-      value_type tsz = 12;
+      value_type tsz = 18;
       typography typot = make_typography_metadata(tsz, true);
-      string browserua = env.sw_name;
-      if (browserua.empty())
-	browserua = "Chrome";
-      place_text_at_point(obj, typot, browserua, x, yprime + (2 * tsz));
+      place_text_at_point(obj, typot, hilite, x, yprime + (2 * tsz));
     }
 
   return obj;

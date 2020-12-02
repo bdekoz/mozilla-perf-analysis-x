@@ -133,7 +133,6 @@ place_text_id(svg_element& obj, const typography& typo, string label,
 
 void
 render_metadata(svg_element& obj, const environment& env,
-		const string hilite,
 		const bool centerp = false, const bool swmetadatap = false)
 {
   int tx = centerp ? obj._M_area._M_width / 2 : k::margin;
@@ -146,8 +145,11 @@ render_metadata(svg_element& obj, const environment& env,
   typohi._M_size = 24; // time is 48
   typohi._M_style._M_fill_color = color::red;
 
-  // Metric
-  place_text_at_point(obj, typohi, hilite, tx, ty);
+  // Browser
+  string browserua = env.sw_name;
+  if (browserua.empty())
+    browserua = "Chrome";
+  place_text_at_point(obj, typohi, browserua, tx, ty);
   ty += typohi._M_size;
 
   // SW/HW environment.
