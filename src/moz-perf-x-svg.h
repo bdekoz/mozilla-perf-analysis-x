@@ -75,14 +75,15 @@ make_typography_values()
 
 
 typography
-make_typography_metadata(size_type fs = 14, const bool centerp = false)
+make_typography_metadata(const size_type fs = 14, const bool centerp = false,
+			 const color klr = color::gray50)
 {
   // Metadata typographics.
   typography typom = svg::k::zslab_typo;
   typom._M_w = svg::typography::weight::medium;
   typom._M_size = fs;
   typom._M_style = svg::k::b_style;
-  typom._M_style._M_fill_color = color::gray50;
+  typom._M_style._M_fill_color = klr;
 
   if (centerp)
     {
@@ -141,9 +142,10 @@ render_metadata(svg_element& obj, const environment& env,
   typography typom = make_typography_metadata(12, centerp);
   typography typolarge = typom;
   typolarge._M_size = 16; // time is 48
+
   typography typohi = typolarge;
   typohi._M_size = 24; // time is 48
-  typohi._M_style._M_fill_color = color::red;
+  typohi._M_style._M_fill_color = color::black;
 
   // Browser
   string browserua = env.sw_name;

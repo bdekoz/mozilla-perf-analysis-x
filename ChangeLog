@@ -1,6 +1,12 @@
+2020-12-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	v3.2 metadata
+	* src/moz-perf-x-radial.h
+	* src/moz-perf-x-svg.h
+
 2020-12-01  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
-	v3 metadata
+	v3.1 metadata
 	* src/moz-perf-x-analyze-radial-uno.cc
 	* src/moz-perf-x-radial.h
 	* src/moz-perf-x-svg.h

@@ -174,8 +174,6 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
 	      const int radius = 80, const int rspace = 24,
 	      const bool contextp = true)
 {
-  typography typo = make_typography_id();
-
   auto [ x, y ] = origin;
 
   // Get id map and outcomes.
@@ -193,12 +191,16 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
   if (vmax != 0)
     value_max = vmax;
 
-  // Render
+  // Render radial elements.
+  typography typo = make_typography_id();
+  point_2t& rrange = get_radial_range();
+  rrange = { 0, 270 };
+
 #if 0
   radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max,
 				radius, rspace);
 #else
-  // weigh-by-value, collision-avoidance, insert-arrow
+  // bool values: weigh-by-value, collision-avoidance, insert-arrow
   kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max,
 			       radius, rspace, false, false, true);
 #endif
@@ -217,7 +219,7 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
       render_metadata_time(obj, timev, color::red, x, yprime);
 
       value_type tsz = 18;
-      typography typot = make_typography_metadata(tsz, true);
+      typography typot = make_typography_metadata(tsz, true, color::red);
       place_text_at_point(obj, typot, hilite, x, yprime + (2 * tsz));
     }
 
