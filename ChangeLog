@@ -1,3 +1,16 @@
+2020-03-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Fixups for izzi API changes, other changes.
+	* scripts/compile-source.sh: Remove extraneous.
+	* src/moz-perf-x-analyze-radial-duo-ripple.cc: Comment out
+	problematic parts for now.
+	* src/moz-perf-x-analyze-radial-duo-side-by-side.cc: Same.
+	* src/moz-perf-x-extract.cc: Remove duplicate string constant.
+	* src/moz-perf-x-radial.h (init_id_render_state_cache): Add
+	metric cosmology names to cache, assign colors and styles.
+	* src/moz-perf-x-svg.h: Use _M_anchor.
+	* src/moz-perf-x.h
+
 2020-12-03  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	v3.2 metadata
