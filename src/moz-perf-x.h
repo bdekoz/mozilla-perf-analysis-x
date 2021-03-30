@@ -1,6 +1,6 @@
 // mozilla performance analysis -*- mode: C++ -*-
 
-// Copyright (c) 2018-2020, Mozilla
+// Copyright (c) 2018-2021, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -51,6 +51,11 @@ namespace moz::constants {
   // Whitespace constants in pixels.
   constexpr int margin = 100;
   constexpr int spacer = 10;
+
+  // Metric cosmologies.
+  constexpr const char* telemetry = "Telemetry";
+  constexpr const char* webvitals = "Web Vitals";
+  constexpr const char* visualmetrics = "Visual Metrics";
 
 } // namespace moz::constants
 

@@ -46,7 +46,6 @@ namespace constants {
   constexpr const char* browserscripts = "browserScripts";
   constexpr const char* statistics = "statistics";
   constexpr const char* timings = "timings";
-  constexpr const char* visualmetrics = "visualMetrics";
   constexpr const char* vendor = "vendor";
   constexpr const char* pscalars = "privileged_telemetry_scalars";
   constexpr const char* phistograms = "privileged_telemetry_histograms";

@@ -121,8 +121,11 @@ int main(int argc, char* argv[])
       const auto x2 = x + xdelta;
 
       // Draw arcs.
+#if 0
+      // XXX need imetric type before hilite
       render_radial(obj, point_2t(x1, y), f1, hilite, vmax, radius1, rspace1);
       render_radial(obj, point_2t(x2, y), f2, hilite, vmax, radius2, rspace2);
+#endif
 
       // Add metadata.
       environment env;
@@ -136,7 +139,7 @@ int main(int argc, char* argv[])
 	{
 	  env = deserialize_environment(f1);
 	}
-      render_metadata(obj, env, hilite, true);
+      render_metadata(obj, env, true);
     }
 
   return 0;

@@ -1,6 +1,6 @@
 // telemetry radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2020, Mozilla
+// Copyright (c) 2018-2021, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -55,7 +55,7 @@ make_typography_id()
   typo._M_style = svg::k::b_style;
   typo._M_w = svg::typography::weight::xlight;
   typo._M_align = svg::typography::align::left;
-  typo._M_a = svg::typography::anchor::start;
+  typo._M_anchor = svg::typography::anchor::start;
   return typo;
 }
 
@@ -69,7 +69,7 @@ make_typography_values()
   typo._M_style = svg::k::b_style;
   typo._M_w = svg::typography::weight::medium;
   typo._M_align = svg::typography::align::right;
-  typo._M_a = svg::typography::anchor::end;
+  typo._M_anchor = svg::typography::anchor::end;
   return typo;
 }
 
@@ -88,12 +88,12 @@ make_typography_metadata(const size_type fs = 14, const bool centerp = false,
   if (centerp)
     {
       typom._M_align = typography::align::center;
-      typom._M_a = typography::anchor::middle;
+      typom._M_anchor = typography::anchor::middle;
     }
   else
     {
       typom._M_align = svg::typography::align::left;
-      typom._M_a = svg::typography::anchor::start;
+      typom._M_anchor = svg::typography::anchor::start;
     }
 
   return typom;

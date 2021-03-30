@@ -9,7 +9,6 @@ INCLUDEF=$BASEINCLUDEF
 
 BASELINKF="-lstdc++fs -lssl -lcrypto"
 BOOSTLINKF="-lboost_system -lboost_date_time"
-TORRENTLINKF="-L/home/bkoz/bin/H-libtorrent/lib/ -ltorrent-rasterbar"
 GEOLINKF="-L/usr/lib64/ -lGeoIP"
 LINKF=$BASELINKF
 

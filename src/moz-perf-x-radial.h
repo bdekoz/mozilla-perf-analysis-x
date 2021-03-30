@@ -1,6 +1,6 @@
 // support for radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2020, Mozilla
+// Copyright (c) 2020-2021, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -133,22 +133,32 @@ void
 init_id_render_state_cache(double opacity = 0.33,
 			   const string hilite = "rumSpeedIndex")
 {
-  const svg::k::select dviz = svg::k::select::glyph | svg::k::select::vector;
+  using svg::k::select;
+  const select dviz = select::glyph | select::vector;
 
   // Default.
   style dstyl = { color::black, opacity, color::white, opacity, 3 };
   add_to_id_render_state_cache("", dstyl, dviz);
 
-  // Pull out one it to highlight, say rumSpeedIndex.
+  // Metric cosmologies.
+  style webvitalstyl = { color::asamablue, 1.0, color::asamablue, 0, 3 };
+  add_to_id_render_state_cache(k::webvitals, webvitalstyl, dviz);
+
+  style telemetrystyl = { color::asamaorange, 1.0, color::asamaorange, 0, 3 };
+  add_to_id_render_state_cache(k::telemetry, telemetrystyl, dviz);
+
+  style vizmetricstyl = { color::ruriiro, 1.0, color::ruriiro, 0, 3 };
+  add_to_id_render_state_cache(k::visualmetrics, vizmetricstyl, dviz);
+
+  // Highlight style.
   style histyl = { color::red, 1.0, color::red, 0, 3 };
   add_to_id_render_state_cache(hilite, histyl, dviz);
 
-  // Colors: color::ruriiro, color::asamaorange.
-  style webvitalsstyl = { color::asamablue, 1.0, color::asamablue, 0, 3 };
-  add_to_id_render_state_cache("TTFB", webvitalsstyl, dviz);
-  add_to_id_render_state_cache("firstPaint", webvitalsstyl, dviz);
-  add_to_id_render_state_cache("FCP", webvitalsstyl, dviz);
-  add_to_id_render_state_cache("LCP", webvitalsstyl, dviz);
+  // Explicitly-styled metrics.
+  add_to_id_render_state_cache("TTFB", webvitalstyl, dviz);
+  add_to_id_render_state_cache("firstPaint", webvitalstyl, dviz);
+  add_to_id_render_state_cache("FCP", webvitalstyl, dviz);
+  add_to_id_render_state_cache("LCP", webvitalstyl, dviz);
 }
 
 
@@ -200,9 +210,20 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
   radiate_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max,
 				radius, rspace);
 #else
-  // bool values: weigh-by-value, collision-avoidance, insert-arrow
+  // Match imetrictype to style.
+  id_render_state rst = get_id_render_state(imetrictype);
+
+  // Direction glyph.
+  svg::style stylinset(rst.styl);
+  stylinset._M_fill_opacity = 0;
+  stylinset._M_stroke_opacity = 1;
+  stylinset._M_stroke_size = 3;
+  direction_arc_at(obj, origin, radius, stylinset);
+  direction_arc_title_at(obj, origin, radius, rst.styl, k::webvitals);
+
+  // bool values: weigh-by-value, collision-avoidance
   kusama_ids_per_uvalue_on_arc(obj, origin, typo, iv, value_max,
-			       radius, rspace, false, false, true);
+			       radius, rspace, false, false);
 #endif
 
   // Render titles, times, or other context.

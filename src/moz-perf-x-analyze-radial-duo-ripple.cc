@@ -102,14 +102,16 @@ int main(int argc, char* argv[])
       value_type value_max = largest_value_in(f1, f2);
       clog << "value_max: " << value_max << endl;
 
+#if 0
+      // XXXX need imetrictype before hilite
       render_radial(obj, origin, f1, hilite, value_max, 80, 24);
       render_radial(obj, origin, f2, hilite, value_max, 320, 24, false);
-
+#endif
       clog << "done render" << endl;
 
       // Add metadata.
       environment env = deserialize_environment(f1);
-      render_metadata(obj, env, hilite);
+      render_metadata(obj, env);
     }
 
   return 0;
