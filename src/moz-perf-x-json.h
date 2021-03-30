@@ -97,6 +97,42 @@ deserialize_json_to_dom(string input_file)
 }
 
 
+
+// Convert from input file name to an in-memory vector of strings
+// representing identifiers/names to match against field names in a
+// JSON file.
+strings
+deserialize_text_to_strings(string inames)
+{
+  strings probes;
+  std::ifstream ifs(inames);
+  if (ifs.good())
+    {
+      string line;
+      do
+	{
+	  std::getline(ifs, line);
+	  if (ifs.good())
+	    probes.push_back(line);
+	}
+      while (!ifs.eof());
+      std::sort(probes.begin(), probes.end());
+
+      std::clog << probes.size() << " match names found in: " << std::endl;
+      std::clog << inames << std::endl;
+      std::clog << std::endl;
+    }
+  else
+    {
+      std::cerr << k::errorprefix << "deserialize_text_to_strings:: "
+		<< "cannot open input file: "
+		<< inames << std::endl;
+    }
+
+  return probes;
+}
+
+
 int
 field_value_to_int(const rj::Value& v)
 {

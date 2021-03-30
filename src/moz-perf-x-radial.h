@@ -20,44 +20,11 @@
 
 #include "moz-perf-x-svg.h"
 #include "moz-perf-x-json.h"
+#include "a60-svg-radial-arc.h"
 
 
 namespace moz {
 
-
-// Convert from input file name to an in-memory vector of strings
-// representing identifiers/names to match against field names in a
-// JSON file.
-strings
-deserialize_text_to_strings(string inames)
-{
-  strings probes;
-  std::ifstream ifs(inames);
-  if (ifs.good())
-    {
-      string line;
-      do
-	{
-	  std::getline(ifs, line);
-	  if (ifs.good())
-	    probes.push_back(line);
-	}
-      while (!ifs.eof());
-      std::sort(probes.begin(), probes.end());
-
-      std::clog << probes.size() << " match names found in: " << std::endl;
-      std::clog << inames << std::endl;
-      std::clog << std::endl;
-    }
-  else
-    {
-      std::cerr << k::errorprefix << "deserialize_text_to_strings:: "
-		<< "cannot open input file: "
-		<< inames << std::endl;
-    }
-
-  return probes;
-}
 
 // Read CSV file of [marker name || probe name] and value, and
 // store in hash_map, return this plus the max value as a tuple.

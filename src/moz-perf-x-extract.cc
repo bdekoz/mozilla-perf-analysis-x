@@ -765,7 +765,7 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
 
-  value_type v(0);
+  svg::value_type v(0);
   istringstream iss(oss.str());
   id_value_umap actual = deserialize_id_value_map(iss, v);
   for (const string& probe : probes)
