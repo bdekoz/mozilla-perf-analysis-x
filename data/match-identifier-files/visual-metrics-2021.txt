@@ -1,0 +1,4 @@
+FirstVisualChange
+LastVisualChange
+SpeedIndex
+VisualComplete95
