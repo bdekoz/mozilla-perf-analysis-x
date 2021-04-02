@@ -205,7 +205,7 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
     {
       std::clog << "snapshot format failure: input isn't object, string."
 		<< "Is it an array? " << is_array << std::endl;
-      exit (123);
+      exit(123);
     }
 }
 
@@ -237,7 +237,7 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
     {
       std::clog << "snapshot format failure: input isn't object, string."
 		<< "Is it an array? " << is_array << std::endl;
-      exit (123);
+      exit(124);
     }
 }
 
@@ -364,7 +364,7 @@ extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
   keyedHistograms
  */
 void
-extract_mozilla_android(string inames, string ifile)
+extract_mozilla_android(const string ifile, const string inames)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -436,7 +436,7 @@ extract_mozilla_android(string inames, string ifile)
   environment
  */
 void
-extract_mozilla_desktop(string inames, string ifile)
+extract_mozilla_desktop(const string ifile, const string inames)
 {
   // Read probe names from input file, and put into vector<string>
   strings probes = deserialize_text_to_strings(inames);
@@ -663,7 +663,7 @@ extract_browsertime_statistics(const rj::Value& v,
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime(string inames, string ifile, const histogram_view_t dview)
+extract_browsertime( string ifile, string inames, const histogram_view_t dview)
 {
   // Setup output.
   string ofname(file_path_to_stem(ifile));
@@ -678,11 +678,16 @@ extract_browsertime(string inames, string ifile, const histogram_view_t dview)
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
+  if (!dom.HasParseError())
+    std::clog << "start dom extract" << std::endl << std::endl;
+  else
+    {
+      std::clog << "error: json parse failed in " << ifile << std::endl;
+      exit(12);
+    }
 
   // Data is either an array of objects or just one object. If it is
   // an array, just use the first one.
-
-  std::clog << "start dom extract" << std::endl << std::endl;
 
   // Older browsertime versions...
   if (dom.IsObject())
@@ -798,7 +803,7 @@ inames = input file of probe names to find in log file, if none extract all
 iterations = number of browsertime interations in log file
  */
 void
-extract_browsertime_log(const string logfile, const string inames = "",
+extract_browsertime_log(const string logfile, const string inames,
 			const uint iterations = 10)
 {
   // Do edit list.
@@ -917,16 +922,16 @@ extract_browsertime_log(const string logfile, const string inames = "",
 
 
 void
-extract_identifiers(string inames, string idata, const json_t schema)
+extract_identifiers(string idata, string inames, const json_t schema)
 {
   if (schema == json_t::browsertime)
-    extract_browsertime(inames, idata, histogram_view_t::median);
+    extract_browsertime(idata, inames, histogram_view_t::median);
   if (schema == json_t::browsertime_log)
     extract_browsertime_log(idata, inames);
   if (schema == json_t::mozilla_desktop)
-    extract_mozilla_desktop(inames, idata);
+    extract_mozilla_desktop(idata, inames);
   if (schema == json_t::mozilla_android)
-    extract_mozilla_android(inames, idata);
+    extract_mozilla_android(idata, inames);
   if (schema == json_t::mozilla_glean)
     extract_mozilla_glean(idata);
 }
@@ -961,8 +966,9 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 0);
   //list_json_fields(idata, 1);
 
-  extract_identifiers(inames, idata, json_t::browsertime_log);
-  //  extract_identifiers(inames, idata, json_t::har);
+  //extract_identifiers(idata, inames, json_t::browsertime_log);
+  extract_identifiers(idata, inames, json_t::browsertime);
+  //  extract_identifiers(idata, inames, json_t::har);
 
   return 0;
 }
