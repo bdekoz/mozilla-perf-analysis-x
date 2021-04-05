@@ -1,6 +1,6 @@
 // telemetry sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2020, Mozilla
+// Copyright (c) 2018-2021, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -609,7 +609,6 @@ extract_browsertime_statistics(const rj::Value& v,
       extract_browsertime_nested_object(dnavt, found, ofs, dview);
     }
 
-#if 1
   // Walk nested page timings.
   const char* kpaget = "pageTimings";
   if (vt.HasMember(kpaget))
@@ -617,16 +616,26 @@ extract_browsertime_statistics(const rj::Value& v,
       const rj::Value& dpaget = vt[kpaget];
       extract_browsertime_nested_object(dpaget, found, ofs, dview);
     }
-#endif
+
+  // Walk nested paint timings.
+  const char* kpaint = "paintTimings";
+  if (vt.HasMember(kpaint))
+    {
+      const rj::Value& dpaint = vt[kpaint];
+      extract_browsertime_nested_object(dpaint, found, ofs, dview);
+    }
 
   // Walk nested visual metrics.
-  if (v.HasMember(k::visualmetrics))
+  const char* kvizmet = "visualMetrics";
+  if (v.HasMember(kvizmet))
     {
-      const rj::Value& dvismet = v[k::visualmetrics];
+      const rj::Value& dvismet = v[kvizmet];
       extract_browsertime_nested_object(dvismet, found, ofs, dview);
     }
 
-  std::clog << "probes found: " << found.size() << std::endl;
+  std::clog << found.size() << " probes found: " << std::endl;
+  for (const string& s : found)
+    std::clog << s << std::endl;
 }
 
 
@@ -678,16 +687,24 @@ extract_browsertime( string ifile, string inames, const histogram_view_t dview)
 
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
-  if (!dom.HasParseError())
-    std::clog << "start dom extract" << std::endl << std::endl;
-  else
+  if (dom.HasParseError())
     {
-      std::clog << "error: json parse failed in " << ifile << std::endl;
+      std::clog << "error: failed to parse JSON in " << ifile << std::endl;
       exit(12);
     }
 
+  // Depending on the browsertime version, extraction varies.
   // Data is either an array of objects or just one object. If it is
   // an array, just use the first one.
+  string browsertimev;
+  rj::Value* bv = rj::Pointer("/info/browsertime/version").Get(dom);
+  if (bv)
+    {
+      const rj::Value& v = *bv;
+      browsertimev = field_value_to_string(v);
+      std::clog << "start dom extract of browsertime version: "
+		<< browsertimev << std::endl << std::endl;
+    }
 
   // Older browsertime versions...
   if (dom.IsObject())
@@ -715,19 +732,22 @@ extract_browsertime( string ifile, string inames, const histogram_view_t dview)
   // Newer browsertime versions...
   if (dom.IsArray())
     {
-      std::clog << "dom array size " << dom.Size() << std::endl << std::endl;
+      bool statisticsp = false;
+      bool vendorp = false;
+      bool browserscriptsp = false;
 
+      std::clog << "dom array size " << dom.Size() << std::endl << std::endl;
       for (uint i = 0; i < dom.Size(); ++i)
 	{
 	  const rj::Value& v = dom[i];
 	  auto nfields = list_object_fields(v, "", false, true);
-	  std::clog << std::endl;
 
 	  if (v.IsObject() && nfields > 0)
 	    {
 	      if (v.HasMember(k::statistics))
 		{
 		  // Browsertime metrics.
+		  statisticsp = true;
 		  const rj::Value& vs = v[k::statistics];
 		  extract_browsertime_statistics(vs, oss, dview);
 
@@ -735,11 +755,10 @@ extract_browsertime( string ifile, string inames, const histogram_view_t dview)
 		  environment env = extract_environment_browsertime(v);
 		  serialize_environment(env, ofname);
 		}
-	      else
-		std::cerr << "no dom node " << k::statistics << std::endl;
 
 	      if (v.HasMember(k::browserscripts))
 		{
+		  browserscriptsp = true;
 		  const rj::Value& vscripts = v[k::browserscripts];
 		  if (vscripts.IsArray())
 		    {
@@ -748,20 +767,27 @@ extract_browsertime( string ifile, string inames, const histogram_view_t dview)
 			  const rj::Value& vssub = vscripts[j];
 			  if (vssub.HasMember(k::vendor))
 			    {
+			      vendorp = true;
 			      const rj::Value& vendor = vssub[k::vendor];
 			      if (list_object_fields(vendor, "", false) > 0)
 				extract_mozilla_snapshot(vendor, inames, ifile);
 			    }
-			  else
-			    std::cerr << "no dom node " << k::vendor
-				      << std::endl;
 			}
 		    }
 		}
-	      else
-		std::cerr << "no dom node " << k::browserscripts << std::endl;
 	    }
 	}
+
+      auto not_found_alert = [](const string& s, const bool b)
+      {
+	if (b)
+	  std::cerr << "dom node: " << s << " not found" << std::endl;
+      };
+
+      std::clog << std::endl;
+      not_found_alert(k::statistics, statisticsp);
+      not_found_alert(k::browserscripts, browserscriptsp);
+      not_found_alert(k::vendor, vendorp);
     }
 
   std::clog << std::endl << "end dom extract" << std::endl;
@@ -966,8 +992,8 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 0);
   //list_json_fields(idata, 1);
 
-  //extract_identifiers(idata, inames, json_t::browsertime_log);
-  extract_identifiers(idata, inames, json_t::browsertime);
+  extract_identifiers(idata, inames, json_t::browsertime_log);
+  //extract_identifiers(idata, inames, json_t::browsertime);
   //  extract_identifiers(idata, inames, json_t::har);
 
   return 0;

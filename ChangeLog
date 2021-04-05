@@ -1,3 +1,9 @@
+2020-04-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* src/moz-perf-x-extract.cc (extract_browsertime_nested_object): Update.
+	(extract_browsertime): Get version, use that to determine
+	how to extract. Show diagnostics once for missing sections.
+
 2020-03-30  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Fixups for izzi API changes, other changes.
