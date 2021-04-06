@@ -1,3 +1,16 @@
+2020-04-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Integrate/merge browsertime results work with this repository.
+	* README-browsertime.md
+	* scripts/browsertime-to-uno-with-1-edit-list.sh
+	* scripts/cleanup-generated-files.sh
+	* scripts/copy-json-files-to-one-dir.sh
+	* scripts/copy-log-files-to-one-dir.sh
+	* scripts/extract-metrics-from-json-and-log.sh
+	* scripts/png-to-split-screen-mkv.sh
+	* scripts/transform-1-metric-to-uno.sh
+	* scripts/uncompress-all-from-xz-files-in-dir.sh
+
 2020-04-02  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* src/moz-perf-x-extract.cc (extract_browsertime_nested_object): Update.
