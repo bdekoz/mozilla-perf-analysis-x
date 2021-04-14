@@ -1,3 +1,23 @@
+2020-04-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* scripts/extract-metrics-from-json-and-log.sh: Break into..
+	* scripts/extract-metrics-from-log.sh: ..this...
+	* scripts/extract-metrics-from-json.sh: ... and this.
+
+	* scripts/browsertime-to-uno-with-1-edit-list.sh: Rename...
+	* scripts/browsertime-to-uno-with-1-metric-list.sh: ...this.
+
+	* scripts/transform-1-metric-to-uno.sh: Rename...
+	* scripts/transform-1-metric-cosmology-to-uno.sh: ...this.
+
+	* src/moz-perf-x-extract.cc (extract_mozilla_snapshot):
+	Rework so that null data file is extract all.
+	(extract_browsertime): Same.
+	* src/moz-perf-x-json.h (deserialize_text_to_strings): To..
+	(deserialize_file_to_strings): ...this.
+	(deserialize_json_to_environment): New, takes json file.
+	(deserialize_environment): Old, mangle csv path to get to json file.
+
 2020-04-06  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Integrate/merge browsertime results work with this repository.

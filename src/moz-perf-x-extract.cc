@@ -301,7 +301,7 @@ void
 extract_mozilla_snapshot(const rj::Value& dvendor, string inames, string ifile)
 {
   // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
+  strings probes = deserialize_file_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
   std::ofstream ofs(make_data_file(ofname, k::csv_ext));
@@ -367,7 +367,7 @@ void
 extract_mozilla_android(const string ifile, const string inames)
 {
   // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
+  strings probes = deserialize_file_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
   std::ofstream ofs(make_data_file(ofname, k::csv_ext));
@@ -439,7 +439,7 @@ void
 extract_mozilla_desktop(const string ifile, const string inames)
 {
   // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
+  strings probes = deserialize_file_to_strings(inames);
 
   string ofname(file_path_to_stem(ifile) + "-x-" + file_path_to_stem(inames));
   std::ofstream ofs(make_data_file(ofname, k::csv_ext));
@@ -672,7 +672,7 @@ extract_browsertime_statistics(const rj::Value& v,
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime( string ifile, string inames, const histogram_view_t dview)
+extract_browsertime(string ifile, string inames, const histogram_view_t dview)
 {
   // Setup output.
   string ofname(file_path_to_stem(ifile));
@@ -792,20 +792,33 @@ extract_browsertime( string ifile, string inames, const histogram_view_t dview)
 
   std::clog << std::endl << "end dom extract" << std::endl;
 
-  // Do edit list.
-  // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
 
   svg::value_type v(0);
   istringstream iss(oss.str());
   id_value_umap actual = deserialize_id_value_map(iss, v);
-  for (const string& probe : probes)
+
+  // Read probe/metric names from input file, and put into vector<string>
+  strings ids = deserialize_file_to_strings(inames);
+  if (!ids.empty())
     {
-      if (actual.count(probe) == 1)
+      // Do edit list only.
+      for (const string& metric : ids)
 	{
-	  auto itr = actual.find(probe);
-	  auto [ p, v] = *itr;
-	  ofs << probe << "," << v << std::endl;
+	  if (actual.count(metric) == 1)
+	    {
+	      auto itr = actual.find(metric);
+	      auto [ id, v] = *itr;
+	      ofs << id << "," << v << std::endl;
+	    }
+	}
+    }
+  else
+    {
+      // Extract all.
+      for (const auto& idv : actual)
+	{
+	  auto [ id, v] = idv;
+	  ofs << id << "," << v << std::endl;
 	}
     }
 }
@@ -834,7 +847,7 @@ extract_browsertime_log(const string logfile, const string inames,
 {
   // Do edit list.
   // Read probe names from input file, and put into vector<string>
-  strings probes = deserialize_text_to_strings(inames);
+  strings probes = deserialize_file_to_strings(inames);
   const auto probends = probes.end();
 
   std::ostringstream ostrs;
@@ -983,7 +996,7 @@ int main(int argc, char* argv[])
   if (argc == 3)
     inames = argv[2];
 
-  std::clog << "input files: " << std::endl
+  std::clog << "starting with " << argc - 1 << " input file(s): " << std::endl
 	    << idata << std::endl << inames << std::endl;
   std::clog << std::endl;
 
@@ -992,8 +1005,8 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 0);
   //list_json_fields(idata, 1);
 
-  extract_identifiers(idata, inames, json_t::browsertime_log);
-  //extract_identifiers(idata, inames, json_t::browsertime);
+  //extract_identifiers(idata, inames, json_t::browsertime_log);
+  extract_identifiers(idata, inames, json_t::browsertime);
   //  extract_identifiers(idata, inames, json_t::har);
 
   return 0;

@@ -97,36 +97,43 @@ deserialize_json_to_dom(string input_file)
 }
 
 
-
 // Convert from input file name to an in-memory vector of strings
 // representing identifiers/names to match against field names in a
 // JSON file.
 strings
-deserialize_text_to_strings(string inames)
+deserialize_file_to_strings(string inames)
 {
   strings probes;
-  std::ifstream ifs(inames);
-  if (ifs.good())
+  if (!inames.empty())
     {
-      string line;
-      do
+      std::ifstream ifs(inames);
+      if (ifs.good())
 	{
-	  std::getline(ifs, line);
-	  if (ifs.good())
-	    probes.push_back(line);
-	}
-      while (!ifs.eof());
-      std::sort(probes.begin(), probes.end());
+	  string line;
+	  do
+	    {
+	      std::getline(ifs, line);
+	      if (ifs.good())
+		probes.push_back(line);
+	    }
+	  while (!ifs.eof());
+	  std::sort(probes.begin(), probes.end());
 
-      std::clog << probes.size() << " match names found in: " << std::endl;
-      std::clog << inames << std::endl;
-      std::clog << std::endl;
+	  std::clog << probes.size() << " match names found in: " << std::endl;
+	  std::clog << inames << std::endl;
+	  std::clog << std::endl;
+	}
+      else
+	{
+	  std::cerr << k::errorprefix << "deserialize_file_to_strings:: "
+		    << "cannot open input file: "
+		    << inames << std::endl;
+	}
     }
   else
     {
-      std::cerr << k::errorprefix << "deserialize_text_to_strings:: "
-		<< "cannot open input file: "
-		<< inames << std::endl;
+      std::clog << "Metric edit file is empty, extracting all metrics.";
+      std::clog << std::endl;
     }
 
   return probes;
@@ -702,23 +709,10 @@ serialize_environment(const environment& env, string ofile)
 }
 
 
-// Take environment JSON file and return in-memory environment object.
+/// Take environment JSON file and return in-memory environment object.
 environment
-deserialize_environment(string ifile)
+deserialize_json_to_environment(const string ifile)
 {
-  // Find environment JSON file from input ifile.
-  auto extpos = ifile.rfind(k::csv_ext);
-  if (extpos != string::npos)
-    ifile.replace(extpos, 4, k::environment_ext);
-  else
-    {
-      string m("deserialize_environment:: error environment file from ");
-      m += k::csv_ext;
-      m += " not found in ";
-      m += ifile;
-      throw std::runtime_error(m);
-    }
-
   // Load input JSON data file into DOM.
   rj::Document dom(deserialize_json_to_dom(ifile));
 
@@ -751,6 +745,53 @@ deserialize_environment(string ifile)
     }
 
   return env;
+}
+
+
+/// Find json file from known last position, and extract environment.
+/// @ifile is generated CSV file, aka workingdir/[csv | csv3]/this.csv
+environment
+deserialize_environment(const string cifile)
+{
+  // Find environment JSON file from input cfile (.csv) based on
+  // assumed or known details about the result directory layout...
+  string jfile(cifile);
+  auto extpos = jfile.rfind(k::csv_ext);
+  if (extpos != string::npos)
+    {
+      // Replace extension.
+      jfile.replace(extpos, 4, k::environment_ext);
+
+      // Replace top level directory with json.
+      const string jdir("json");
+      auto csv3pos = jfile.rfind("csv3");
+      if (csv3pos != string::npos)
+	jfile.replace(csv3pos, 4, jdir);
+      else
+	{
+	  auto csvpos = jfile.rfind("csv");
+	  if (csvpos != string::npos)
+	    jfile.replace(csvpos, 3, jdir);
+	  else
+	    {
+	      std::clog << "deserialize_environment:: no csv in path: " << jfile
+			<< std::endl;
+	    }
+	}
+
+      // Remove -verbose. in *-verbose.environment.json.
+      const string verbose("-verbose.");
+      auto vpos = jfile.rfind(verbose);
+      if (vpos != string::npos)
+	jfile.erase(vpos, verbose.size() - 1); // leave the period.
+    }
+  else
+    {
+      string m("deserialize_environment:: error environment not found in: ");
+      m += jfile;
+      throw std::runtime_error(m);
+    }
+  return deserialize_json_to_environment(jfile);
 }
 
 
