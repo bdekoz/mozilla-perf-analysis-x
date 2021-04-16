@@ -97,8 +97,7 @@ largest_value_in(const string f1, const string f2 = "")
 
 
 void
-init_id_render_state_cache(double opacity = 0.33,
-			   const string hilite = "rumSpeedIndex")
+init_id_render_state_cache(const double opacity, const string hilite)
 {
   using svg::k::select;
   const select dviz = select::glyph | select::vector;
@@ -118,8 +117,11 @@ init_id_render_state_cache(double opacity = 0.33,
   add_to_id_render_state_cache(k::visualmetrics, vizmetricstyl, dviz);
 
   // Highlight style.
-  style histyl = { color::red, 1.0, color::red, 0, 3 };
-  add_to_id_render_state_cache(hilite, histyl, dviz);
+  if (!hilite.empty())
+    {
+      style histyl = { color::red, 1.0, color::red, 0, 3 };
+      add_to_id_render_state_cache(hilite, histyl, dviz);
+    }
 
   // Explicitly-styled metrics.
   add_to_id_render_state_cache("TTFB", webvitalstyl, dviz);
@@ -143,25 +145,24 @@ init_id_render_state_cache(double opacity = 0.33,
    rspace       == space between arc end and label text begin
 
    contextp	== add in metadata about context if true, otherwise just do arc.
- */
-svg_element
-render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
-	      const string imetrictype,
-	      const string hilite = "rumSpeedIndex", const value_type vmax = 0,
-	      const int radius = 80, const int rspace = 24,
-	      const bool contextp = true)
-{
-  auto [ x, y ] = origin;
 
+   Returns the time of the highlight metric or vmax.
+ */
+value_type
+render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
+	      const string imetrictype, const string hilite,
+	      const value_type vmax = 0,
+	      const int radius = 80, const int rspace = 24)
+{
   // Get id map and outcomes.
   // Iif in nanoseconds scale to milliseconds
   // Iif vmax non-zero, scale rendered radials to vmax.
   value_type ts = 1;
-#if 0
-  // nanoseconds
-  // Glean
-  ts = 1000000;
-#endif
+
+  // Glean is in nanoseconds, assumes glean-generated files include "glean".
+  if (imetrictype.find("glean") != string::npos)
+    ts = 1000000;
+
 
   value_type value_max(0);
   id_value_umap iv = deserialize_csv_to_id_value_map(idatacsv, value_max, ts);
@@ -193,25 +194,8 @@ render_radial(svg_element& obj, const point_2t origin, const string idatacsv,
 			       radius, rspace, false, false);
 #endif
 
-  // Render titles, times, or other context.
-  // NB: Assumes an environment data file exists, which may not be the case...
-  if (contextp)
-    {
-      value_type timev;
-      if (iv.count(hilite))
-	timev = iv[hilite];
-      else
-	timev = value_max;
-
-      auto yprime = obj._M_area._M_height - moz::k::margin;
-      render_metadata_time(obj, timev, color::red, x, yprime);
-
-      value_type tsz = 18;
-      typography typot = make_typography_metadata(tsz, true, color::red);
-      place_text_at_point(obj, typot, hilite, x, yprime + (2 * tsz));
-    }
-
-  return obj;
+  value_type timev = iv.count(hilite) ? iv[hilite] : value_max;
+  return timev;
 }
 
 } // namespace moz

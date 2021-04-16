@@ -1,3 +1,14 @@
+2020-04-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Consolidate metadata rendering in analyze.
+	* src/moz-perf-x-extract.cc (extract_mozilla_glean): Add glean to
+	filename.
+	* src/moz-perf-x-radial.h (init_id_render_state_cache): Make
+	hilite optional.
+	(render_radial): Scan input for glean, and use that as a time
+	multipler variable switch.
+	* src/moz-perf-x-analyze-radial-uno.cc: Move metadata bits here.
+
 2020-04-14  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	* scripts/extract-metrics-from-json-and-log.sh: Break into..

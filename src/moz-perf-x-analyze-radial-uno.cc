@@ -1,6 +1,6 @@
 // telemetry radial, sunburst / RAIL forms -*- mode: C++ -*-
 
-// Copyright (c) 2018-2020, Mozilla
+// Copyright (c) 2018-2021, Mozilla
 // Benjamin De Kosnik <bdekoz@mozilla.com>
 
 // This file is part of the MOZILLA TELEMETRY X library.
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   clog << "input files: " << idata << endl;
   clog << "metric type: " << imetrictype << endl;
 
-  string hilite = "ContentfulSpeedIndex";
+  string hilite = "VisualComplete95";
   if (argc == 4)
     hilite = argv[3];
   clog << "key metric: " << hilite << endl;
@@ -70,11 +70,20 @@ int main(int argc, char* argv[])
   const string fstem = file_path_to_stem(idata);
   svg_element obj = initialize_svg(fstem);
   const point_2t origin = obj.center_point();
-  render_radial(obj, origin, idata, imetrictype, hilite);
+  value_type timev = render_radial(obj, origin, idata, imetrictype, hilite);
 
   // Add metadata.
   environment env = deserialize_environment(idata);
   render_metadata(obj, env);
+
+  // Render metadata titles, times, or context.
+  auto x = obj._M_area._M_width / 2;
+  auto y = obj._M_area._M_height - moz::k::margin;
+  render_metadata_time(obj, timev, color::red, x, y);
+
+  value_type tsz = 18;
+  typography typot = make_typography_metadata(tsz, true, color::red);
+  place_text_at_point(obj, typot, hilite, x, y + (2 * tsz));
 
   return 0;
 }

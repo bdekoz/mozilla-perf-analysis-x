@@ -246,7 +246,7 @@ extract_maybe_stringified(const rj::Value& vnode, strings& found,
 void
 extract_mozilla_glean(string ifile)
 {
-  string ofname(file_path_to_stem(ifile) + "-x-" + "telemetry");
+  string ofname(file_path_to_stem(ifile) + "-x-" + "glean-telemetry");
   ofstream ofs(make_data_file(ofname, k::csv_ext));
 
   // Load input JSON data file into DOM.
