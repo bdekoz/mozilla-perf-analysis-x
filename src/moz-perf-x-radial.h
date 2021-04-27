@@ -26,6 +26,7 @@
 namespace moz {
 
 
+// CSV form with metric, value.
 // Read CSV file of [marker name || probe name] and value, and
 // store in hash_map, return this plus the max value as a tuple.
 // ifile == input csv file
