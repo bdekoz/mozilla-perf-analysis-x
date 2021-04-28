@@ -511,33 +511,81 @@ extract_mozilla_desktop(const string ifile, const string inames)
 }
 
 
-// Extract nested objects from Browsertime format.
+/// Extract nested objects from Browsertime format, with deviations.
 void
-extract_browsertime_nested_object(const rj::Value& v, strings& probes,
-				  ostream& ofs,
-				  const histogram_view_t dview)
+extract_browsertime_object_plus(const rj::Value& v, const char* metric,
+				const histogram_view_t dview, ostream& ofs,
+				strings& found, const uint deviations)
 {
-  if (v.IsObject())
+  if (v.HasMember(metric))
     {
-      for (vcmem_iterator i = v.MemberBegin(); i != v.MemberEnd(); ++i)
+      const rj::Value& dobj = v[metric];
+      if (dobj.IsObject())
 	{
-	  string nname = i->name.GetString();
-	  probes.push_back(nname);
+	  for (vcmem_iterator i = dobj.MemberBegin(); i != dobj.MemberEnd(); ++i)
+	    {
+	      string nname = i->name.GetString();
+	      const rj::Value& nv = i->value;
+	      auto iv = extract_pseudo_histogram_field(nv, dview);
+	      ofs << nname << k::comma << iv;
 
-	  const rj::Value& nv = i->value;
-	  auto iv = extract_pseudo_histogram_field(nv, dview);
+	      if (deviations >= 1)
+		{
+		  const rj::Value& dstddev = nv["stddev"];
+		  ofs << k::comma << dstddev.GetDouble();
+		}
+	      if (deviations >= 2)
+		{
+		  const rj::Value& dmdev = nv["mdev"];
+		  ofs << k::comma << dmdev.GetDouble();
+		}
+	      ofs << std::endl;
 
-	  ofs << nname << "," << iv << std::endl;
+	      found.push_back(nname);
+	    }
 	}
+    }
+}
+
+
+/// Extract nested values from Browsertime format, possibly with deviations.
+/// CSV file composed of lines with 2, 3, or 4 fields ending with a newline.
+void
+extract_browsertime_value_plus(const rj::Value& v, const char* metric,
+			       const histogram_view_t dview, ostream& ofs,
+			       strings& found, const uint deviations)
+{
+  if (v.HasMember(metric))
+    {
+      const rj::Value& dfp = v[metric];
+      auto ifp = extract_pseudo_histogram_field(dfp, dview);
+      ofs << metric << k::comma << ifp;
+
+      if (deviations >= 1)
+	{
+	  const rj::Value& dstddev = dfp["stddev"];
+	  ofs << k::comma << dstddev.GetDouble();
+	}
+      if (deviations >= 2)
+	{
+	  const rj::Value& dmdev = dfp["mdev"];
+	  ofs << k::comma << dmdev.GetDouble();
+	}
+      ofs << std::endl;
+
+      found.push_back(metric);
     }
 }
 
 
 // Extract metrics (as object nodes in JSON) from Browsertime format.
 // Assuming the statistics/timing and statistics/visualMetrics nodes.
+/// @deviations are which, if any, deviation/variance metrics.
+///   1 == stddev
+///   2 == mdev
 void
-extract_browsertime_statistics(const rj::Value& v,
-			       ostream& ofs, const histogram_view_t dview)
+extract_browsertime_statistics(const rj::Value& v, const histogram_view_t dview,
+			       ostream& ofs, const uint deviations = 0)
 {
   strings found;
 
@@ -548,90 +596,38 @@ extract_browsertime_statistics(const rj::Value& v,
   // firstPaint
   // fullyLoaded
   const char* kfp = "firstPaint";
-  if (vt.HasMember(kfp))
-    {
-      const rj::Value& dfp = vt[kfp];
-      auto ifp = extract_pseudo_histogram_field(dfp, dview);
-      ofs << kfp << "," << ifp << std::endl;
-      found.push_back(kfp);
-    }
+  extract_browsertime_value_plus(vt, kfp, dview, ofs, found, deviations);
 
   const char* kfl = "fullyLoaded";
-  if (vt.HasMember(kfl))
-    {
-      const rj::Value& dfl = vt[kfl];
-      auto ifl = extract_pseudo_histogram_field(dfl, dview);
-      ofs << kfl << "," << ifl << std::endl;
-      found.push_back(kfl);
-    }
+  extract_browsertime_value_plus(vt, kfl, dview, ofs, found, deviations);
 
   const char* kttcp = "timeToContentfulPaint";
-  if (vt.HasMember(kttcp))
-    {
-      const rj::Value& dttcp = vt[kttcp];
-      auto ittcp = extract_pseudo_histogram_field(dttcp, dview);
-      ofs << kttcp << "," << ittcp << std::endl;
-      found.push_back(kttcp);
-    }
+  extract_browsertime_value_plus(vt, kttcp, dview, ofs, found, deviations);
 
   const char* kttdcf = "timeToDomContentFlushed";
-  if (vt.HasMember(kttdcf))
-    {
-      const rj::Value& dttdcf = vt[kttdcf];
-      auto ittdcf = extract_pseudo_histogram_field(dttdcf, dview);
-      ofs << kttdcf << "," << ittdcf << std::endl;
-      found.push_back(kttdcf);
-    }
+  extract_browsertime_value_plus(vt, kttdcf, dview, ofs, found, deviations);
 
   const char* kttfi = "timeToFirstInteractive";
-  if (vt.HasMember(kttfi))
-    {
-      const rj::Value& dttfi = vt[kttfi];
-      auto ittfi = extract_pseudo_histogram_field(dttfi, dview);
-      ofs << kttfi << "," << ittfi << std::endl;
-      found.push_back(kttfi);
-    }
+  extract_browsertime_value_plus(vt, kttfi, dview, ofs, found, deviations);
 
   const char* krum = "rumSpeedIndex";
-  if (vt.HasMember(krum))
-    {
-      const rj::Value& drum = vt[krum];
-      auto irum = extract_pseudo_histogram_field(drum, dview);
-      ofs << krum << "," << irum << std::endl;
-      found.push_back(krum);
-    }
+  extract_browsertime_value_plus(vt, krum, dview, ofs, found, deviations);
 
   // Walk nested navigation timing.
   const char* knavt = "navigationTiming";
-  if (vt.HasMember(knavt))
-    {
-      const rj::Value& dnavt = vt[knavt];
-      extract_browsertime_nested_object(dnavt, found, ofs, dview);
-    }
+  extract_browsertime_object_plus(vt, knavt, dview, ofs, found, deviations);
 
   // Walk nested page timings.
   const char* kpaget = "pageTimings";
-  if (vt.HasMember(kpaget))
-    {
-      const rj::Value& dpaget = vt[kpaget];
-      extract_browsertime_nested_object(dpaget, found, ofs, dview);
-    }
+  extract_browsertime_object_plus(vt, kpaget, dview, ofs, found, deviations);
 
   // Walk nested paint timings.
   const char* kpaint = "paintTimings";
-  if (vt.HasMember(kpaint))
-    {
-      const rj::Value& dpaint = vt[kpaint];
-      extract_browsertime_nested_object(dpaint, found, ofs, dview);
-    }
+  extract_browsertime_object_plus(vt, kpaint, dview, ofs, found, deviations);
 
   // Walk nested visual metrics.
   const char* kvizmet = "visualMetrics";
-  if (v.HasMember(kvizmet))
-    {
-      const rj::Value& dvismet = v[kvizmet];
-      extract_browsertime_nested_object(dvismet, found, ofs, dview);
-    }
+  extract_browsertime_object_plus(v, kvizmet, dview, ofs, found, deviations);
 
   std::clog << found.size() << " probes found: " << std::endl;
   for (const string& s : found)
@@ -641,7 +637,7 @@ extract_browsertime_statistics(const rj::Value& v,
 
 
 /*
-  Takes a text file with probe names to extract from a browsertime JSON file.
+  Extract from a browsertime JSON @ifile all the with probe names in @inames
 
   Top-level fields:
 
@@ -672,7 +668,8 @@ extract_browsertime_statistics(const rj::Value& v,
   http://www.softwareishard.com/blog/har-12-spec/
  */
 void
-extract_browsertime(string ifile, string inames, const histogram_view_t dview)
+extract_browsertime(string ifile, string inames, const histogram_view_t dview,
+		    const uint deviations = 0)
 {
   // Setup output.
   string ofname(file_path_to_stem(ifile));
@@ -682,7 +679,8 @@ extract_browsertime(string ifile, string inames, const histogram_view_t dview)
       string ifname(file_path_to_stem(inames));
       ofname += ifname;
     }
-  ofstream ofs(make_data_file(ofname, k::csv_ext));
+  const string extname('.' + to_string(deviations + 2) + k::csv_ext);
+  ofstream ofs(make_data_file(ofname, extname));
   ostringstream oss;
 
   // Load input JSON data file into DOM.
@@ -719,7 +717,7 @@ extract_browsertime(string ifile, string inames, const histogram_view_t dview)
       if (pv)
 	{
 	  const rj::Value& v = *pv;
-	  extract_browsertime_statistics(v, oss, dview);
+	  extract_browsertime_statistics(v, dview, oss, deviations);
 
 	  // Extract and serialize environmental metadata.
 	  environment env = extract_environment_browsertime(dom);
@@ -749,7 +747,7 @@ extract_browsertime(string ifile, string inames, const histogram_view_t dview)
 		  // Browsertime metrics.
 		  statisticsp = true;
 		  const rj::Value& vs = v[k::statistics];
-		  extract_browsertime_statistics(vs, oss, dview);
+		  extract_browsertime_statistics(vs, dview, oss, deviations);
 
 		  // Extract and serialize environmental metadata, then stop.
 		  environment env = extract_environment_browsertime(v);
@@ -792,34 +790,28 @@ extract_browsertime(string ifile, string inames, const histogram_view_t dview)
 
   std::clog << std::endl << "end dom extract" << std::endl;
 
-
-  svg::value_type v(0);
-  istringstream iss(oss.str());
-  id_value_umap actual = deserialize_id_value_map(iss, v);
-
-  // Read probe/metric names from input file, and put into vector<string>
+  // Read edit list of probe/metric names from input file, and put
+  // into vector<string>.
   strings ids = deserialize_file_to_strings(inames);
   if (!ids.empty())
     {
       // Do edit list only.
+      const string ostring(oss.str());
       for (const string& metric : ids)
 	{
-	  if (actual.count(metric) == 1)
+	  auto startpos = ostring.find(metric);
+	  if (startpos != string::npos)
 	    {
-	      auto itr = actual.find(metric);
-	      auto [ id, v] = *itr;
-	      ofs << id << "," << v << std::endl;
+	      auto endpos = ostring.find(k::newline, startpos);
+	      if (endpos != string::npos)
+		ofs << ostring.substr(startpos, endpos - startpos);
 	    }
 	}
     }
   else
     {
       // Extract all.
-      for (const auto& idv : actual)
-	{
-	  auto [ id, v] = idv;
-	  ofs << id << "," << v << std::endl;
-	}
+      ofs << oss.str();
     }
 }
 
@@ -961,10 +953,11 @@ extract_browsertime_log(const string logfile, const string inames,
 
 
 void
-extract_identifiers(string idata, string inames, const json_t schema)
+extract_identifiers(string idata, string inames, const json_t schema,
+		    const uint deviations = 0)
 {
   if (schema == json_t::browsertime)
-    extract_browsertime(idata, inames, histogram_view_t::median);
+    extract_browsertime(idata, inames, histogram_view_t::median, deviations);
   if (schema == json_t::browsertime_log)
     extract_browsertime_log(idata, inames);
   if (schema == json_t::mozilla_desktop)
@@ -1006,7 +999,7 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 1);
 
   //extract_identifiers(idata, inames, json_t::browsertime_log);
-  extract_identifiers(idata, inames, json_t::browsertime);
+  extract_identifiers(idata, inames, json_t::browsertime, 2);
   //  extract_identifiers(idata, inames, json_t::har);
 
   return 0;

@@ -346,7 +346,8 @@ extract_histogram_field_median(const rj::Value& v, const string& probe)
 }
 
 
-// Use with Browsertime pre-calculated histogram summary types.
+/// Browsertime pre-calculated histogram summary types.
+/// @hview is what type of value to extract
 auto
 extract_pseudo_histogram_field(const rj::Value& v, const histogram_view_t hview)
 {

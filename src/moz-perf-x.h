@@ -82,6 +82,8 @@ using istringstream = std::istringstream;
 using point = std::tuple<double, double>;
 using pointn = std::tuple<point, int>;
 
+using ddtuple = std::tuple<double, double>;
+
 /// Alias namespace moz::filesystem to std::experimental::filesystem.
 namespace filesystem = std::experimental::filesystem;
 
@@ -167,7 +169,9 @@ enum class histogram_view_t
   median = 1,
   mean = 2,
   quantile = 3,
-  range = 4
+  range = 4,
+  stddev = 5,
+  mdev = 6
 };
 
 

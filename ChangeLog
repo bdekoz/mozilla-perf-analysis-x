@@ -1,3 +1,14 @@
+2020-04-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Variance extractions.
+	* src/moz-perf-x-extract.cc (extract_browsertime_object_plus): New.
+	(extract_browsertime_value_plus): New.
+	(extract_browsertime_statistics): Use them.
+	(extract_browsertime): Label csv extract with # fields.
+	* src/moz-perf-x-json.h: Update comment.
+	* src/moz-perf-x.h (histogram_view_t): Add potential histogram fields.
+	(ddtuple): Add.
+
 2020-04-15  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Consolidate metadata rendering in analyze.
