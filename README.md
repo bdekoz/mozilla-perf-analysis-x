@@ -39,9 +39,10 @@ Extract data from input CSV files and render into visual form SVG. The optional 
 
 **SCRIPTS**
 
+From a results directory and metric edit list to svg images for potential static site, radial visualizations
 ```
 browsertime-to-uno-with-1-metric-list.sh (metric file)
-  transform-1-metric-cosmology-to-uno.sh (toplevel product results) (metric file)
+  transform-1-metric-cosmology-to-uno.sh (toplevel product results for one day) (metric file)
     extract-metrics-from-log.sh
       copy-log-files-to-one-dir.sh (results dir)
       moz-perf-x-extract.browsertime_log.exe
@@ -50,4 +51,14 @@ browsertime-to-uno-with-1-metric-list.sh (metric file)
       moz-perf-x-extract.browsertime.exe
     moz-perf-x-analyze-radial-uno.exe (csv file) (metric cosmo)
     svg-dir-to-pngs.sh
+```
+
+From a results directory and metric edit list to grafana chart visualizations
+```
+browsertime-to-uno-with-1-metric-list.sh (metric file)
+  transform-1-metric-cosmology-to-uno.sh (toplevel product results for one day) (metric file)
+    extract-metrics-from-json.sh (results dir)
+      copy-json-files-to-one-dir.sh
+      moz-perf-x-extract.browsertime.exe (2 deviations) 
+      moz-perf-x-extract.browsertime_url.exe
 ```
