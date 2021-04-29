@@ -1,3 +1,10 @@
+2020-04-28  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	Domain extraction from browsertime URL field.
+	* src/moz-perf-x-extract.cc (extract_browsertime_url): New function,
+	extract minimal domain string from "url" field of json.
+	* src/moz-perf-x.h: Add browsertime_url to json_t.
+
 2020-04-27  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Variance extractions.

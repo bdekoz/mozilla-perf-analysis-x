@@ -180,6 +180,7 @@ enum class json_t
 {
   browsertime,
   browsertime_log,
+  browsertime_url,
   har,
   hybrid,
   mozilla_desktop,

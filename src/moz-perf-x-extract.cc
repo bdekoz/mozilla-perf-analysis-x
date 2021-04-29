@@ -952,6 +952,89 @@ extract_browsertime_log(const string logfile, const string inames,
  }
 
 
+// Minified version of URL that just has TLD name, aka "amazon" or "tripadvisor"
+// Find the shortest name, print it to stdout.
+void
+extract_browsertime_url(string ifile)
+{
+  // Load input JSON data file into DOM.
+  rj::Document dom(deserialize_json_to_dom(ifile));
+  if (dom.HasParseError())
+    {
+      std::clog << "error: failed to parse JSON in " << ifile << std::endl;
+      exit(12);
+    }
+
+  // Find string.
+  rj::Value* iurl = rj::Pointer("/0/info/url").Get(dom);
+  if (iurl)
+    {
+      const rj::Value& v = *iurl;
+      string url = field_value_to_string(v);
+
+      // Strip url into smallest possible value, aka the domain no TLD.
+      // Start with: "https://en.m.wikipedia.org/wiki/Main_Page"
+      // End with: "wikipedia"
+      auto protopos = url.find("://");
+      if (protopos != string::npos)
+	{
+	  // Shorten the front, eliminate protocol part of URL string.
+	  url = url.substr(protopos + 3);
+
+	  // Look for common TLDs.
+	  auto tldpos = protopos;
+	  auto compos = url.find(".com");
+	  if (compos != string::npos)
+	    tldpos = compos;
+	  else
+	    {
+	      auto orgpos = url.find(".org");
+	      if (orgpos != string::npos)
+		tldpos = orgpos;
+	      else
+		{
+		  auto netpos = url.find(".net");
+		  if (netpos != string::npos)
+		    tldpos = netpos;
+		  else
+		    {
+		      string m("extract_browsertime_url:: error, unknown TLD");
+		      m += " in URL string: ";
+		      m += url;
+		      throw std::runtime_error(m);
+		    }
+		}
+	    }
+
+	  // Assume TLD found. Now, shorten.
+	  auto ppos = url.rfind('.', tldpos - 1);
+	  if (ppos != string::npos)
+	    url = url.substr(ppos + 1, tldpos - ppos - 1);
+	  else
+	    {
+	      // Assume it's the begining of the string.
+	      url = url.substr(0, tldpos);
+	    }
+	}
+      else
+	{
+	  string m("extract_browsertime_url:: error, cannot find protocol");
+	  m += " in URL string: ";
+	  m += url;
+	  throw std::runtime_error(m);
+	}
+
+      std::cout << url << std::endl;
+    }
+  else
+    {
+      string m("extract_browsertime_url:: error, cannot URL field");
+      throw std::runtime_error(m);
+    }
+}
+
+
+// Main entry point for extraction, meta function dispatch based on @schema.
 void
 extract_identifiers(string idata, string inames, const json_t schema,
 		    const uint deviations = 0)
@@ -960,6 +1043,8 @@ extract_identifiers(string idata, string inames, const json_t schema,
     extract_browsertime(idata, inames, histogram_view_t::median, deviations);
   if (schema == json_t::browsertime_log)
     extract_browsertime_log(idata, inames);
+  if (schema == json_t::browsertime_url)
+    extract_browsertime_url(idata);
   if (schema == json_t::mozilla_desktop)
     extract_mozilla_desktop(idata, inames);
   if (schema == json_t::mozilla_android)
@@ -989,9 +1074,13 @@ int main(int argc, char* argv[])
   if (argc == 3)
     inames = argv[2];
 
-  std::clog << "starting with " << argc - 1 << " input file(s): " << std::endl
-	    << idata << std::endl << inames << std::endl;
-  std::clog << std::endl;
+  bool verbose(false);
+  if (verbose)
+    {
+      std::clog << "starting with " << argc - 1 << " input file(s): "
+		<< std::endl << idata << std::endl << inames << std::endl;
+      std::clog << std::endl;
+    }
 
   // Extract data/values from json.
   // This is useful for generating a list of Histograms and Scalar probe names.
@@ -999,7 +1088,10 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 1);
 
   //extract_identifiers(idata, inames, json_t::browsertime_log);
-  extract_identifiers(idata, inames, json_t::browsertime, 2);
+
+  //extract_identifiers(idata, inames, json_t::browsertime, 2);
+  extract_identifiers(idata, inames, json_t::browsertime_url);
+
   //  extract_identifiers(idata, inames, json_t::har);
 
   return 0;
