@@ -13,7 +13,7 @@ Main executables are built from sources in the src directory, by running `script
 ../scripts/compile-source.sh moz-telemetry-x-extract.cc
 ```
 
-**RUNNING**
+**EXECUTABLES**
 
 ```
 moz-telemetry-x-extract.exe
@@ -34,6 +34,20 @@ Extract data from input CSV file and render into visual form SVG
 
 `moz-telemetry-x-analyze-radial.exe data1.csv data2.csv (edit.txt)`
 
-Extract data from input CSV files and render into visual form SVG. The optional *edit.txt* file is used to hilight the probe names from the *data1.csv* file. 
+Extract data from input CSV files and render into visual form SVG. The optional *edit.txt* file is used to hilight the probe names from the *data1.csv* file.
 
 
+**SCRIPTS**
+
+```
+browsertime-to-uno-with-1-metric-list.sh (metric file)
+  transform-1-metric-cosmology-to-uno.sh (toplevel product results) (metric file)
+    extract-metrics-from-log.sh
+      copy-log-files-to-one-dir.sh (results dir)
+      moz-perf-x-extract.browsertime_log.exe
+    extract-metrics-from-json.sh (results dir)
+      copy-json-files-to-one-dir.sh
+      moz-perf-x-extract.browsertime.exe
+    moz-perf-x-analyze-radial-uno.exe (csv file) (metric cosmo)
+    svg-dir-to-pngs.sh
+```

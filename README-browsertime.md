@@ -21,13 +21,3 @@ $MOZPERFAX/scripts/browsertime-to-uno-with-1-edit-list.sh
 And the generated files will be placed in the nested 'svg' and 'png'
 directories, depending on file type.
 
-
---
-
-1: transform-1-metric-to-uno.sh 'results-dir' (metrics1) (metrics2)
-
-  a: extract-metrics-from-json-and-log.sh 'results-dir' (metrics1f) (metrics2f)
-    1. moz-perf-x-extract.browsertime.exe
-    2. moz-perf-x-extract.browsertime_log.exe
-  b: moz-perf-x-analyze-radial-uno.exe 'metrics.csv' (metric-title) (metric-key)
-  c: svg-dir-to-pngs.sh
