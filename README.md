@@ -55,8 +55,8 @@ browsertime-to-uno-with-1-metric-list.sh (metric file)
 
 From a results directory and metric edit list to grafana chart visualizations
 ```
-browsertime-to-grafana-with-1-metric-list.sh (metric file)
-  transform-1-metric-cosmology-to-grafana.sh (toplevel product results for one day) (metric file)
+browsertime-to-influx-with-1-metric-list.sh (metric file)
+  transform-1-metric-cosmology-to-influx.sh (toplevel product results for one day) (metric file)
     extract-metrics-from-json.sh (results dir)
       copy-json-files-to-one-dir.sh
       moz-perf-x-extract.browsertime.exe (2 deviations) 
