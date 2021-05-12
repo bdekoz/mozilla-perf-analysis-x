@@ -55,10 +55,12 @@ browsertime-to-uno-with-1-metric-list.sh (metric file)
 
 From a results directory and metric edit list to grafana chart visualizations
 ```
-browsertime-to-grafana-with-1-metric-list.sh (metric file)
-  transform-1-metric-cosmology-to-grafana.sh (toplevel product results for one day) (metric file)
-    extract-metrics-from-json.sh (results dir)
+browsertime-to-grafana-with-1-metric-list.sh DEVID PRODUCTID RDIR (metric file)
+  transform-1-metric-cosmology-to-grafana.sh DEVID PRODUCTID RDIR (metric file)
+    extract-metrics-from-json.sh (RD)
       copy-json-files-to-one-dir.sh
-      moz-perf-x-extract.browsertime.exe (2 deviations) 
-      moz-perf-x-extract.browsertime_url.exe
+      moz-perf-x-extract.browsertime.exe (bt file) (metric file)
+      moz-perf-x-extract.browsertime_url.exe (bt file)
+      csv-index-by-line-and-field.sh
+      influx-prep-specific-browsertime-data-for-insertion.sh
 ```

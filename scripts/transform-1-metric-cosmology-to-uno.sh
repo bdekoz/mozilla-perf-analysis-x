@@ -20,7 +20,7 @@ MOZXBDIR="${MOZPERFAX}/bin"
 $SCRIPTSDIR/extract-metrics-from-log.sh $RDIR $METRICLIST
 
 # 1b extract json metrics (all) to csv and environment.json
-$SCRIPTSDIR/extract-metrics-from-json.sh $RDIR
+$SCRIPTSDIR/extract-metrics-from-json-to-csv.sh $RDIR
 
 # CSVDIR is the active results directory.
 # CSVDIR is a directory of 2 or 3 item csv's from browsertime json files.
