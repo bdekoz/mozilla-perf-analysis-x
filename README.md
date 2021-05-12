@@ -46,7 +46,7 @@ browsertime-to-uno-with-1-metric-list.sh (metric file)
     extract-metrics-from-log.sh
       copy-log-files-to-one-dir.sh (results dir)
       moz-perf-x-extract.browsertime_log.exe
-    extract-metrics-from-json.sh (results dir)
+    extract-metrics-from-json-to-csv.sh (results dir)
       copy-json-files-to-one-dir.sh
       moz-perf-x-extract.browsertime.exe
     moz-perf-x-analyze-radial-uno.exe (csv file) (metric cosmo)
