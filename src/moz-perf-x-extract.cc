@@ -961,7 +961,8 @@ extract_browsertime_url(string ifile)
   rj::Document dom(deserialize_json_to_dom(ifile));
   if (dom.HasParseError())
     {
-      std::clog << "error: failed to parse JSON in " << ifile << std::endl;
+      std::clog << "error: failed to parse JSON in file: "
+		<< ifile << std::endl;
       exit(12);
     }
 
@@ -1028,7 +1029,10 @@ extract_browsertime_url(string ifile)
     }
   else
     {
-      string m("extract_browsertime_url:: error, cannot URL field");
+      string m("extract_browsertime_url:: error, cannot find URL field");
+      m +=  " in file: ";
+      m += ifile;
+      m += k::newline;
       throw std::runtime_error(m);
     }
 }
@@ -1088,8 +1092,7 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 1);
 
   //extract_identifiers(idata, inames, json_t::browsertime_log);
-
-  //extract_identifiers(idata, inames, json_t::browsertime, 2);
+  // extract_identifiers(idata, inames, json_t::browsertime, 2);
   extract_identifiers(idata, inames, json_t::browsertime_url);
 
   //  extract_identifiers(idata, inames, json_t::har);
