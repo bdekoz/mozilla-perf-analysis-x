@@ -666,14 +666,20 @@ extract_browsertime_statistics(const rj::Value& v, const histogram_view_t dview,
 
   HAR 1.2
   http://www.softwareishard.com/blog/har-12-spec/
+
+  ifile == input JSON file
+  iname == input edit list file, text newline delimited
+  dview == type of histogram extraction (defaults to median)
+  deviations == number of variance values to extract
+  manglemetricp == add metric cosmology to output csv file name
  */
 void
 extract_browsertime(string ifile, string inames, const histogram_view_t dview,
-		    const uint deviations = 0)
+		    const uint deviations = 0, const bool manglemetricp = false)
 {
   // Setup output.
   string ofname(file_path_to_stem(ifile));
-  if (!inames.empty())
+  if (!inames.empty() && manglemetricp)
     {
       ofname += "-x-";
       string ifname(file_path_to_stem(inames));
@@ -804,7 +810,10 @@ extract_browsertime(string ifile, string inames, const histogram_view_t dview,
 	    {
 	      auto endpos = ostring.find(k::newline, startpos);
 	      if (endpos != string::npos)
-		ofs << ostring.substr(startpos, endpos - startpos);
+		{
+		  ofs << ostring.substr(startpos, endpos - startpos);
+		  ofs << k::newline;
+		}
 	    }
 	}
     }
@@ -1092,8 +1101,8 @@ int main(int argc, char* argv[])
   //list_json_fields(idata, 1);
 
   //extract_identifiers(idata, inames, json_t::browsertime_log);
-  // extract_identifiers(idata, inames, json_t::browsertime, 2);
-  extract_identifiers(idata, inames, json_t::browsertime_url);
+  extract_identifiers(idata, inames, json_t::browsertime, 2);
+  //extract_identifiers(idata, inames, json_t::browsertime_url);
 
   //  extract_identifiers(idata, inames, json_t::har);
 
