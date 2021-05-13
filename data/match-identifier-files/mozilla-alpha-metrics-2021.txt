@@ -1,0 +1,8 @@
+TTFB
+firstPaint
+FCP
+LCP
+FirstVisualChange
+LastVisualChange
+SpeedIndex
+VisualComplete95
