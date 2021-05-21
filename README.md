@@ -61,6 +61,5 @@ browsertime-to-grafana-with-1-metric-list.sh DEVID PRODUCTID RDIR (metric file)
       copy-json-files-to-one-dir.sh
       moz-perf-x-extract.browsertime.exe (bt file) (metric file)
       moz-perf-x-extract.browsertime_url.exe (bt file)
-      csv-index-by-line-and-field.sh
-      influx-prep-specific-browsertime-data-for-insertion.sh
+      csv-index-by-line-and-field.sh FILE LINE FIELD
 ```
