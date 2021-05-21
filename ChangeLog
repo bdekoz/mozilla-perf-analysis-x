@@ -1,3 +1,11 @@
+2020-05-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	browsertime to influx baseline
+	* scripts/browsertime-to-influx-with-1-metric-list.sh
+	* scripts/common-devices.sh
+	* scripts/csv-index-by-line-and-field.sh
+	* scripts/transform-1-metric-cosmology-to-influx.sh
+
 2020-05-13  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	Merge WIP influx work.
