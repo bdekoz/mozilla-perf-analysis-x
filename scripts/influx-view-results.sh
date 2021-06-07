@@ -11,5 +11,5 @@
 # FirstVisualChange
 # LastVisualChange
 # firstPaint
-influx -host hilldale-b40313e5.influxcloud.net -port 8086 -username performance_ro -password 8cd4376a09477b73aab63dadd3d893f1 -ssl -execute 'SELECT * FROM "firstPaint" WHERE ("device" =~ /pixel_4_xl/) AND ("product" =~ /fenix*/)' -database="performance" -precision=rfc3339
+influx -host hilldale-b40313e5.influxcloud.net -port 8086 -username performance_ro -password 8cd4376a09477b73aab63dadd3d893f1 -ssl -execute 'SELECT * FROM "firstPaint" WHERE ("device" =~ /pixel-4-xl/) AND ("product" =~ /fenix*/)' -database="performance" -precision=rfc3339
 

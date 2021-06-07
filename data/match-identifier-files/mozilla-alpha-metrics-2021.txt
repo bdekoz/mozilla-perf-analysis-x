@@ -1,3 +1,4 @@
 firstPaint
 FirstVisualChange
 LastVisualChange
+SpeedIndex
