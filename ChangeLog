@@ -1,3 +1,8 @@
+2020-06-07  Benjamin De Kosnik  <bdekoz@mozilla.com>
+
+	* scripts/influx-post-annotations.sh: Add annotations for a
+	finite number of events.
+
 2020-05-21  Benjamin De Kosnik  <bdekoz@mozilla.com>
 
 	browsertime to influx baseline
