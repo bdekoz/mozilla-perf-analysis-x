@@ -1,4 +1,12 @@
 firstPaint
 FirstVisualChange
 LastVisualChange
+VisualComplete85
 SpeedIndex
+PerceptualSpeedIndex
+ContentfulSpeedIndex
+redirectionTime
+domainLookupTime
+serverResponseTime
+domContentLoadedTime
+domInteractiveTime

@@ -8,7 +8,7 @@ RDIR=$3
 METRICLIST=$4
 
 #DATE=`date --iso`
-DATE=2021-05-01
+DATE=2021-03-31
 # Second precision writes for the database are more than sufficient
 # for something that is monitored on a daily basis...
 if [ ! -n "$DATE" ]; then
