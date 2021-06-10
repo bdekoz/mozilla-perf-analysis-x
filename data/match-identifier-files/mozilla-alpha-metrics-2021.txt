@@ -1,4 +1,5 @@
 firstPaint
+first-contentful-paint
 FirstVisualChange
 LastVisualChange
 VisualComplete85
